@@ -12,13 +12,22 @@ const MIN_PASSWORD_LENGTH = 5
 
 form.addEventListener('submit', (e) => {
   let messages= []  //error messages
-  if (name.value === '' || name.value === null) {
+  const pw = password.value;
+  let nameVal = name.value;
+
+  if (nameVal.trim() === '' ) {
     messages.push('Please enter a name!')
   }
-  if (password.value.length <= MIN_PASSWORD_LENGTH || password.contains('')){
-    messages.push('Minimum passowrd must be ' + MIN_PASSWORD_LENGTH + ' characters long!')
+  if (nameVal !== nameVal.trim()) {
+    messages.push("Invalid character in name!")
   }
-  if (password.value !== confirm_password.value){
+  if (pw.length < MIN_PASSWORD_LENGTH ){
+    messages.push('Minimum password must be ' + MIN_PASSWORD_LENGTH + ' characters long!')
+  }
+  if (!/^\S+$/.test(pw)) {
+    messages.push("Invalid character in password!")
+  }
+  if (pw !== confirm_password.value){
     messages.push('Confirmation password does not match!')
   }
 
@@ -27,7 +36,7 @@ form.addEventListener('submit', (e) => {
 
   if (messages.length > 0) {
     e.preventDefault()
-    errorElement.innerText = messages.join(', ')
+    errorElement.innerText = messages.join('\n ')
   }
 
 })
