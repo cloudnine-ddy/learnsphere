@@ -8,4 +8,4 @@ class Student {
     }
   }
   
-  export default Product;
+  export default Student;

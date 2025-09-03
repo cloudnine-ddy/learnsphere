@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import studentRoute from './Routes/studentRoute.js';
 
 import config from './config.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
@@ -35,6 +36,8 @@ app.post('/register', (req, res) => {
       res.status(error.code).send(error.message);
     })
 })
+
+app.use('/api', studentRoute);
 
 app.listen(config.port, () =>
   console.log(`Server is live @ ${config.hostUrl}`),
