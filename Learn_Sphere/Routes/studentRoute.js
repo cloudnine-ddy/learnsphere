@@ -1,15 +1,15 @@
 import express from 'express';
 
 import {
-    createStudent,
-    getStudent
+    registerStudent,
+    loginStudent
 } from '../Controllers/studentController.js';
 
 const router = express.Router();
 
 // router.get('/', getProducts);
-router.post('/new', createStudent);
-router.get('/student/:id', getStudent);
+router.post('/register', registerStudent);
+router.post('/login', loginStudent);
 // router.put('/update/:id', updateProduct);
 // router.delete('/delete/:id', deleteProduct);
 
