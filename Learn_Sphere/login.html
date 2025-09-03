@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LearnSphere - Login</title>
+        <link rel="stylesheet" href="CSS/login.css">
+    </head>
+
+    <body>
+
+        <div class="main-content">
+            <header class="header">
+                <span>LearnSphere</span>
+            </header>
+
+            <div class="page-content">
+
+                <div class="role-section">
+
+                    <img class="cover-pic" src="images/pictures/cover.png" alt="cover picture">
+
+                    <button id="instructorBtn" class="role-card" type="button" onclick="selectRole('instructor')">
+                        <img class="role-icon" src="images/icons/teacher.png" alt="teacher icon">
+                        <p class="role-info">I am an Instructor</p>
+                    </button>
+
+                    <button id="studentBtn" class="role-card" type="button" onclick="selectRole('student')">
+                        <p class="role-info">I am a Student</p>
+                        <img class="role-icon" src="images/icons/student.png" alt="student icon">
+                        
+                    </button>
+
+                </div>
+
+                <script>
+                    function selectRole(role) {
+                        let instructorBtn = document.getElementById("instructorBtn");
+                        let studentBtn = document.getElementById("studentBtn");
+
+                        if (role == 'instructor') {
+                            instructorBtn.style.opacity = "1";
+                            studentBtn.style.opacity = "0.5";
+                        } else {
+                            instructorBtn.style.opacity = "0.5";
+                            studentBtn.style.opacity = "1";
+                        }
+                    }
+                </script>
+
+                <div class="info-section">
+
+                    <div class="info-header">
+                        <h1 class="info-title">Login</h1>
+                    </div>
+                    
+                   
+                    <div class="info-scroll">
+                        <div class="form-row">
+                            <label for="username">Username</label>
+                            <div class="input-field">
+                                <input class="input" name="username" id="username" type="text" required>
+                            </div>
+                            
+                        </div>
+
+                        <div class="form-row">
+                            <label for="password">Password</label>
+                            <div class="input-field">
+                                <input class="input" name="password" id="password" type="password" required>
+                                <button type="button" class="side-button" onclick="togglePassword('password', this)">
+                                    <img src="images/icons/hide.png" alt="hide" class="icon">
+                                </button>
+                            </div>
+                            
+                        </div>
+
+                        <script>
+                            function togglePassword(id, button) {
+                                let input = document.getElementById(id);
+                                let icon = button.querySelector('img');
+
+                                if (input.type === 'password') {
+                                    input.type = 'text';
+                                    icon.src = "images/icons/show.png";
+                                    icon.alt = 'show';
+                                } else {
+                                    input.type = 'password';
+                                    icon.src = "images/icons/hide.png";
+                                    icon.alt = 'hide';
+                                }
+                            }
+                        </script>
+
+                        <p style="font-size: 14px; opacity: 0.5; margin-top: -10px;"><a href="#" style="color: black; text-decoration: none;">Forgot Password</a></p>
+                    </div>
+
+                    <div class="info-footer">
+                        
+                        <button class="login-btn" type="submit">Login</button>
+
+                        <p>
+                            No account? <a href="#" style="color: white; text-decoration: none;">Sign up</a>
+                        </p>
+                    </div>
+
+                </div>
+                
+            </div>
+        </div>
+
+    </body>
+
+
+</html>
