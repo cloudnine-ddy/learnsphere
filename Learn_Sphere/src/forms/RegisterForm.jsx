@@ -5,6 +5,8 @@ import PasswordField from "../components/PasswordField";
 import TermsCheckbox from "../components/TermsCheckbox";
 import Button from "../components/Button";
 import ErrorMessage from "../components/ErrorMessage";
+import config from '../config.js';
+import Student from "../../Models/Users/studentModel.js";
 
 import styles from "./RegisterForm.module.css";
 
@@ -33,6 +35,17 @@ function RegisterForm() {
         console.log("submit form");
         setErrorMessages([]);
         console.log(firstName, lastName, email, password, confirmPassword);
+
+        const newStudent = Student(0, firstName, lastName, email, password)
+
+        const submitRequest = fetch(config.hostURL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newStudent),
+        });
+        console.log(submitRequest)
     }
      
     return (

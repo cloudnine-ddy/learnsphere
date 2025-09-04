@@ -63,7 +63,7 @@ export const loginStudent = async (req, res, next) => {
   createUserWithEmailAndPassword(auth, req.body.email, req.body.password)
     .then((userCredential) => {
       const user = userCredential.user;
-      user.displayName = req.body.displayName;
+      user.displayName = "${req.body.firstName} ${req.body.lastname}";
 
       auth.currentUser = userCredential.user;
       res.cookie('user', userCredential);
