@@ -1,0 +1,11 @@
+.formRow {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.formRow label {
+  font-size: 18px;
+  margin-bottom: 6px;
+  color: black;
+}
