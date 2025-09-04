@@ -15,11 +15,10 @@ function RegisterForm() {
             </div>
 
             <div className={styles.infoScroll}>
-                <InputField label="Username" id="username" placeholder="Enter username" />
                 <InputField label="Email" id="email" placeholder="Enter email" />
-
                 <PasswordField label="Password" id="password" placeholder="Enter password" />
                 <PasswordField label="ConfirmPassword" id="confirmPassword" placeholder="Re-enter password" />
+                <InputField label="Token" id="token" placeholder="Enter token" />
             </div>
 
             <div className={styles.infoFooter}>

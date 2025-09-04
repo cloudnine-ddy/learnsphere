@@ -6,7 +6,7 @@ function PasswordField({label, id, placeholder=""}) {
     const [show, setShow] = useState(false)
     return (
         <div className={styles.formRow}>
-            <label htmlFor={id}>{label}</label>
+            <label className={styles.label} htmlFor={id}>{label}</label>
             <div className={styles.inputField}>
                 <input 
                 className={styles.input}
@@ -21,7 +21,6 @@ function PasswordField({label, id, placeholder=""}) {
                     className={styles.sideButton}
                     onClick={() => setShow(!show)}
                 >
-                    
                     <img 
                         src = {show ? "images/icons/show.png" : "images/icons/hide.png"} 
                         alt = {show ? "show" : "hide"} 
