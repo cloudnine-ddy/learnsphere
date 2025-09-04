@@ -13,3 +13,4 @@ function ErrorMessage({messages}) {
         </div>
     );
 }
+export default ErrorMessage;
