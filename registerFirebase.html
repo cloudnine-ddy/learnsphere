@@ -38,7 +38,8 @@
 
         const email = emailInput.value;
         const password = passwordInput.value;
-        const name = document.getElementById("name").value;
+        const firstName = document.getElementById("firstName").value;
+        const lastName = document.getElementById("lastName").value;
         const role = document.getElementById("role").value;
 
 
@@ -53,8 +54,9 @@
             const userData = {
               email: email,
               password: password,
-              name: name,
-              role: role
+              firstName: firstName,
+              lastName: lastName,
+              role: role,
             };
 
             // Save user data to Firestore
@@ -62,7 +64,7 @@
             setDoc(docRef, userData)
               .then(() => {
                 console.log("Document successfully written!"); // Debugging log
-                window.location.href = 'index.html'; // Redirect after successful signup
+                window.location.href = 'placeholderHomepage.html'; // Redirect after successful signup
               })
               .catch((error) => {
                 console.error("Error writing document:", error);
@@ -81,8 +83,11 @@
   <form>
       <div id="signUpMessage" class="messageDiv" style="display:none;"></div>
 
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" placeholder="Enter your name"><br>
+      <label for="firstName">First Name:</label>
+      <input type="text" id="firstName" name="name" placeholder="Enter your name"><br>
+
+      <label for="lastName">Last Name:</label>
+      <input type="text" id="lastName" name="name" placeholder="Enter your name"><br>
 
       <label for="email">Email:</label>
       <input type="email" id="email" name="email" placeholder="Enter your email"><br>
@@ -101,5 +106,5 @@
   <button id="delete">Delete Account</button> <br> <!-- Button to delete user account -->
   <button id="logIn">Login</button>
 
-</body> d
+</body> 
 </html>
