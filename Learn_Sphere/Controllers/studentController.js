@@ -12,9 +12,8 @@ import {
 } from 'firebase/firestore';
 import { 
   getAuth, 
-  createUserWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  getUserBy
 } from "firebase/auth";
 
 const db = getFirestore(firebase);
@@ -47,20 +46,20 @@ export const getStudent = async (req, res, next) => {
 };
 */
 
-export const registerStudent = (req, res) => {
-  signInWithEmailAndPassword(auth, req.body.email, req.body.password)
+export const registerStudent = async (req, res) => {
+  createUserWithEmailAndPassword(auth, req.body.email, req.body.password)
     .then((userCredential) => {
       auth.currentUser = userCredential.user;
       res.cookie('user', userCredential);
       res.status(200).send('login successful!');
     })
     .catch((error) => {
-      res.status(error.code).send(error.message);
+      res.status(400).send(error.message);
     })
   };
 
 export const loginStudent = async (req, res, next) => {
-  createUserWithEmailAndPassword(auth, req.body.email, req.body.password)
+  signInWithEmailAndPassword(auth, req.body.email, req.body.password)
     .then((userCredential) => {
       const user = userCredential.user;
       user.displayName = "${req.body.firstName} ${req.body.lastname}";
@@ -74,6 +73,7 @@ export const loginStudent = async (req, res, next) => {
     })
   };
 
+/*
 export const getStudent = async(req, res, next) => {
   auth.getUser(req.body.userID)
     .then((userRecord) => {
@@ -84,3 +84,4 @@ export const getStudent = async(req, res, next) => {
       res.status(error.code).send('Error fetching user data:', error);
     });
   }
+*/

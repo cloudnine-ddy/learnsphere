@@ -5,7 +5,6 @@ import PasswordField from "../components/PasswordField";
 import TermsCheckbox from "../components/TermsCheckbox";
 import Button from "../components/Button";
 import ErrorMessage from "../components/ErrorMessage";
-import config from '../config.js';
 import Student from "../../Models/Users/studentModel.js";
 
 import styles from "./RegisterForm.module.css";
@@ -19,7 +18,7 @@ function RegisterForm() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorMessages, setErrorMessages] = useState([]);
 
-    const submitForm = (e) => { 
+    const submitForm = async (e) => { 
         e.preventDefault();
         let message = []
         if (password !== confirmPassword) {
@@ -36,9 +35,9 @@ function RegisterForm() {
         setErrorMessages([]);
         console.log(firstName, lastName, email, password, confirmPassword);
 
-        const newStudent = Student(0, firstName, lastName, email, password)
+        const newStudent = new Student(0, firstName, lastName, email, password)
 
-        const submitRequest = fetch(config.hostURL, {
+        const submitRequest = await fetch("http://localhost:3000/api/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

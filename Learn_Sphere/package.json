@@ -31,5 +31,6 @@
   "main": "index.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "start": "nodemon index.js"
 }

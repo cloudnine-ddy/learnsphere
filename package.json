@@ -1,12 +1,12 @@
 {
   "dependencies": {
+    "dotenv": "^17.2.2",
     "firebase": "^12.2.1"
   },
   "name": "ma_thursday5pm_team3",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
