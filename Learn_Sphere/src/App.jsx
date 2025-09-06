@@ -3,13 +3,21 @@
 import React from "react";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+import {BrowserRouter, Routes, Route } from "react-router-dom";
 
 
 function App() {
   return (
-    <div>
-      <RegisterPage />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/reg" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+    </BrowserRouter>
+
+    // <div>
+    //   <RegisterPage />
+    // </div>
   );
 }
 export default App;
