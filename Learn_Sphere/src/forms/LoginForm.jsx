@@ -8,7 +8,7 @@ import styles from "./LoginForm.module.css";
 
 function LoginForm() {
   const navigate = useNavigate();
-
+  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessages, setErrorMessages] = useState([])
@@ -40,7 +40,7 @@ function LoginForm() {
         </div>
 
         <div className={styles.infoScroll}>
-          <InputField label="Username" id="username" placeholder="Enter username" value = {username} onChange={(e) => setUsername(e.target.value)}   />
+          <InputField label="Email" id="email" placeholder="Enter email" value = {email} onChange={(e) => setEmail(e.target.value)}   />
           <PasswordField label="Password" id="password" placeholder="Enter password"  value={password} onChange={(e) => setPassword(e.target.value)} />
 
 
