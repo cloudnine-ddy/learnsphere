@@ -8,17 +8,17 @@ import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/reg" element={<RegisterPage />} />
-        <Route path="/login" element={<LoginPage />} />
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/reg" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </BrowserRouter>
 
-    // <div>
-    //   <RegisterPage />
-    // </div>
+      // <div>
+      //   <RegisterPage />
+      // </div>
   );
 }
 export default App;

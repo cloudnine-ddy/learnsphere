@@ -33,31 +33,31 @@ function LoginForm() {
 
   return (
       <form onSubmit={submitForm} className={styles.infoFooter}>
-      <div className={styles.infoSection}>
-        <div className={styles.infoHeader}>
-          <h1 className={styles.infoTitle}>Login</h1>
+        <div className={styles.infoSection}>
+          <div className={styles.infoHeader}>
+            <h1 className={styles.infoTitle}>Login</h1>
+          </div>
+
+          <div className={styles.infoScroll}>
+            <InputField label="Email" id="email" placeholder="Enter email" value = {email} onChange={(e) => setEmail(e.target.value)}   />
+            <PasswordField label="Password" id="password" placeholder="Enter password"  value={password} onChange={(e) => setPassword(e.target.value)} />
+
+            {errorMessages.length>0 && (
+                <div>
+                  {errorMessages.map((msg,idx) => (
+                      <p key = {idx} style={{ color: "red"}}>
+                        {msg}
+                      </p>
+                  ))}
+                </div>
+            )}
+
+          </div>
+
+          <div className={styles.infoFooter}>
+            <button type="submit">Login</button>
+          </div>
         </div>
-
-        <div className={styles.infoScroll}>
-          <InputField label="Email" id="email" placeholder="Enter email" value = {email} onChange={(e) => setEmail(e.target.value)}   />
-          <PasswordField label="Password" id="password" placeholder="Enter password"  value={password} onChange={(e) => setPassword(e.target.value)} />
-
-          {errorMessages.length>0 && (
-            <div>
-              {errorMessages.map((msg,idx) => (
-                <p key = {idx} style={{ color: "red"}}>
-                  {msg}
-                </p>
-              ))}
-              </div>
-          )}
-
-        </div>
-
-        <div className={styles.infoFooter}>
-          <button type="submit">Login</button> 
-        </div>
-      </div>
       </form>
   );
 }
