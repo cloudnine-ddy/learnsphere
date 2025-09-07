@@ -94,3 +94,21 @@
     height: 25px;
     opacity: 0.5;
 }
+
+.noAccount {
+    color: black; 
+    text-decoration: none;
+    margin-top: 5px;
+    align-self: self-start;
+}
+
+.noAccount a {
+    color: white; 
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.noAccount a:hover {
+    text-decoration: underline;
+}

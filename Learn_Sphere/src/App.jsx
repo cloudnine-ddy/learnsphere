@@ -3,12 +3,15 @@
 import React from "react";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+import DashboardPage from "./pages/DashboardPage";
 
 
 function App() {
   return (
     <div>
+      {/* <LoginPage /> */}
       <RegisterPage />
+      {/* <DashboardPage /> */}
     </div>
   );
 }

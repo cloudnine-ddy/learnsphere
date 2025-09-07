@@ -17,11 +17,11 @@ function LoginForm() {
         <div className={styles.infoScroll}>
             <InputField label="Email" id="email" placeholder="Enter email" />
             <PasswordField label="Password" id="password" placeholder="Enter password" />
-            <PasswordField label="ConfirmPassword" id="confirmPassword" placeholder="Re-enter password" />
         </div>
 
         <div className={styles.infoFooter}>
             <Button type="submit">Login</Button>
+            <div className={styles.noAccount}>No account?<a href=""> Sign Up</a></div>
         </div>
     </div>
   );
