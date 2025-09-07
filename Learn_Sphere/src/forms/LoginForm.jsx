@@ -2,14 +2,14 @@ import React, {useState} from "react";
 import InputField from "../components/InputField";
 import PasswordField from "../components/PasswordField";
 import Button from "../components/Button";
+import { useNavigate } from "react-router-dom";
 
 import styles from "./LoginForm.module.css";
 
 function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessages, setErrorMessages] = useState([])
 
@@ -27,10 +27,10 @@ function LoginForm() {
       setErrorMessages(message);
       return;
     }
-    console.log("submit form")
+    console.log("login successful")
     navigate("/register");
     setErrorMessages([]);
-    console.log(username,email,password,errorMessages)
+    console.log(username,password,errorMessages)
   }
 
   return (
@@ -40,11 +40,10 @@ function LoginForm() {
         </div>
 
         <div className={styles.infoScroll}>
-          <InputField label="Username" id="username" placeholder="Enter username" value = {username} onChange={(e) => setUsername(e.target.value)}  = />
-          <PasswordField label="Password" id="password"
-                         placeholder="Enter password"/>
-          <PasswordField label="ConfirmPassword" id="confirmPassword"
-                         placeholder="Re-enter password"/>
+          <InputField label="Username" id="username" placeholder="Enter username" value = {username} onChange={(e) => setUsername(e.target.value)}   />
+          <PasswordField label="Password" id="password" placeholder="Enter password"  value={password} onChange={(e) => setPassword(e.target.value)} />
+
+
         </div>
 
         <div className={styles.infoFooter}>
