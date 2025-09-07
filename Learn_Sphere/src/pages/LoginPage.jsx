@@ -5,7 +5,8 @@ import LoginForm from "../forms/LoginForm"
 import styles from "./LoginPage.module.css";
 
 function LoginPage() {
-    return (
+  console.log("LoginPage rendered");
+  return (
         <div className={styles.mainContent}>
             <AuthHeader />
             <div className={styles.pageContent}>

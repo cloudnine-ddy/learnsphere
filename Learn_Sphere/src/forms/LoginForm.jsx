@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./LoginForm.module.css";
 
 function LoginForm() {
+  console.log("help")
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -16,11 +17,8 @@ function LoginForm() {
   const submitForm = (e) => {
     e.preventDefault();
     let message = []
-    let instructorBtn = document.getElementById("instructorBtn");
-    let studentBtn = document.getElementById("studentBtn");
-
-    if (!instructorBtn || !studentBtn) {
-      message.push("Please select a role!");
+    if (!email.includes("@gmail.com")) {
+      message.push("Enter a valid email!")
     }
 
     if (message.length > 0) {
@@ -28,12 +26,13 @@ function LoginForm() {
       return;
     }
     console.log("login successful")
-    navigate("/register");
+    navigate("/reg");
     setErrorMessages([]);
     console.log(username,password,errorMessages)
   }
 
   return (
+      <form onSubmit={submitForm} className={styles.infoFooter}>
       <div className={styles.infoSection}>
         <div className={styles.infoHeader}>
           <h1 className={styles.infoTitle}>Login</h1>
@@ -43,13 +42,23 @@ function LoginForm() {
           <InputField label="Email" id="email" placeholder="Enter email" value = {email} onChange={(e) => setEmail(e.target.value)}   />
           <PasswordField label="Password" id="password" placeholder="Enter password"  value={password} onChange={(e) => setPassword(e.target.value)} />
 
+          {errorMessages.length>0 && (
+            <div>
+              {errorMessages.map((msg,idx) => (
+                <p key = {idx} style={{ color: "red"}}>
+                  {msg}
+                </p>
+              ))}
+              </div>
+          )}
 
         </div>
 
         <div className={styles.infoFooter}>
-          <Button type="submit">Login</Button>
+          <button type="submit">Login</button> 
         </div>
       </div>
+      </form>
   );
 }
 
