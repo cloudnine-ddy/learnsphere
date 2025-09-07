@@ -7,14 +7,10 @@ function Lessons()
 
     useEffect(() => {
         getLessons().then((res) => {
-            console.log(res);
             setLessons(res);
         })
         .catch(error => "error: ${error}");
-    }, [lessons]);
-
-    console.log(lessons);
-    
+    }, [lessons]);    
 
     return (
         <ul>
