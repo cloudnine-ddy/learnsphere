@@ -1,5 +1,5 @@
 import {initializeApp} from "firebase/app"
-import {collection, query, where, getDocs, getFirestore} from "firebase/firestore";
+import {collection, doc, query, where, getDoc, getDocs, getFirestore} from "firebase/firestore";
 
 function db()
 {
@@ -31,4 +31,19 @@ export async function getLessons()
     lessons.map((item) => {console.log(item)});
 
     return lessons;
+}
+
+export async function getLesson(id)
+{
+    const docRef = doc(db(), "lessons", id);
+    //const q = query(collection(db(), "lessons"), where("title", "==", title));
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists())
+    {
+        return docSnap.data();
+    }
+    else
+    {
+        return null;
+    }
 }
