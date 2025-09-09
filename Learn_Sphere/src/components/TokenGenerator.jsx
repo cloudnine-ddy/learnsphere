@@ -9,20 +9,6 @@ function TokenGenerator({label="Generate"}) {
     let navigate = useNavigate("/home");
 
     useEffect(() => {
-    //Runs only at first render to kick out students
-        getCurrentUser().then(
-            (user) => {
-                return getUserInfo(user);
-            })
-            .then((info) => {
-                if (info.role == "student")
-                {
-                    navigate("/home");
-                }
-            });
-    }, [])
-
-    useEffect(() => {
     //Runs when token state is changed
         getTokens().then(
             (tokens) => {
@@ -62,7 +48,7 @@ function TokenGenerator({label="Generate"}) {
             <div>
                 {tokens.map((token, index) => (
                     <div key={index} className={styles.tokenField}>
-                        <span>
+                        <span className={styles.token}>
                             {token.value}
                         </span>
 

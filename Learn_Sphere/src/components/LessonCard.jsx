@@ -14,9 +14,9 @@ function LessonCard({lessonID, lessonTitle, creditPoint, instructorName, href}) 
                     <p className={styles.lessonId}>
                         {lessonID} 
                     </p>
-                    <h3 className={styles.lessonTitle}>
+                    <p className={styles.lessonTitle}>
                         {lessonTitle}
-                    </h3>
+                    </p>
                     <p className={styles.lessonCreditPoint}>
                         Credit Point: {creditPoint} 
                     </p>

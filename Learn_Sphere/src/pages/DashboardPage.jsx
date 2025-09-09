@@ -102,7 +102,7 @@ function DashboardPage() {
                                 prerequisiteOptions={currentUnits} 
                             />} />}
                             {userData != null && userData.role != "student" && 
-                                <Route path="/report" element={<TokenGenerator />} 
+                                <Route path="/report" element={<AdminPortal />} 
                             />}
                         </Routes>
                     </div>

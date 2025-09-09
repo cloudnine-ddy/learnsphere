@@ -44,7 +44,7 @@ function LessonDashboard() {
             </div>
             <div className={styles.infoScroll}>
                 <div className={styles.cardContainer}>
-                    {lessons.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().lessonTitle} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/courses/${lesson.id}`}/>)}
+                    {lessons.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().title} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/courses/${lesson.id}`}/>)}
                 </div>
             </div>
         </>
