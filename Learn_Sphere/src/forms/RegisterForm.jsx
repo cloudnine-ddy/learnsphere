@@ -5,6 +5,7 @@ import PasswordField from "../components/PasswordField";
 import TermsCheckbox from "../components/TermsCheckbox";
 import Button from "../components/Button";
 import ErrorMessage from "../components/ErrorMessage";
+import TitleDropdown from "../components/TitleDropdown";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./RegisterForm.module.css";
@@ -18,6 +19,13 @@ function RegisterForm({selectedRole}) {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorMessages, setErrorMessages] = useState([]);
+    const [role, setRole] = useState("");
+    const roles = [
+        { value: "mr", label: "Mr" },
+        { value: "mrs", label: "Mrs" },
+        { value: "ms", label: "Ms" },
+        { value: "dr", label: "Dr" },
+    ];
 
     const submitForm = (e) => { 
         e.preventDefault();
@@ -36,11 +44,13 @@ function RegisterForm({selectedRole}) {
             return;
         }
         console.log("submit form");
-        navigate("/login");
+        navigate("/home");
         setErrorMessages([]);
         console.log(firstName, lastName, email, password, confirmPassword);
     }
-     
+    
+    
+
     return (
         <form className={styles.infoSection} onSubmit={submitForm}>
             <div className={styles.infoHeader}>
@@ -48,18 +58,23 @@ function RegisterForm({selectedRole}) {
             </div>
 
             <div className={styles.infoScroll}>
+
+                <TitleDropdown label="Title" id="role" placeholder="Choose a role…" value={role} onChange={setRole} options={roles} />
+
                 <InputField label="First Name" id="firstName" placeholder="Enter first name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                 <InputField label="Last Name" id="lastName" placeholder="Enter last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                 <InputField label="Email" id="email" placeholder="Enter email"  value={email} onChange={(e) => setEmail(e.target.value)} />
 
                 <PasswordField label="Password" id="password" placeholder="Enter password"  value={password} onChange={(e) => setPassword(e.target.value)} />
                 <PasswordField label="Confirm Password" id="confirmPassword" placeholder="Re-enter password"  value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                <InputField label="Token" id="token" placeholder="Enter token"  value={email} onChange={(e) => setEmail(e.target.value)} />
                 <ErrorMessage messages={errorMessages} />
             </div>
 
             <div className={styles.infoFooter}>
                 <TermsCheckbox />
                 <Button type="submit"  >Register</Button>
+                <div className={styles.haveAccount}>Have an account?<a href="/login"> Login Here</a></div>
             </div>
         </form>
     );
