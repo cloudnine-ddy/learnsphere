@@ -14,7 +14,7 @@ function App() {
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/reg" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/home" element={<DashboardPage />} />
+          <Route path="/home/*" element={<DashboardPage />} />
         </Routes>
       </BrowserRouter>
   );

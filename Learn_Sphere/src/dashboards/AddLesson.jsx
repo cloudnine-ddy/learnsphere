@@ -41,7 +41,7 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
     };
 
     return (
-        <div onSubmit={submitForm} className={styles.wrapper}>
+        <div className={styles.wrapper}>
             <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>
                     Add Lesson
@@ -91,7 +91,7 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
                     <AddFromList 
                         prerequisites={prerequisites}
                         setPrerequisites={setPrerequisites}
-                        prerequisiteOptions={prerequisiteOptions}
+                        prerequisiteOptions={prerequisiteOptions.map(option => `${option.data().lessonID}: ${option.data().title}`)}
                     />
 
                     <InputField
@@ -112,7 +112,7 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
                         ))}
                     </select> */}
 
-                <SelectOneFromList label="Instructor" object={lesson} list = {instructorList} onChange={handleLessonChange}/>
+                <SelectOneFromList label="Instructor" object={lesson} list = {instructorList.map(instructor => `${instructor.title} ${instructor.firstName} ${instructor.lastName}`)} onChange={handleLessonChange}/>
                 <SelectStatus label="Status" object={lesson} onChange={handleLessonChange}/>
 
 
@@ -127,7 +127,7 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
             </div>
             
             <div className={styles.infoFooter}>
-                <Button type="submit"  >Register</Button>
+                <Button type="submit" onClick={submitForm} >Register</Button>
             </div>
         </div>
     );

@@ -9,7 +9,7 @@ export async function signInUser(email, password)
     await signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         user = userCredential.user; // This is the authenticated user
-        cookieStore.set('user', userCredential);
+        cookieStore.set('user', JSON.stringify(userCredential));
       })
       .catch((error) => {
         throw "Cannot sign in user! " + error;
@@ -26,7 +26,7 @@ export async function registerUser(firstName, lastName, email, password, title, 
     await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
         user = userCredential.user;
-        cookieStore.set('user', userCredential);
+        cookieStore.set('user', JSON.stringify(userCredential));
         console.log("User created successfully:", user); // Debugging log
 
         let userData = {
@@ -60,7 +60,7 @@ export async function getCurrentUser()
 
     if (userCredential)
     {
-        return userCredential.user;
+        return JSON.parse(userCredential.value).user;
     }
     else
     {
@@ -68,19 +68,43 @@ export async function getCurrentUser()
     }
 }
 
-export async function getUserInfo(id)
+export async function getUserInfo(user)
 {
-    //get the user credentials to look for
-    const docRef = doc(db, "lessons", id);
+    //get the user credentials to look for, pass down user
+    const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
 
     //if they exist, return the credentials
     if (docSnap.exists())
     {
-        return docSnap;
+        return docSnap.data();
     }
     else
     {
         return null;
+    }
+}
+
+export async function getAllInstructorsInfo()
+{
+    let user = await getCurrentUser();
+
+    if (user)
+    {
+        const lessons = []
+        
+        const q = query(collection(db, "users"), where("role", "==", "instructor"));
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((user) => {
+            // doc.data() is never undefined for query doc snapshots
+            lessons.push(user.data())
+        });
+
+        return lessons;
+    }
+    else
+    {
+        throw "You are not logged in, so you cannot access this page!"
     }
 }

@@ -6,26 +6,45 @@ import LoginForm from "../forms/LoginForm";
 import FilterDropdown from "../components/FilterDropdown";
 import LessonCard from "../components/LessonCard";
 import { useNavigate } from "react-router-dom";
-import { getCurrentUser, getUserInfo} from "../components/manageUsers";
+import { getCurrentUser, getUserInfo, getAllInstructorsInfo } from "../components/manageUsers";
+import { getLessons } from "../components/getLessons";
+import {BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
 
 import styles from "./DashboardPage.module.css";
 
 function DashboardPage() {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
+    const [userData, setUserData] = useState(null);
+    const [instructors, setInstructors] = useState([]);
+    const [currentUnits, setCurrentUnits] = useState([]);
 
     useEffect(() => {
     //Runs only on the first render
         getCurrentUser().then(
             (user) => {
                 user != null ? setUser(user) : navigate("/reg");
-            }
-        )
+                return getUserInfo(user);
+            })
+            .then((userInfo) => {
+                setUserData(userInfo);
+            });
     }, []);
+
+    useEffect(() => {
+    //Runs every render
+        getAllInstructorsInfo().then(
+            (instructors) => {setInstructors(instructors);}
+        );
+
+        getLessons(true).then(
+            (lessons) => {setCurrentUnits(lessons);}
+        );
+    })
 
     return (
         <div className={styles.mainContent}>
-            <DashbaordHeader username={user != null ? getUserInfo(user).data().firstName : "user"} />
+            <DashbaordHeader username={userData != null ? `${userData.title} ${userData.firstName} ${userData.lastName}` : "user"} />
 
             <div className={styles.pageContent}>
 
@@ -33,15 +52,19 @@ function DashboardPage() {
 
                     <div className={styles.sidebarMenu}>
                         
-                        <h3 className={styles.menuItem}>
-                            <img src="../images/icons/course.png" className={styles.menuIcon} />
-                            Courses
-                        </h3>
+                        <Link to="/home/courses">
+                            <h3 className={styles.menuItem}>
+                                <img src="../images/icons/course.png" className={styles.menuIcon} />
+                                Courses
+                            </h3>
+                        </Link>
 
+                        <Link to="/home/newcourse">
                         <h3 className={styles.menuItem}>
                             <img src="../images/icons/lesson.png" className={styles.menuIcon} />
                             Lessons
                         </h3>
+                        </Link>
 
                         <h3 className={styles.menuItem}>
                             <img src="../images/icons/classroom.png" className={styles.menuIcon} />
@@ -65,11 +88,15 @@ function DashboardPage() {
 
                 <div className={styles.contentArea}>
                     <div className={styles.infoSection}>
+                        <Routes>
+                            <Route path="/" element={<Navigate to="courses" replace />} />
+                            <Route path="/courses" element={<LessonDashboard />} />
+                            <Route path="/newcourse" element={<AddLesson 
+                                instructorList={instructors} 
+                                prerequisiteOptions={currentUnits} 
+                            />} />
+                        </Routes>
                         {/* <LessonDashboard /> */}
-                        <AddLesson 
-                            instructorList={["currentUser", "Prof. John", "Dr. Smith"]} 
-                            prerequisiteOptions={["Math 101", "CS 201", "Bio 303"]} 
-                        />
                     </div>
                 </div>
             </div>
