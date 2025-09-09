@@ -25,6 +25,9 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
     const [readingList, setReadingList] = useState([]);
     const [currentBook, setCurrentBook] = useState("");
 
+    const [assignmentList, setAssignmentList] = useState([]);
+    const [currentAssignment, setCurrentAssignment] = useState("");
+
     const [prerequisites, setPrerequisites] = useState([]);
 
     const handleLessonChange = (e) => {
@@ -74,10 +77,21 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
                         onChange={handleLessonChange}
                     />
                     <AddToList
-                    currentBook={currentBook}
-                    setCurrentBook={setCurrentBook}
-                    readingList={readingList}
-                    setReadingList={setReadingList}
+                    label="Reading List"
+                    placeholder = "Enter book name"
+                    currentItem={currentBook}
+                    setCurrentItem={setCurrentBook}
+                    itemList={readingList}
+                    setItemList={setReadingList}
+                    />
+
+                    <AddToList
+                    label="Assignment"
+                    placeholder = "Enter assignment"
+                    currentItem={currentAssignment}
+                    setCurrentItem={setCurrentAssignment}
+                    itemList={assignmentList}
+                    setItemList={setAssignmentList}
                     />
 
                     <AddFromList 

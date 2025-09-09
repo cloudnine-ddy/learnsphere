@@ -3,34 +3,34 @@ import InputField from "./InputField";
 import styles from "./AddToList.module.css";
 
 
-function AddToList({ currentBook, setCurrentBook, readingList, setReadingList }) {
+function AddToList({ label, placeholder, currentItem, setCurrentItem, itemList, setItemList }) {
     const handleAddBook = () => {
-        if (currentBook.trim()) {
-            setReadingList(prev => [...prev, currentBook.trim()]);
-            setCurrentBook("");
+        if (currentItem.trim()) {
+            setItemList(prev => [...prev, currentItem.trim()]);
+            setCurrentItem("");
         }
     };
 
     const handleDelete = (itemToDelete) => {
-        setReadingList(prev => prev.filter(item => item !== itemToDelete));
+        setItemList(prev => prev.filter(item => item !== itemToDelete));
     };
 
     return (
         <div className={styles.wholeField}>
             <div className={styles.addingPart}>
                 <InputField
-                    label="Reading List"
+                    label={label}
                     type="text"
-                    value={currentBook}
-                    onChange={(e) => setCurrentBook(e.target.value)}
-                    placeholder="Enter book title"
+                    value={currentItem}
+                    onChange={(e) => setCurrentItem(e.target.value)}
+                    placeholder={placeholder}
                     style = {{flex:1}}
                 />
                 <button className={styles.addButton} type="button" onClick={handleAddBook}>Add</button>
             </div>
 
             <ul className={styles.readingList}>
-                {readingList.map((book, index) => (
+                {itemList.map((book, index) => (
                     <li key={index} className={styles.readingItem}>
                         {book}
                         <button className={styles.deleteButton} onClick={() => handleDelete(book)}>
