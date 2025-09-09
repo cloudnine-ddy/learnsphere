@@ -1,0 +1,83 @@
+.wholeFiled {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+  font-size: 18px;
+  margin-bottom: 6px;
+  color: black;
+  text-align: left;
+}
+
+.addingPart {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    padding: 10px 12px;
+    font-size: 15px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    background: #B2C8CF;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.addingPart select {
+    width: 100%;
+    font-size: 18px;
+    border: none;
+    background: #B2C8CF;
+    justify-content: space-between;
+    outline: none;
+    box-shadow: none;  
+}
+
+.addingPart select option {
+    width: 100%;
+    font-size: 18px;
+    color: #4af195;
+    border: none;
+    background: red;
+}
+
+.selectedList {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selectedItem {
+  background-color: #4af195;
+  padding: 10px 14px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  font-size: 18px;
+  border: 1px solid transparent;
+  background: #B2C8CF;
+  justify-content: space-between;
+}
+
+.selectedItem:hover {
+  background-color: yellow;
+}
+
+.deleteButton {
+  background: #ff4d4f;
+  border: none;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  align-items: flex-end;
+}
+
+.deleteButton:hover {
+  background: blue;
+}

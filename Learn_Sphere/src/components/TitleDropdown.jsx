@@ -1,9 +1,9 @@
 // Dropdown.jsx
 import React from "react";
 
-import styles from "./Dropdown.module.css"
+import styles from "./TitleDropdown.module.css"
 
-function Dropdown({ id, label, value, onChange, options, placeholder="Please select…"}) {
+function TitleDropdown({ id, label, value, onChange, options, placeholder="Please select…"}) {
   return (
     <div className={styles.formRow}>
       {label && <label className={styles.label} htmlFor={id}>{label}</label>}
@@ -21,4 +21,4 @@ function Dropdown({ id, label, value, onChange, options, placeholder="Please sel
   );
 }
 
-export default Dropdown;
+export default TitleDropdown;

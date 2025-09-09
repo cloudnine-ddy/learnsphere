@@ -1,13 +1,13 @@
 import React from "react";
 
-import styles from "./InputField.module.css";
+import styles from "./TextArea.module.css";
 
-function InputField({label, id, type="text", placeholder="", value, onChange, style = {}}) {
+function TextArea({label, id, type="text", placeholder="", value, onChange}) {
     return (
-        <div className={styles.formRow} style = {style}>
+        <div className={styles.formRow}>
             <label className={styles.label} htmlFor={id}>{label}</label>
             <div className={styles.inputField}>
-                <input 
+                <textarea
                 className={styles.input}
                 id = {id}
                 name = {id} 
@@ -22,4 +22,4 @@ function InputField({label, id, type="text", placeholder="", value, onChange, st
     );
 }
 
-export default InputField;
+export default TextArea;

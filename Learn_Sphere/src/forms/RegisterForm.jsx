@@ -5,7 +5,7 @@ import PasswordField from "../components/PasswordField";
 import TermsCheckbox from "../components/TermsCheckbox";
 import Button from "../components/Button";
 import ErrorMessage from "../components/ErrorMessage";
-import Dropdown from "../components/Dropdown";
+import TitleDropdown from "../components/TitleDropdown";
 
 import styles from "./RegisterForm.module.css";
 
@@ -53,7 +53,7 @@ function RegisterForm() {
 
             <div className={styles.infoScroll}>
 
-                <Dropdown label="Title" id="role" placeholder="Choose a role…" value={role} onChange={setRole} options={roles} />
+                <TitleDropdown label="Title" id="role" placeholder="Choose a role…" value={role} onChange={setRole} options={roles} />
 
                 <InputField label="First Name" id="firstName" placeholder="Enter first name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                 <InputField label="Last Name" id="lastName" placeholder="Enter last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
