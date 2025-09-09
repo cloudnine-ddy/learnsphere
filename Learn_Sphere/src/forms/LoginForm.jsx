@@ -21,6 +21,10 @@ function LoginForm() {
       message.push("Enter a valid email!")
     }
 
+    if (/\s/.test(password)) {
+      message.push("Password cannot have spaces!")
+    }
+
     if (message.length > 0) {
       setErrorMessages(message);
       return;
@@ -55,7 +59,7 @@ function LoginForm() {
           </div>
 
           <div className={styles.infoFooter}>
-            <button type="submit">Login</button>
+            <Button type="submit">Login</Button>
           </div>
         </div>
       </form>
