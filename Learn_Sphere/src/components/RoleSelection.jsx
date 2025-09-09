@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styles from "./RoleSelection.module.css";
 
-function RoleSelection() {
-  const [selectedRole, setSelectedRole] = useState(null);
+function RoleSelection({selectedRole, setSelectedRole}) {
+
+  // const [selectedRole, setselectedRole] = useState("student");
 
   return (
     <div className={styles.roleSection}>

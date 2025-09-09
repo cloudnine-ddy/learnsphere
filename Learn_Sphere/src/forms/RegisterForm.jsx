@@ -5,11 +5,16 @@ import PasswordField from "../components/PasswordField";
 import TermsCheckbox from "../components/TermsCheckbox";
 import Button from "../components/Button";
 import ErrorMessage from "../components/ErrorMessage";
+<<<<<<< HEAD
 import TitleDropdown from "../components/TitleDropdown";
+=======
+import { useNavigate } from "react-router-dom";
+>>>>>>> 513e262e3713e59968f69f1317b763b8f03e5fda
 
 import styles from "./RegisterForm.module.css";
 
-function RegisterForm() {
+function RegisterForm({selectedRole}) {
+    const navigate = useNavigate();
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -39,6 +44,7 @@ function RegisterForm() {
             return;
         }
         console.log("submit form");
+        navigate("/login");
         setErrorMessages([]);
         console.log(firstName, lastName, email, password, confirmPassword);
     }
