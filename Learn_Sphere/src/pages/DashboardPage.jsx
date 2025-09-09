@@ -2,6 +2,8 @@ import React from "react";
 import DashbaordHeader from "../layout/DashboardHeader";
 import LessonDashboard from "../dashboards/LessonDashboard";
 import AddLesson from "../dashboards/AddLesson";
+import AdminPortal from "../dashboards/AdminPortal";
+
 import LoginForm from "../forms/LoginForm";
 import FilterDropdown from "../components/FilterDropdown";
 import LessonCard from "../components/LessonCard";
@@ -52,10 +54,11 @@ function DashboardPage() {
                 <div className={styles.contentArea}>
                     <div className={styles.infoSection}>
                         {/* <LessonDashboard /> */}
-                        <AddLesson 
+                        {/* <AddLesson 
                             instructorList={["currentUser", "Prof. John", "Dr. Smith"]} 
                             prerequisiteOptions={["Math 101", "CS 201", "Bio 303"]} 
-                        />
+                        /> */}
+                        <AdminPortal />
                     </div>
                 </div>
             </div>
