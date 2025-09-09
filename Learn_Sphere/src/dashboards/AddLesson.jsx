@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import InputField from "../components/InputField";
 import TextArea from "../components/TextArea";
@@ -10,6 +10,8 @@ import TitleDropdown from "../components/TitleDropdown";
 import SelectOneFromList from "../components/SelectOneFromList";
 import SelectStatus from "../components/SelectStatus";
 import { addLessonToDatabase } from "../components/addLessons";
+import { getCurrentUser, getUserInfo } from "../components/manageUsers";
+import { useNavigate } from "react-router-dom";
 
 import styles from "./AddLesson.module.css";
 
@@ -23,6 +25,7 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
         status: ""
     });
 
+    let navigate = useNavigate();
     const [readingList, setReadingList] = useState([]);
     const [currentBook, setCurrentBook] = useState("");
 
@@ -32,13 +35,28 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
     const [prerequisites, setPrerequisites] = useState([]);
     const [errorMessages, setErrorMessages] = useState([]);
 
+    useEffect(() => {
+    //Runs only at first render to kick out students
+        getCurrentUser().then(
+            (user) => {
+                return getUserInfo(user);
+            })
+            .then((info) => {
+                if (info.role == "student")
+                {
+                    navigate("/home");
+                }
+            });
+    }, [])
+
     function submitForm(e)
     {
         if (isValid())
         {
             console.log(lesson.lessonId, lesson.title, lesson.description, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status);
-            addLessonToDatabase(lesson.lessonId, lesson.title, lesson.description, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status);
-            setErrorMessages(["Successfully created a lesson!"]);
+            addLessonToDatabase(lesson.lessonId, lesson.title, lesson.description, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status)
+            .then(() => setErrorMessages(["Successfully created a lesson!"]))
+            .catch((error) => setErrorMessages([error]));
         }
         else
         {

@@ -20,6 +20,7 @@ function RegisterForm({selectedRole}) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [token, setToken] = useState("");
     const [errorMessages, setErrorMessages] = useState([]);
     const [role, setRole] = useState("");
     const roles = [
@@ -58,7 +59,7 @@ function RegisterForm({selectedRole}) {
 
         // Create user using Firebase Authentication
         // Reference function from imported JavaScript 
-        registerUser(firstName, lastName, email, password, role, selectedRole)
+        registerUser(firstName, lastName, email, password, role, token, selectedRole)
             .then((user) => {
                 console.log(user);
                 if (user) {
@@ -91,7 +92,7 @@ function RegisterForm({selectedRole}) {
 
                 <PasswordField label="Password" id="password" placeholder="Enter password"  value={password} onChange={(e) => setPassword(e.target.value)} />
                 <PasswordField label="Confirm Password" id="confirmPassword" placeholder="Re-enter password"  value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-                <InputField label="Token" id="token" placeholder="Enter token"  value={email} onChange={(e) => setEmail(e.target.value)} />
+                <InputField label="Token" id="token" placeholder="Enter token"  value={token} onChange={(e) => setToken(e.target.value)} />
             </div>
 
             <div className={styles.infoFooter}>

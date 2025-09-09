@@ -1,5 +1,5 @@
 import { getAuth, signInWithEmailAndPassword, deleteUser, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-auth.js";
-import {collection, doc, query, where, getDoc, setDoc, getDocs} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import {collection, doc, query, where, getDoc, setDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { auth, db } from "./firebaseConfig";
 import { use } from "react";
 
@@ -19,9 +19,13 @@ export async function signInUser(email, password)
     return user;
 }
 
-export async function registerUser(firstName, lastName, email, password, title, selectedRole)
+export async function registerUser(firstName, lastName, email, password, title, token, selectedRole)
 {
     let user = null;
+    let validToken = await useToken(token);
+
+    if (validToken)
+    {
     // Create user using Firebase Authentication
     await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
@@ -50,6 +54,11 @@ export async function registerUser(firstName, lastName, email, password, title, 
         .catch((error) => {
             throw ("Cannot create user! " + error);
         });
+    }
+    else
+    {
+        throw ("Token does not exist!");
+    }
     console.log(user);
     return user;
 }
@@ -137,5 +146,73 @@ export async function deleteCurrentUser()
     else 
     {
         throw "No user is signed in.";
+    }
+}
+
+export async function createToken(token)
+{
+    let user = await getCurrentUser();
+    let userInfo = await getUserInfo(user);
+
+    if (user != null && userInfo.role != "student")
+    {
+        let tokenObject = {value: token, owner: user.uid, status:"Available"};
+
+        const existingToken = await getDoc(doc(db, "tokens", token));
+        console.log(existingToken.data(), token);
+
+        // Save token data to Firestore
+        if (existingToken.data() == null)
+        {
+            await setDoc(doc(db, "tokens", token), tokenObject);
+            return;
+        }
+        else
+        {
+            throw 808; //try again
+        }
+    }
+    else
+    {
+        throw 403; //forbidden
+    }
+}
+
+export async function useToken(token)
+{
+    const existingToken = await getDoc(doc(db, "tokens", token));
+
+    if (existingToken.data() != null)
+    {
+        await updateDoc(doc(db, "tokens", token), { status : "Used" });
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+export async function getTokens()
+{
+    let user = await getCurrentUser();
+
+    if (user != null)
+    {
+        let tokens = []
+        
+        let q = query(collection(db, "tokens"), where("owner", "==", user.uid));
+        let querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((user) => {
+            // doc.data() is never undefined for query doc snapshots
+            tokens.push(user.data())
+        });
+
+        return tokens;
+    }
+    else
+    {
+        throw "No user found!";
     }
 }

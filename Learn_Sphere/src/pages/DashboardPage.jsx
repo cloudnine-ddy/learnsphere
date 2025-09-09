@@ -13,6 +13,7 @@ import { getLessons } from "../components/getLessons";
 import {BrowserRouter, Routes, Route, Navigate, Link, useParams } from "react-router-dom";
 
 import styles from "./DashboardPage.module.css";
+import TokenGenerator from "../components/TokenGenerator";
 
 function DashboardPage() {
     const navigate = useNavigate();
@@ -58,22 +59,26 @@ function DashboardPage() {
                             </h3>
                         </Link>
 
+                        {userData != null && userData.role != "student" && 
                         <Link to="/home/newcourse">
                         <h3 className={styles.menuItem}>
                             <img src="../images/icons/lesson.png" className={styles.menuIcon} />
                             Lessons
                         </h3>
-                        </Link>
+                        </Link>}
 
                         <h3 className={styles.menuItem}>
                             <img src="../images/icons/classroom.png" className={styles.menuIcon} />
                             Classroom
                         </h3>
 
+                        {userData != null && userData.role != "student" && 
+                        <Link to="/home/report">
                         <h3 className={styles.menuItem}>
                             <img src="../images/icons/view_report.png" className={styles.menuIcon} />
                             View Report
                         </h3>
+                        </Link>}
 
                     </div>
 
@@ -91,10 +96,14 @@ function DashboardPage() {
                             <Route path="/" element={<Navigate to="courses" replace />} />
                             <Route path="/courses/*" element={<LessonDashboard />} />
                             <Route path="/courses/:id" element={<ViewLesson />} />
-                            <Route path="/newcourse" element={<AddLesson 
+                            {userData != null && userData.role &&
+                                <Route path="/newcourse" element={<AddLesson 
                                 instructorList={instructors} 
                                 prerequisiteOptions={currentUnits} 
-                            />} />
+                            />} />}
+                            {userData != null && userData.role != "student" && 
+                                <Route path="/report" element={<TokenGenerator />} 
+                            />}
                         </Routes>
                     </div>
                 </div>
