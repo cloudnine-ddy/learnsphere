@@ -1,17 +1,31 @@
-import React from "react";
+import React, { use, useState, useEffect } from "react";
 import DashbaordHeader from "../layout/DashboardHeader";
 import LessonDashboard from "../dashboards/LessonDashboard";
 import AddLesson from "../dashboards/AddLesson";
 import LoginForm from "../forms/LoginForm";
 import FilterDropdown from "../components/FilterDropdown";
 import LessonCard from "../components/LessonCard";
+import { useNavigate } from "react-router-dom";
+import { getCurrentUser, getUserInfo} from "../components/manageUsers";
 
 import styles from "./DashboardPage.module.css";
 
 function DashboardPage() {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+    //Runs only on the first render
+        getCurrentUser().then(
+            (user) => {
+                user != null ? setUser(user) : navigate("/reg");
+            }
+        )
+    }, []);
+
     return (
         <div className={styles.mainContent}>
-            <DashbaordHeader username="Mr. Monash" />
+            <DashbaordHeader username={user != null ? getUserInfo(user).data().firstName : "user"} />
 
             <div className={styles.pageContent}>
 

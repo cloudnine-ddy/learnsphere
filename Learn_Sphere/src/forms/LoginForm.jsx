@@ -5,9 +5,9 @@ import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 
 import styles from "./LoginForm.module.css";
+import { signInUser } from "../components/manageUsers";
 
 function LoginForm() {
-  console.log("help")
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -16,8 +16,10 @@ function LoginForm() {
 
   const submitForm = (e) => {
     e.preventDefault();
-    let message = []
-    if (!email.includes("@gmail.com")) {
+    let message = [];
+    let emailPattern = /\w+@\w+\.([a-z])+/;
+
+    if (!email.match(emailPattern)) {
       message.push("Enter a valid email!")
     }
 
@@ -25,10 +27,30 @@ function LoginForm() {
       setErrorMessages(message);
       return;
     }
-    console.log("login successful")
-    navigate("/home");
-    setErrorMessages([]);
-    console.log(username,password,errorMessages)
+    else
+    {
+      setErrorMessages([]);
+    }
+
+    console.log("Form submitted. Email: ", email, " Password: ", password); // Debugging log
+
+    // Sign in user using Firebase Authentication
+    signInUser(email, password)
+      .then((user) => {
+        console.log(user);
+        if (user) {
+          console.log("User signed in:", user); // Debugging log
+          navigate("/home");
+          console.log(username,password,errorMessages)
+        }
+      })
+      .catch((error) => {
+        console.error("Error signing in user:", error); // Debugging log
+        setErrorMessages([error]);
+      });
+    
+    //console.log("login successful")
+    //navigate("/home");
   }
 
   return (

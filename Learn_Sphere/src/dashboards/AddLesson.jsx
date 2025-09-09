@@ -9,6 +9,7 @@ import AddFromList from "../components/AddFromList";
 import TitleDropdown from "../components/TitleDropdown";
 import SelectOneFromList from "../components/SelectOneFromList";
 import SelectStatus from "../components/SelectStatus";
+import { addLessonToDatabase } from "../components/addLessons";
 
 import styles from "./AddLesson.module.css";
 
@@ -27,13 +28,20 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
 
     const [prerequisites, setPrerequisites] = useState([]);
 
+    function submitForm(e)
+    {
+        //e.preventDefault();
+        console.log(lesson.lessonId, lesson.title, lesson.description, readingList, prerequisites, [], lesson.owner, lesson.status);
+        addLessonToDatabase(lesson.lessonId, lesson.title, lesson.description, readingList, prerequisites, [], lesson.owner, lesson.status);
+    };
+
     const handleLessonChange = (e) => {
         const { name, value } = e.target;
         setLesson(prev => ({ ...prev, [name]: value }));
     };
 
     return (
-        <div className={styles.wrapper}>
+        <div onSubmit={submitForm} className={styles.wrapper}>
             <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>
                     Add Lesson

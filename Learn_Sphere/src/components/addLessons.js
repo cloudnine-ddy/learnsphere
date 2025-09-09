@@ -1,22 +1,5 @@
-import {initializeApp} from "firebase/app"
-import {setDoc, doc, getFirestore} from "firebase/firestore";
-
-function db()
-{
-    const firebaseConfig = {
-        apiKey: "AIzaSyBkQNEyRcMLYQ6tgUni9hh9JN1evZpo0iM",
-        authDomain: "weshowagile.firebaseapp.com",
-        projectId: "weshowagile",
-        storageBucket: "weshowagile.firebasestorage.app",
-        messagingSenderId: "324942220550",
-        appId: "1:324942220550:web:779f62ae8323962e4fe287",
-        measurementId: "G-9B5LVZ9MST"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    return db;
-}
+import {setDoc, doc} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { db } from "./firebaseConfig";
 
 export async function addLessonToDatabase(lessonID, title, description, readingList, prerequisites, assignments, owner, status)
 {
@@ -34,7 +17,7 @@ export async function addLessonToDatabase(lessonID, title, description, readingL
     };
 
     // Save lesson data to Firestore
-    const docRef = doc(db(), "lessons", new Date().getTime().toString());  // Unique document ID based on timestamp
+    const docRef = doc(db, "lessons", new Date().getTime().toString());  // Unique document ID based on timestamp
     console.log(docRef)
 
     try {
