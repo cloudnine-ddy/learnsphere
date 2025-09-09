@@ -31,10 +31,7 @@ function DashboardPage() {
             .then((userInfo) => {
                 setUserData(userInfo);
             });
-    }, []);
 
-    useEffect(() => {
-    //Runs every render
         getAllInstructorsInfo().then(
             (instructors) => {setInstructors(instructors);}
         );
@@ -42,7 +39,7 @@ function DashboardPage() {
         getLessons(true).then(
             (lessons) => {setCurrentUnits(lessons);}
         );
-    })
+    }, [])
 
     return (
         <div className={styles.mainContent}>

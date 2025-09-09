@@ -35,6 +35,7 @@
     padding: 12px;
     text-decoration: none;
     color: black;
+    cursor: pointer;
 }
 .dropdownContent a:hover {
     background: #eee;

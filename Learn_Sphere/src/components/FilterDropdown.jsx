@@ -1,18 +1,20 @@
 import React from "react";
 import styles from "./FilterDropdown.module.css";
 
-function FilterDropdown({label}) {
+function FilterDropdown({label, options, changeEvent}) {
+    
+    
     return (
         <div className={styles.dropdown}>
 
             <button className={styles.dropdownButton}>
-                {label}
+                {label} ▼
             </button>
             
             <div className={styles.dropdownContent}>
-                <a href="#">All Lessons</a>
-                <a href="#">My Lessons</a>
-                <a href="#">My Lessons</a>
+                {options.map((option) => <a onClick={(e) => changeEvent(e, option.state)}>{option.label}</a>)}
+                
+                {/* <a href="#">My Lessons</a> */}
             </div>
 
         </div>

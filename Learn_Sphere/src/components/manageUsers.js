@@ -108,3 +108,34 @@ export async function getAllInstructorsInfo()
         throw "You are not logged in, so you cannot access this page!"
     }
 }
+
+export async function deleteCurrentUser()
+{
+    let user = await getCurrentUser();
+    
+    if (user) 
+    {
+        // Delete user data from Firestore
+        const docRef = doc(db, "users", user.uid);
+        deleteDoc(docRef)
+        .then(() => {
+            console.log("User data successfully deleted from Firestore!");
+            
+            // Now delete the user account
+            deleteUser(user)
+            .then(() => {
+                console.log("User account successfully deleted!");
+            })
+            .catch((error) => {
+                throw "Error deleting user account: " + error;
+            });
+        })
+        .catch((error) => {
+            throw "Error deleting user data from Firestore: " + error;
+        });
+    } 
+    else 
+    {
+        throw "No user is signed in.";
+    }
+}

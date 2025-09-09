@@ -16,6 +16,7 @@ function SelectStatus({label, object, name, onChange}) {
                 </select> */}
 
                 <select name={name} value={object[name]} onChange={onChange}>
+                    <option value="">Select</option>
                     <option value="Draft">Draft</option>
                     <option value="Published">Published</option>
                     <option value="Archived">Archived</option>

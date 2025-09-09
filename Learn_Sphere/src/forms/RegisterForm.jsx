@@ -24,10 +24,10 @@ function RegisterForm({selectedRole}) {
     const [role, setRole] = useState("");
     const roles = [
         { value: "", label: "" },
-        { value: "mr", label: "Mr" },
-        { value: "mrs", label: "Mrs" },
-        { value: "ms", label: "Ms" },
-        { value: "dr", label: "Dr" },
+        { value: "Mr", label: "Mr" },
+        { value: "Mrs", label: "Mrs" },
+        { value: "Ms", label: "Ms" },
+        { value: "Dr", label: "Dr" },
     ];
 
     const submitForm = (e) => { 

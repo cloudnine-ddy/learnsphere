@@ -1,16 +1,17 @@
 import {collection, doc, query, where, getDoc, getDocs} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 
-export async function getLessons(status=true)
+export async function getLessons(status)
 {
     const lessons = []
+    console.log(status)
 
-    if (!['draft', 'published', 'archived'].includes(status) || status != true)
+    if (status !== true && (typeof(status) == String && !(['Draft', 'Published', 'Archived'].includes(status))))
     {
         status = true;
     }
     
-    const q = status == true ? query(collection(db, "lessons")) : query(collection(db, "lessons"), where("status", "==", status));
+    const q = status === true ? query(collection(db, "lessons")) : query(collection(db, "lessons"), where("status", "==", status));
 
     const querySnapshot = await getDocs(q);
 

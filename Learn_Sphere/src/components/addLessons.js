@@ -1,7 +1,7 @@
 import {setDoc, doc} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 
-export async function addLessonToDatabase(lessonID, title, description, readingList, prerequisites, assignments, owner, status)
+export async function addLessonToDatabase(lessonID, title, description, readingList, prerequisites, assignments, creditPoint, owner, status)
 {
     const lessonData = {
         lessonID: lessonID,
@@ -12,6 +12,7 @@ export async function addLessonToDatabase(lessonID, title, description, readingL
         assignments: assignments.map(s => s.trim()).filter(Boolean),
         owner: owner,
         status: status,
+        creditPoint: creditPoint,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     };
