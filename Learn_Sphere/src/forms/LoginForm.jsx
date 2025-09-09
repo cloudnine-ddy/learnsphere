@@ -26,7 +26,7 @@ function LoginForm() {
       return;
     }
     console.log("login successful")
-    navigate("/reg");
+    navigate("/home");
     setErrorMessages([]);
     console.log(username,password,errorMessages)
   }
@@ -38,16 +38,6 @@ function LoginForm() {
             <h1 className={styles.infoTitle}>Login</h1>
           </div>
 
-<<<<<<< HEAD
-        <div className={styles.infoScroll}>
-            <InputField label="Email" id="email" placeholder="Enter email" />
-            <PasswordField label="Password" id="password" placeholder="Enter password" />
-        </div>
-
-        <div className={styles.infoFooter}>
-            <Button type="submit">Login</Button>
-            <div className={styles.noAccount}>No account?<a href=""> Sign Up</a></div>
-=======
           <div className={styles.infoScroll}>
             <InputField label="Email" id="email" placeholder="Enter email" value = {email} onChange={(e) => setEmail(e.target.value)}   />
             <PasswordField label="Password" id="password" placeholder="Enter password"  value={password} onChange={(e) => setPassword(e.target.value)} />
@@ -66,8 +56,8 @@ function LoginForm() {
 
           <div className={styles.infoFooter}>
             <button type="submit">Login</button>
+            <div className={styles.noAccount}>No account?<a href="/reg"> Sign Up</a></div>
           </div>
->>>>>>> 513e262e3713e59968f69f1317b763b8f03e5fda
         </div>
       </form>
   );
