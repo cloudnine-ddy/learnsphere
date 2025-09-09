@@ -12,7 +12,7 @@ export async function addLessonToDatabase(lessonID, title, description, readingL
         assignments: assignments.map(s => s.trim()).filter(Boolean),
         owner: owner,
         status: status,
-        creditPoint: creditPoint,
+        creditPoint: Number.parseInt(creditPoint),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     };

@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from "./InputField.module.css";
 
-function InputField({label, id, type="text", placeholder="", value, onChange, style = {}}) {
+function InputField({label, id, type="text", placeholder="", value, onChange, style = {}, min}) {
     return (
         <div className={styles.formRow} style = {style}>
             <label className={styles.label} htmlFor={id}>{label}</label>
@@ -15,6 +15,7 @@ function InputField({label, id, type="text", placeholder="", value, onChange, st
                 placeholder={placeholder}
                 value = {value}
                 onChange = {onChange}
+                min = {min}
                 required
             />  
             </div>

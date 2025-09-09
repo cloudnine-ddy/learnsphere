@@ -18,7 +18,7 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
         lessonId: "",
         title: "",
         description: "",
-        creditPoints: "",
+        creditPoints: 0,
         instructor: "",
         status: ""
     });
