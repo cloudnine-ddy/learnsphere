@@ -6,7 +6,7 @@ function InfoBlock({title, content, renderItem}) {
     return (
         <div className={styles.wholeField}>
             <div className={styles.title}>
-                {title}
+                {title} :
             </div>
             <div className={styles.content}>
                 {Array.isArray(content) ? (

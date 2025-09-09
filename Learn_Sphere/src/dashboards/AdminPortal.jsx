@@ -15,7 +15,7 @@ import TokenGenerator from "../components/TokenGenerator";
 
 import styles from "./AdminPortal.module.css";
 
-function AdminPortal( { instructorList, prerequisiteOptions }) {
+function AdminPortal() {
     
 
 

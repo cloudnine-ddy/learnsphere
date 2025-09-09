@@ -44,7 +44,7 @@ function TokenGenerator({label="Generate"}) {
             (error) => {
                 if (error == 808)
                 {
-                    //generateToken();
+                    // generateToken();
                 }
                 else
                 {

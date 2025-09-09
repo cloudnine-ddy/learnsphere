@@ -2,7 +2,7 @@
     flex: 1;
     background: #80BC87;
     max-width: 400px;
-    max-height: 550px;
+    max-height: 600px;
     border-radius: 50px;
     padding-top: 15px;
     padding-left: 30px;
@@ -36,13 +36,13 @@
     padding-right: 10px;
     overflow-y: auto;
 
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 90%, rgba(0,0,0,0) 100%);
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: 100% 100%;
 }
 
 .infoScroll::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .infoScroll::-webkit-scrollbar-track {

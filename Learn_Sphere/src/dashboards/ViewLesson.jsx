@@ -33,7 +33,7 @@ function ViewLesson() {
                     <div className={styles.lessonStatus}>
                         {lesson != null ? lesson.status : "null"}
                     </div>
-                    <button className={styles.smallButton}>Edit</button>
+                    <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}}>Edit</button>
                     <button className={styles.smallButton}>Delete</button>
 
                 </div>
@@ -43,14 +43,14 @@ function ViewLesson() {
 
             <div className={styles.infoScroll}>
                 <div className={styles.container}>
-                    <InfoBlock title="lesson owner" content={lesson != null ? lesson.owner : "null"}/>
-                    <InfoBlock title="credit point" content={lesson != null ? lesson.creditPoint : "null"}/>
-                    <InfoBlock title="created date" content={lesson != null ? lesson.createdAt : "null"}/>
-                    <InfoBlock title="edited date" content={lesson != null ? lesson.updatedAt : "null"}/>
+                    <InfoBlock title="Owner" content={lesson != null ? lesson.owner : "null"}/>
+                    <InfoBlock title="Credit Point" content={lesson != null ? lesson.creditPoint : "null"}/>
+                    <InfoBlock title="Date Created" content={lesson != null ? lesson.createdAt : "null"}/>
+                    <InfoBlock title="Last Updated" content={lesson != null ? lesson.updatedAt : "null"}/>
                     <InfoBlock title="Lesson Description" content={lesson != null ? lesson.description : "null"}/>
-                    <InfoBlock title="reading list" content={lesson != null ? lesson.readingList.length > 0 ? lesson.readingList : "No Reading List" : "No Reading List"}/>
-                    <InfoBlock title="assignment list" content={lesson != null ? lesson.assignments.length > 0 ? lesson.assignments : "No Assignments" : "No Assignments"}/>
-                    <InfoBlock title="prerequisite list" content={lesson != null ? lesson.prerequisites.length > 0 ? lesson.prerequisites : "No Prerequisites" : "No Prerequisites"}/>
+                    <InfoBlock title="Reading List" content={lesson != null ? lesson.readingList.length > 0 ? lesson.readingList : "No Reading List" : "No Reading List"}/>
+                    <InfoBlock title="Assignments" content={lesson != null ? lesson.assignments.length > 0 ? lesson.assignments : "No Assignments" : "No Assignments"}/>
+                    <InfoBlock title="Prerequisites" content={lesson != null ? lesson.prerequisites.length > 0 ? lesson.prerequisites : "No Prerequisites" : "No Prerequisites"}/>
                 </div>
             </div>
         </div>

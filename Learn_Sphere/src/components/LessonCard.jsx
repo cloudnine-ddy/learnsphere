@@ -7,19 +7,19 @@ function LessonCard({lessonID, lessonTitle, creditPoint, instructorName, href}) 
     return (
         <Link to={href}>
             <div className={styles.lessonCard}>
-                {/* <div className={styles.lessonIcon}>
-                    <img src="images/icons/atom.png" alt="">
-                </div> */}
+                <div className={styles.lessonIcon}>
+                    <img src="images/icons/atom.png" alt="" />
+                </div>
                 <div className={styles.lessonInfo}>
                     <p className={styles.lessonId}>
                         {lessonID} 
                     </p>
-                    <p className={styles.lessonCreditPoint}>
-                        {creditPoint} 
-                    </p>
                     <h3 className={styles.lessonTitle}>
                         {lessonTitle}
                     </h3>
+                    <p className={styles.lessonCreditPoint}>
+                        Credit Point: {creditPoint} 
+                    </p>
                     <p className={styles.lessonInstructor}>
                         {instructorName}
                     </p>
