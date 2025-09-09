@@ -93,7 +93,7 @@ function RegisterForm({selectedRole}) {
 
             <div className={styles.infoFooter}>
                 <TermsCheckbox />
-                <Button type="submit"  >Register</Button>
+                <Button type="submit" label="Register"/>
                 <ErrorMessage messages={errorMessages} />
                 <div className={styles.haveAccount}>Have an account?<a href="/login"> Login Here</a></div>
             </div>

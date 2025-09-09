@@ -4,7 +4,6 @@ import { db } from "./firebaseConfig";
 export async function getLessons(status)
 {
     const lessons = []
-    console.log(status)
 
     if (status !== true && (typeof(status) == String && !(['Draft', 'Published', 'Archived'].includes(status))))
     {

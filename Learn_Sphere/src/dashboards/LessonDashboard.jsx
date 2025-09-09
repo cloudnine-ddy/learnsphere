@@ -1,9 +1,13 @@
 import React from "react";
 import FilterDropdown from "../components/FilterDropdown";
+import DashbaordHeader from "../layout/DashboardHeader";
+import DashboardPage from "../pages/DashboardPage";
 import LessonCard from "../components/LessonCard";
 import styles from "./LessonDashboard.module.css";
+import ViewLesson from "./ViewLesson";
 import { getLessons } from "../components/getLessons";
 import { useState, useEffect } from "react";
+import {BrowserRouter, Routes, Route, Navigate, Link, useParams } from "react-router-dom";
 
 function LessonDashboard() {
     const [filter, setFilter] = useState(true);
@@ -24,7 +28,6 @@ function LessonDashboard() {
 
     useEffect(() => {
         //Runs when filter is updated
-        console.log(filter);
         getLessons(filter).then(
             (lessons) => {
                 setLessons(lessons);
@@ -32,7 +35,7 @@ function LessonDashboard() {
     }, [filter]);
 
     return (
-        <div>
+        <>
             <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>
                     My Lessons
@@ -41,10 +44,10 @@ function LessonDashboard() {
             </div>
             <div className={styles.infoScroll}>
                 <div className={styles.cardContainer}>
-                    {lessons.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().lessonTitle} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner}/>)}
+                    {lessons.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().lessonTitle} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/courses/${lesson.id}`}/>)}
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 
