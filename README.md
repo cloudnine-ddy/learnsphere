@@ -22,6 +22,7 @@ Developers: [in alphabetical order] <br>
 
 - **Project Inception**: [Inception Document](https://docs.google.com/document/d/1DlTXxda6A-UzEcwqsiFDRGQRCP7Lfb23GWrcImaBrvc/edit?usp=sharing)
 - **Recordings**: [Sprint Planning and Stand-up Meetings](https://drive.google.com/drive/folders/1AHiwEfQMtVJDTSdGQoSrWFbcB-1NTI8h?usp=drive_link)
+- **Retrospective**: [Retrospective Document Sprint 1](https://docs.google.com/document/d/19rAPV-wZSOGwwE99Q0CylvMg2P1b-64q/edit?usp=sharing&ouid=100047865276099939875&rtpof=true&sd=true)
 
 ### Meeting Minutes
 
