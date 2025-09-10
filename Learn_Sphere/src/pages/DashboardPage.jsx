@@ -38,7 +38,7 @@ function DashboardPage() {
             (instructors) => {setInstructors(instructors);}
         );
 
-        getLessons(true).then(
+        getLessons(true, userData).then(
             (lessons) => {setCurrentUnits(lessons);}
         );
     }, [user])
