@@ -7,29 +7,21 @@ import InfoBlock from "../components/InfoBlock";
 import { getLesson } from "../components/getLessons";
 import { useParams } from "react-router-dom";
 import { getCurrentUser, getUserInfo } from "../components/manageUsers";
+import { useNavigate } from "react-router-dom";
 
-function ViewLesson() {
+function ViewLesson({userData}) {
+    let navigate = useNavigate();
+
     const {id} = useParams();
     const [lesson, setLesson] = useState(null);
-    const [canEdit, setEdit] = useState(false);
     
     useEffect(() => {
-        //Runs only on the first render
-        getLesson(id).then(
+        //Runs on the first render only
+        getLesson(id, userData).then(
             (lesson) => {
                 setLesson(lesson);
             });
-            
-        getCurrentUser().then(
-            (user) => {
-                return getUserInfo(user);
-            })
-            .then((info) => {
-                if (info.role != "student")
-                {
-                    setEdit(true);
-                }
-            });
+        
     }, []);
 
     return (
@@ -46,8 +38,8 @@ function ViewLesson() {
                     <div className={styles.lessonStatus}>
                         {lesson != null ? lesson.status : "null"}
                     </div>
-                    {canEdit && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}}>Edit</button>}
-                    {canEdit && <button className={styles.smallButton}>Delete</button>}
+                    {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}}>Edit</button>}
+                    {userData != null && userData.role != 'student' && <button className={styles.smallButton}>Delete</button>}
 
                 </div>
 

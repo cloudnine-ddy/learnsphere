@@ -54,7 +54,7 @@ function AdminPortal() {
                         </div>
 
                         <div className={styles.instructorGenerator}>
-                            <TokenGenerator label="Generate Instructor Token" role="teacher" prefix="INSTRUCT"/>
+                            <TokenGenerator label="Generate Instructor Token" role="instructor" prefix="INSTRUCT"/>
                         </div>
 
                     </div>

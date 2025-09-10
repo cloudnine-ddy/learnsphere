@@ -34,17 +34,26 @@ export async function getLessons(status, userData)
     return lessons;
 }
 
-export async function getLesson(id)
+export async function getLesson(id, userData)
 {
-    const docRef = doc(db, "lessons", id);
-    //const q = query(collection(db(), "lessons"), where("title", "==", title));
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists())
+    if (userData != null)
     {
-        return docSnap.data();
+        const docRef = doc(db, "lessons", id);
+        //const q = query(collection(db(), "lessons"), where("title", "==", title));
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists())
+        {
+            if (docSnap.data().status != 'Published' && userData.role == 'student')
+            {
+                return null;
+            }
+            return docSnap.data();
+        }
+        else
+        {
+            return null;
+        }
     }
-    else
-    {
-        return null;
-    }
+
+    return null;
 }

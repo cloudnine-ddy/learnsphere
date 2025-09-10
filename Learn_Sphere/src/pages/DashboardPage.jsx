@@ -103,7 +103,7 @@ function DashboardPage() {
                         <Routes>
                             <Route path="/" element={<Navigate to="courses" replace />} />
                             <Route path="/courses/*" element={<LessonDashboard userData={userData} />} />
-                            <Route path="/courses/:id" element={<ViewLesson />} />
+                            <Route path="/courses/:id" element={<ViewLesson userData={userData} />} />
                             {userData != null && userData.role &&
                                 <Route path="/newcourse" element={<AddLesson 
                                 instructorList={instructors} 
