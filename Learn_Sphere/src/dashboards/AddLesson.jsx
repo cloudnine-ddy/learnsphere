@@ -116,65 +116,58 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
                         required
                     />
 
-                <TextArea
-                    label="Description"
-                    type="textarea"
-                    id="description"
-                    name="description"
-                    value={lesson.description}
-                    onChange={handleLessonChange}
-                />
+                    <TextArea
+                        label="Description"
+                        type="textarea"
+                        id="description"
+                        name="description"
+                        value={lesson.description}
+                        onChange={handleLessonChange}
+                    />
 
-                <AddToList
-                label="Reading List"
-                placeholder = "Enter book name"
-                currentItem={currentBook}
-                setCurrentItem={setCurrentBook}
-                itemList={readingList}
-                setItemList={setReadingList}
-                />
+                    <AddToList
+                    label="Reading List"
+                    placeholder = "Enter book name"
+                    currentItem={currentBook}
+                    setCurrentItem={setCurrentBook}
+                    itemList={readingList}
+                    setItemList={setReadingList}
+                    />
 
-                <AddToList
-                label="Assignment"
-                placeholder = "Enter assignment"
-                currentItem={currentAssignment}
-                setCurrentItem={setCurrentAssignment}
-                itemList={assignmentList}
-                setItemList={setAssignmentList}
-                />
+                    <AddToList
+                    label="Assignment"
+                    placeholder = "Enter assignment"
+                    currentItem={currentAssignment}
+                    setCurrentItem={setCurrentAssignment}
+                    itemList={assignmentList}
+                    setItemList={setAssignmentList}
+                    />
 
-                <AddFromList 
-                    prerequisites={prerequisites}
-                    setPrerequisites={setPrerequisites}
-                    prerequisiteOptions={prerequisiteOptions.map(option => `${option.data().lessonID}: ${option.data().title}`)}
-                />
+                    <AddFromList 
+                        prerequisites={prerequisites}
+                        setPrerequisites={setPrerequisites}
+                        prerequisiteOptions={prerequisiteOptions.map(option => `${option.data().lessonID}: ${option.data().title}`)}
+                    />
 
-                <InputField
-                    label="Credit Points"
-                    type="number"
-                    id="creditPoints"
-                    name="creditPoints"
-                    value={lesson.creditPoints}
-                    onChange={handleLessonChange}
-                    min="0"
-                    required
-                />
+                    <InputField
+                        label="Credit Points"
+                        type="number"
+                        id="creditPoints"
+                        name="creditPoints"
+                        value={lesson.creditPoints}
+                        onChange={handleLessonChange}
+                        min="0"
+                        required
+                    />
 
-                {/* <label>Owner/Creator</label>
-                <select name="owner" value={lesson.owner} onChange={handleLessonChange}>
-                    {ownerList.map((user, idx) => (
-                        <option key={idx} value={user}>{user}</option>
-                    ))}
-                </select> */}
-
-                <SelectOneFromList name="instructor" label="Instructor" object={lesson} list = {[""].concat(instructorList.map(instructor => `${instructor.title} ${instructor.firstName} ${instructor.lastName}`))} onChange={handleLessonChange}/>
-                <SelectStatus name="status" label="Status" object={lesson} onChange={handleLessonChange}/>
+                    <SelectOneFromList name="instructor" label="Instructor" object={lesson} list = {[""].concat(instructorList.map(instructor => `${instructor.title} ${instructor.firstName} ${instructor.lastName}`))} onChange={handleLessonChange}/>
+                    <SelectStatus name="status" label="Status" object={lesson} onChange={handleLessonChange}/>
 
                 </div>
             </div>
             
             <div className={styles.infoFooter}>
-                <Button onClick={submitForm} label="Submit"/>
+                <Button onClick={submitForm} label="Add" />
 
                 {errorMessages.length>0 && (
                 <div>

@@ -6,12 +6,12 @@
 .addingPart {
     display: flex;
     flex-direction: row;
-    gap: 10px
+    gap: 10px;
 }
 
 .addButton {
   padding: 12px;
-  background: purple;
+  background: #91684A;
   border: 2px solid transparent;
   border-radius: 15px;
   font-weight: bold;
@@ -35,7 +35,7 @@
 }
 
 .readingItem {
-  background-color: #4af195;
+  background-color: #fffbe9;
   padding: 10px 14px;
   border-radius: 8px;
   display: flex;
@@ -43,25 +43,27 @@
   flex: 1;
   font-size: 18px;
   border: 1px solid transparent;
-  background: #B2C8CF;
   justify-content: space-between;
+  color: black;
 }
 
 .readingItem:hover {
-  background-color: yellow;
+  background-color: #e3caa5;
 }
 
 .deleteButton {
-  background: #ff4d4f;
+  background: #ceab93;
   border: none;
-  color: white;
-  padding: 4px 10px;
+  color: black;
+  opacity: 0.6;
+  font-weight: bold;
+  padding: 10px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 15px;
   align-items: flex-end;
 }
 
 .deleteButton:hover {
-  background: blue;
+  background: #ad8b73;
 }
