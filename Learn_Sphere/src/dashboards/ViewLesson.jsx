@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import { getCurrentUser, getUserInfo } from "../components/manageUsers";
 import { useNavigate } from "react-router-dom";
 import MessageBox from "../components/MessageBox";
-import { deleteLessonFromDatabase } from "../components/deleteLessons";
+import { deleteLessonFromDatabase, deletePrereq } from "../components/deleteLessons";
 
 function ViewLesson({userData}) {
     let navigate = useNavigate();
@@ -39,19 +39,18 @@ function ViewLesson({userData}) {
             getLesson(id, userData).then(
             (lesson) => {
                 setLesson(lesson);
+
+                if (lesson == null)
+                {
+                    navigate("/home");
+                }
             }); 
         }
     }, [userData])
 
-    useEffect(() => {
-        if (userData != null && userData.role == "student" && lesson.status != 'Published')
-        {
-            navigate("/home");
-        }
-    }, [userData, lesson])
-
     const handleDelete = () => {
         deleteLessonFromDatabase(id)
+        .then(() => deletePrereq(lesson.lessonID))
         .then(() => setShowDelete(false))
         .then(() => navigate("/home"))
         .catch((error) => console.error("Error deleting lesson:", error));
