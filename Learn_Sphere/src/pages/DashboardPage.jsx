@@ -114,7 +114,6 @@ function DashboardPage() {
                                 <Route path="/report" element={<AdminPortal />} 
                             />}
                             <Route path="/editLesson/:id" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>
-/>} />
                         </Routes>
                     </div>
                 </div>
