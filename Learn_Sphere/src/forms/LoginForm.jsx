@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./LoginForm.module.css";
 import { signInUser } from "../components/manageUsers";
 
-function LoginForm() {
+function LoginForm({showError, setShowError}) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -49,6 +49,7 @@ function LoginForm() {
         }
       })
       .catch((error) => {
+        setShowError(true);
         console.error("Error signing in user:", error); // Debugging log
         setErrorMessages([error]);
       });

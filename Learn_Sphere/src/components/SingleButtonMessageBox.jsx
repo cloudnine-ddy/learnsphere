@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from "./SingleButtonMessageBox.module.css";
 
-function SingleButtonMessageBox({label="Notification", message, button="OK", onConfirm, onCancel}) {
+function SingleButtonMessageBox({label="Notification", message, button="OK", onConfirm}) {
 
     return (
         <div className={styles.overlay}>
@@ -14,7 +14,7 @@ function SingleButtonMessageBox({label="Notification", message, button="OK", onC
                     {message}
                 </div>
                 <div className={styles.buttonArea}>
-                    <button className={styles.smallButton} style={{background: "#beb2a4"}} onClick = {onCancel}>
+                    <button className={styles.smallButton} style={{background: "#beb2a4"}} onClick = {onConfirm}>
                         {button}
                     </button>
                 </div>
