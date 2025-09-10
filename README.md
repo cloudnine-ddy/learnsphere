@@ -2,7 +2,7 @@
 
 **Product of** ©weShowAgile
 
-Developers: <br>
+Developers: [in alphabetical order] <br>
 - Chin Min Hao [ 34474463] 
 - Joanne Youssel Rahmanto  [ 34881565 ] 
 - Lai Cen Yee [ 36243191 ] 
