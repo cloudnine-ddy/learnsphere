@@ -50,11 +50,11 @@ function AdminPortal() {
                     <div className={styles.generatorArea}>
 
                         <div className={styles.studentGenerator}>
-                            <TokenGenerator label="Generate Student Token"/>
+                            <TokenGenerator label="Generate Student Token" role="student" prefix="STUDENT"/>
                         </div>
 
                         <div className={styles.instructorGenerator}>
-                            <TokenGenerator label="Generate Instructor Token"/>
+                            <TokenGenerator label="Generate Instructor Token" role="teacher" prefix="INSTRUCT"/>
                         </div>
 
                     </div>

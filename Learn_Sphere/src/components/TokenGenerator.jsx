@@ -4,13 +4,13 @@ import { getCurrentUser, getUserInfo, getTokens, createToken, useToken } from ".
 import { useNavigate } from "react-router-dom";
 
 
-function TokenGenerator({label="Generate"}) {
+function TokenGenerator({label="Generate", role="student"}, prefix="STUDENT") {
     const [tokens, setTokens] = useState([]);
     let navigate = useNavigate("/home");
 
     useEffect(() => {
     //Runs when token state is changed
-        getTokens().then(
+        getTokens(role).then(
             (tokens) => {
                 setTokens(tokens);
             })
@@ -20,17 +20,17 @@ function TokenGenerator({label="Generate"}) {
     }, [tokens])
 
     const generateToken = () => {
-        const randomToken = "STUDENT" + Math.random().toString(36).substring(2, 7).toUpperCase();
-        createToken(randomToken).then(
+        const randomToken = {prefix} + Math.random().toString(36).substring(2, 7).toUpperCase();
+        createToken(randomToken, role).then(
             () => {
                 console.log("success!");
             }
         )
         .catch(
             (error) => {
-                if (error == 808)
+                if (error == "TRY_AGAIN")
                 {
-                    // generateToken();
+                    generateToken();
                 }
                 else
                 {

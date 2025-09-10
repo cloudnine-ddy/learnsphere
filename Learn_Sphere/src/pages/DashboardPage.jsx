@@ -102,7 +102,7 @@ function DashboardPage() {
                     <div className={styles.infoSection}>
                         <Routes>
                             <Route path="/" element={<Navigate to="courses" replace />} />
-                            <Route path="/courses/*" element={<LessonDashboard />} />
+                            <Route path="/courses/*" element={<LessonDashboard userData={userData} />} />
                             <Route path="/courses/:id" element={<ViewLesson />} />
                             {userData != null && userData.role &&
                                 <Route path="/newcourse" element={<AddLesson 

@@ -9,7 +9,7 @@ import { getLessons } from "../components/getLessons";
 import { useState, useEffect } from "react";
 import {BrowserRouter, Routes, Route, Navigate, Link, useParams } from "react-router-dom";
 
-function LessonDashboard() {
+function LessonDashboard({userData}) {
     const [filter, setFilter] = useState(true);
     const [label, setLabel] = useState("All Lessons");
     const [lessons, setLessons] = useState([]);
@@ -28,11 +28,11 @@ function LessonDashboard() {
 
     useEffect(() => {
         //Runs when filter is updated
-        getLessons(filter).then(
+        getLessons(filter, userData).then(
             (lessons) => {
                 setLessons(lessons);
             });
-    }, [filter]);
+    }, [filter, userData]);
 
     return (
         <>
@@ -40,7 +40,7 @@ function LessonDashboard() {
                 <div className={styles.infoTitle}>
                     My Lessons
                 </div>
-                <FilterDropdown label={label} options={options} changeEvent={changeEvent} />
+                {userData != null && ( userData.role == "student" ? <FilterDropdown label={"Your Lessons"} options={[{label: "Your Lessons", state: 'Published'}]} changeEvent={changeEvent} /> : <FilterDropdown label={label} options={options} changeEvent={changeEvent} />)}
             </div>
             <div className={styles.infoScroll}>
                 <div className={styles.cardContainer}>
