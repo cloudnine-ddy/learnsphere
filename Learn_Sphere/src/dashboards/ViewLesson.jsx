@@ -35,6 +35,10 @@ function ViewLesson({userData}) {
         .catch((error) => console.error("Error deleting lesson:", error));
     }
 
+    const handleEdit = () => {
+        navigate("/editLesson")
+    }
+
     return (
         <div className={styles.wrapper}>
             <div className={styles.infoHeader}>
@@ -49,7 +53,7 @@ function ViewLesson({userData}) {
                     <div className={styles.lessonStatus}>
                         {lesson != null ? lesson.status : "null"}
                     </div>
-                    {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}}>Edit</button>}
+                    {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}} onClick ={() => handleEdit}>Edit</button>}
                     {userData != null && userData.role != 'student' && <button className={styles.smallButton} onClick={() => setShowDelete(true)}>Delete</button>}
 
                 </div>

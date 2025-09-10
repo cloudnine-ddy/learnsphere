@@ -1,0 +1,134 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  /* display: grid;
+  grid-template-rows: auto 1fr auto; */
+  flex: 1;       /* 让组件填满父容器 */
+  min-height: 0; /* 关键：允许子元素（infoScroll）在纵向收缩 */
+}
+
+.infoHeader {
+    display: flex;
+    flex-direction: row;
+    flex: 0 0 auto;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.infoTitle {
+    margin: 0;
+    font-size: 30px;
+    color: black;
+}
+
+.infoScroll {
+    flex: 1 1 auto;
+    margin-top: 10px;
+    padding-right: 10px;
+    overflow-y: auto;
+    min-height: 0;
+    /* height: 0; */
+    -webkit-overflow-scrolling: touch;
+
+    /* -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%; */
+}
+
+.infoScroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.infoScroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.infoScroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+}
+
+.infoScroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,0.4);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 0 10px 0;
+}
+
+/* .addButton {
+  padding: 12px;
+  background: purple;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  font-weight: bold;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  width: 10%;
+  height: 10%;
+  margin-top: 30px;
+}
+
+.addButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  outline: none;
+  border-color: #C4E4D3;
+}
+
+.addButton:focus {
+    outline: none;
+    border-color: #C4E4D3;
+} */
+/* 
+.readingList {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.readingItem {
+  background-color: #4af195;
+  padding: 10px 14px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  font-size: 18px;
+  border: 1px solid transparent;
+  background: #B2C8CF;
+}
+
+.readingItem:hover {
+  background-color: yellow;
+}
+
+.deleteButton {
+  background: #ff4d4f;
+  border: none;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.deleteButton:hover {
+  background: #d9363e;
+} */
+
+.infoFooter {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    /* margin-top: auto; */
+}

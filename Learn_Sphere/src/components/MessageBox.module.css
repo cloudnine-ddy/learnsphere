@@ -13,16 +13,17 @@
 .box {
     display: flex;
     flex-direction: column;
-    width: 300px;
+    width: 450px;
     height: auto;
+    padding: 20px;
     border-radius: 25px;
     border: none;
-    background-color: greenyellow;
-    
+    background-color: #f7f5de;
+    gap: 10px;
 }
 
 .title {
-    font-size: 30px;
+    font-size: 25px;
     font-weight: bold;
     color: black;
     text-align: center;
@@ -31,10 +32,11 @@
 
 .messageArea {
     flex: 1;
-    font-size: 25px;
+    font-size: 20px;
     text-align: center;
     color: black;
     justify-content: center;
+    padding: 20px;
 }
 
 .buttonArea {
@@ -45,7 +47,7 @@
 }
 
 .smallButton {
-    background: #897351;
+    background: #58171b;
     padding: 12px;
     border: 2px solid transparent;
     border-radius: 15px;

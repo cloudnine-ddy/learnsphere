@@ -14,6 +14,7 @@ import {BrowserRouter, Routes, Route, Navigate, Link, useParams } from "react-ro
 
 import styles from "./DashboardPage.module.css";
 import TokenGenerator from "../components/TokenGenerator";
+import EditLesson from "../dashboards/EditLesson";
 
 function DashboardPage() {
     const navigate = useNavigate();
@@ -112,6 +113,7 @@ function DashboardPage() {
                             {userData != null && userData.role != "student" && 
                                 <Route path="/report" element={<AdminPortal />} 
                             />}
+                            <Route path="/editLesson" element={<EditLesson />} />
                         </Routes>
                     </div>
                 </div>
