@@ -11,29 +11,39 @@ import SelectOneFromList from "../components/SelectOneFromList";
 import SelectStatus from "../components/SelectStatus";
 import { addLessonToDatabase } from "../components/addLessons";
 import { getCurrentUser, getUserInfo } from "../components/manageUsers";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { updateLessonInDatabase } from "../components/updateLessons";
 
 import styles from "./EditLesson.module.css";
 
 function EditLesson( { instructorList, prerequisiteOptions }) {
+
+    const { id } = useParams();
+    const location = useLocation();
+    const lessonData = location.state.lesson;
+
     const [lesson, setLesson] = useState({
-        lessonId: "",
-        title: "",
-        description: "",
-        creditPoints: 0,
-        instructor: "",
-        status: ""
+        lessonId: lessonData?.lessonID || "",
+        title: lessonData?.title || "",
+        description: lessonData?.description || "",
+        creditPoints: lessonData?.creditPoint || 0,
+        instructor: lessonData?.owner || "",
+        status: lessonData?.status || ""
     });
 
-    let navigate = useNavigate();
-    const [readingList, setReadingList] = useState([]);
-    const [currentBook, setCurrentBook] = useState("");
+    const [readingList, setReadingList] = useState(lessonData?.readingList || []);
+    const [assignmentList, setAssignmentList] = useState(lessonData?.assignments || []);
+    const [prerequisites, setPrerequisites] = useState(lessonData?.prerequisites || []);
 
-    const [assignmentList, setAssignmentList] = useState([]);
+    let navigate = useNavigate();
+    const [currentBook, setCurrentBook] = useState("");
     const [currentAssignment, setCurrentAssignment] = useState("");
 
-    const [prerequisites, setPrerequisites] = useState([]);
     const [errorMessages, setErrorMessages] = useState([]);
+
+    const handleCancel = () => {
+        navigate(`/home/courses/${id}`);
+    }
 
     useEffect(() => {
     //Runs only at first render to kick out students
@@ -51,17 +61,28 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
 
     function submitForm(e)
     {
-        if (isValid())
-        {
-            console.log(lesson.lessonId, lesson.title, lesson.description, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status);
-            addLessonToDatabase(lesson.lessonId, lesson.title, lesson.description, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status)
-            .then(() => setErrorMessages(["Successfully created a lesson!"]))
+        if (isValid()){
+            const updates = {
+                title: lesson.title,
+                description: lesson.description,
+                readingList: readingList,
+                prerequisites: prerequisites,
+                assignments: assignmentList,
+                creditPoint: lesson.creditPoints,
+                owner: lesson.instructor,
+                status: lesson.status
+            };
+
+            console.log(updates);
+            updateLessonInDatabase(id, updates)
+            .then(() => {
+                setErrorMessages(["Successfully updated a lesson!"]);
+                navigate(`/home/courses/${id}`);
+            })
             .catch((error) => setErrorMessages([error]));
-        }
-        else
-        {
-            setErrorMessages(["Missing and invalid values! Check the form again."]);
-        }
+            } else {
+                setErrorMessages(["Missing and invalid values! Check the form again."]);
+            }
     };
 
     function isValid()
@@ -174,7 +195,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
             </div>
             
             <div className={styles.infoFooter}>
-                <Button onClick={submitForm} label="Cancel"/>
+                <Button onClick={handleCancel} label="Cancel"/>
                 <Button onClick={submitForm} label="Save Change"/>
                 {errorMessages.length>0 && (
                 <div>

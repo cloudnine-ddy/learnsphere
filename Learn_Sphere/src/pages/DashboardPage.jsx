@@ -62,7 +62,7 @@ function DashboardPage() {
                         <Link to="/home/courses">
                             <h3 className={styles.menuItem}>
                                 <img src="../images/icons/course.png" className={styles.menuIcon} />
-                                Courses
+                                My Lesson
                             </h3>
                         </Link>
 
@@ -70,20 +70,20 @@ function DashboardPage() {
                         <Link to="/home/newcourse">
                         <h3 className={styles.menuItem}>
                             <img src="../images/icons/lesson.png" className={styles.menuIcon} />
-                            Lessons
+                            Add Lesson
                         </h3>
                         </Link>}
 
-                        <h3 className={styles.menuItem}>
+                        {/* <h3 className={styles.menuItem}>
                             <img src="../images/icons/classroom.png" className={styles.menuIcon} />
                             Classroom
-                        </h3>
+                        </h3> */}
 
                         {userData != null && userData.role != "student" && 
                         <Link to="/home/report">
                         <h3 className={styles.menuItem}>
                             <img src="../images/icons/view_report.png" className={styles.menuIcon} />
-                            View Report
+                            Admin Portal
                         </h3>
                         </Link>}
 
@@ -105,7 +105,7 @@ function DashboardPage() {
                             <Route path="/" element={<Navigate to="courses" replace />} />
                             <Route path="/courses/*" element={<LessonDashboard userData={userData} />} />
                             <Route path="/courses/:id" element={<ViewLesson userData={userData} />} />
-                            {userData != null && userData.role &&
+                            {userData != null && userData.role != "student" &&
                                 <Route path="/newcourse" element={<AddLesson 
                                 instructorList={instructors} 
                                 prerequisiteOptions={currentUnits} 
@@ -113,7 +113,8 @@ function DashboardPage() {
                             {userData != null && userData.role != "student" && 
                                 <Route path="/report" element={<AdminPortal />} 
                             />}
-                            <Route path="/editLesson" element={<EditLesson />} />
+                            {userData != null && userData.role != "student" &&
+                            <Route path="/courses/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
                         </Routes>
                     </div>
                 </div>
