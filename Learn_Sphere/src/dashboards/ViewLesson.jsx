@@ -8,12 +8,16 @@ import { getLesson } from "../components/getLessons";
 import { useParams } from "react-router-dom";
 import { getCurrentUser, getUserInfo } from "../components/manageUsers";
 import { useNavigate } from "react-router-dom";
+import MessageBox from "../components/MessageBox";
+import { deleteLessonFromDatabase } from "../components/deleteLessons";
 
 function ViewLesson({userData}) {
     let navigate = useNavigate();
 
     const {id} = useParams();
     const [lesson, setLesson] = useState(null);
+
+    const [showDelete, setShowDelete] = useState(false);
     
     useEffect(() => {
         //Runs on the first render only
@@ -23,6 +27,13 @@ function ViewLesson({userData}) {
             });
         
     }, []);
+
+    const handleDelete = () => {
+        deleteLessonFromDatabase(id)
+        .then(() => setShowDelete(false))
+        .then(() => navigate("/home"))
+        .catch((error) => console.error("Error deleting lesson:", error));
+    }
 
     return (
         <div className={styles.wrapper}>
@@ -39,7 +50,7 @@ function ViewLesson({userData}) {
                         {lesson != null ? lesson.status : "null"}
                     </div>
                     {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}}>Edit</button>}
-                    {userData != null && userData.role != 'student' && <button className={styles.smallButton}>Delete</button>}
+                    {userData != null && userData.role != 'student' && <button className={styles.smallButton} onClick={() => setShowDelete(true)}>Delete</button>}
 
                 </div>
 
@@ -58,6 +69,8 @@ function ViewLesson({userData}) {
                     <InfoBlock title="Prerequisites" content={lesson != null ? lesson.prerequisites.length > 0 ? lesson.prerequisites : "No Prerequisites" : "No Prerequisites"}/>
                 </div>
             </div>
+
+            {showDelete && <MessageBox onCancel={() => setShowDelete(false)} onConfirm={handleDelete}/>}
         </div>
     );
 }
