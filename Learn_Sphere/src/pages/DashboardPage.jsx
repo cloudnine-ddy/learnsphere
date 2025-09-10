@@ -8,7 +8,7 @@ import LoginForm from "../forms/LoginForm";
 import FilterDropdown from "../components/FilterDropdown";
 import LessonCard from "../components/LessonCard";
 import { useNavigate } from "react-router-dom";
-import { getCurrentUser, getUserInfo, getAllInstructorsInfo } from "../components/manageUsers";
+import { getCurrentUser, getUserInfo, getAllInstructorsInfo, logOut } from "../components/manageUsers";
 import { getLessons } from "../components/getLessons";
 import {BrowserRouter, Routes, Route, Navigate, Link, useParams } from "react-router-dom";
 
@@ -23,7 +23,7 @@ function DashboardPage() {
     const [currentUnits, setCurrentUnits] = useState([]);
 
     useEffect(() => {
-    //Runs only on the first render
+    //Runs only on the first render or everytime the user is changed
         getCurrentUser().then(
             (user) => {
                 user != null ? setUser(user) : navigate("/reg");
@@ -40,7 +40,13 @@ function DashboardPage() {
         getLessons(true).then(
             (lessons) => {setCurrentUnits(lessons);}
         );
-    }, [])
+    }, [user])
+
+    const logOutUser = () => {
+        logOut();
+        setUser(null);
+        setUserData(null);
+    }
 
     return (
         <div className={styles.mainContent}>
@@ -83,10 +89,12 @@ function DashboardPage() {
                     </div>
 
                     <div className={styles.sidebarBottom}>
-                        <h3 className={styles.menuItem}>
-                            <img src="../images/icons/logout.png" className={styles.menuIcon} />
-                            Log out
-                        </h3>
+                        <Link onClick={logOutUser}>
+                            <h3 className={styles.menuItem}>
+                                <img src="../images/icons/logout.png" className={styles.menuIcon} />
+                                Log Out
+                            </h3>
+                        </Link>
                     </div>
                 </div>
 
@@ -94,15 +102,15 @@ function DashboardPage() {
                     <div className={styles.infoSection}>
                         <Routes>
                             <Route path="/" element={<Navigate to="courses" replace />} />
-                            <Route path="/courses/*" element={<LessonDashboard />} />
-                            <Route path="/courses/:id" element={<ViewLesson />} />
+                            <Route path="/courses/*" element={<LessonDashboard userData={userData} />} />
+                            <Route path="/courses/:id" element={<ViewLesson userData={userData} />} />
                             {userData != null && userData.role &&
                                 <Route path="/newcourse" element={<AddLesson 
                                 instructorList={instructors} 
                                 prerequisiteOptions={currentUnits} 
                             />} />}
                             {userData != null && userData.role != "student" && 
-                                <Route path="/report" element={<TokenGenerator />} 
+                                <Route path="/report" element={<AdminPortal />} 
                             />}
                         </Routes>
                     </div>

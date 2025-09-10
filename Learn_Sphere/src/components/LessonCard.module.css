@@ -27,6 +27,7 @@
     flex-direction: column;
     margin-left: 20px;
     align-items:first baseline;
+    text-align: left;
 }
 
 .lessonId {
@@ -38,8 +39,8 @@
 }
 
 .lessonTitle {
-    margin: 5px 0 0 0;
-    font-size: 30px;
+    margin: 0;
+    font-size: 20px;
     font-weight: bold;
     color: black;
     opacity: 1.0;

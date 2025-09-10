@@ -3,6 +3,11 @@ import {collection, doc, query, where, getDoc, setDoc, getDocs, updateDoc } from
 import { auth, db } from "./firebaseConfig";
 import { use } from "react";
 
+export function logOut()
+{
+    cookieStore.delete('user');
+}
+
 export async function signInUser(email, password)
 {
     let user = null;
@@ -22,7 +27,7 @@ export async function signInUser(email, password)
 export async function registerUser(firstName, lastName, email, password, title, token, selectedRole)
 {
     let user = null;
-    let validToken = await useToken(token);
+    let validToken = await useToken(token, selectedRole);
 
     if (validToken)
     {
@@ -67,7 +72,7 @@ export async function getCurrentUser()
 {
     let userCredential = await cookieStore.get('user');
 
-    if (userCredential)
+    if (userCredential != null)
     {
         return JSON.parse(userCredential.value).user;
     }
@@ -149,14 +154,14 @@ export async function deleteCurrentUser()
     }
 }
 
-export async function createToken(token)
+export async function createToken(token, role)
 {
     let user = await getCurrentUser();
     let userInfo = await getUserInfo(user);
 
     if (user != null && userInfo.role != "student")
     {
-        let tokenObject = {value: token, owner: user.uid, status:"Available"};
+        let tokenObject = {value: token, owner: user.uid, status:"Available", role: role};
 
         const existingToken = await getDoc(doc(db, "tokens", token));
         console.log(existingToken.data(), token);
@@ -169,20 +174,20 @@ export async function createToken(token)
         }
         else
         {
-            throw 808; //try again
+            throw "TRY_AGAIN"; //try again
         }
     }
     else
     {
-        throw 403; //forbidden
+        throw "NOT_ALLOWED"; //forbidden
     }
 }
 
-export async function useToken(token)
+export async function useToken(token, role)
 {
     const existingToken = await getDoc(doc(db, "tokens", token));
 
-    if (existingToken.data() != null)
+    if (existingToken.data() != null && existingToken.data().role == role)
     {
         await updateDoc(doc(db, "tokens", token), { status : "Used" });
         return true;
@@ -193,20 +198,25 @@ export async function useToken(token)
     }
 }
 
-export async function getTokens()
+export async function getTokens(role=true)
 {
     let user = await getCurrentUser();
+
+    if (role !== true && (typeof(role) == String && !(['student', 'instructor'].includes(role))))
+    {
+        role = true;
+    }
 
     if (user != null)
     {
         let tokens = []
         
-        let q = query(collection(db, "tokens"), where("owner", "==", user.uid));
+        let q = role === true ? query(collection(db, "tokens")) : query(collection(db, "tokens"), where("role", "==", role));
         let querySnapshot = await getDocs(q);
 
-        querySnapshot.forEach((user) => {
+        querySnapshot.forEach((token) => {
             // doc.data() is never undefined for query doc snapshots
-            tokens.push(user.data())
+            tokens.push(token.data())
         });
 
         return tokens;
