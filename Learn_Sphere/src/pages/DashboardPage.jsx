@@ -38,7 +38,7 @@ function DashboardPage() {
             (instructors) => {setInstructors(instructors);}
         );
 
-        getLessons(true).then(
+        getLessons(true, userData).then(
             (lessons) => {setCurrentUnits(lessons);}
         );
     }, [user])
@@ -105,7 +105,7 @@ function DashboardPage() {
                             <Route path="/" element={<Navigate to="courses" replace />} />
                             <Route path="/courses/*" element={<LessonDashboard userData={userData} />} />
                             <Route path="/courses/:id" element={<ViewLesson userData={userData} />} />
-                            {userData != null && userData.role &&
+                            {userData != null && userData.role != "student" &&
                                 <Route path="/newcourse" element={<AddLesson 
                                 instructorList={instructors} 
                                 prerequisiteOptions={currentUnits} 
@@ -113,7 +113,8 @@ function DashboardPage() {
                             {userData != null && userData.role != "student" && 
                                 <Route path="/report" element={<AdminPortal />} 
                             />}
-                            <Route path="/editLesson/:id" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>
+                            {userData != null && userData.role != "student" &&
+                            <Route path="/courses/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
                         </Routes>
                     </div>
                 </div>

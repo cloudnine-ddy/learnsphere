@@ -40,9 +40,7 @@ function RegisterForm({selectedRole}) {
         if (!email.match(emailPattern)) {
             message.push("Enter a valid email!")
         }
-        if (password.length < 5) {
-            message.push("Password must be at least 5 characters");
-        }
+
         if (/\s/.test(password) || (/\s/.test(firstName)) || (/\s/.test(lastName)) || (/\s/.test(email))) {
           message.push("Do not put spaces in the fields!");
         }
