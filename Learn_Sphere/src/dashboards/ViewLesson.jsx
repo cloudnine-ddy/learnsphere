@@ -44,7 +44,7 @@ function ViewLesson({userData}) {
     }, [userData])
 
     useEffect(() => {
-        if (userData != null && userData.role == "student" && lesson.status != 'Published')
+        if (userData != null && lesson != null && userData.role == "student" && lesson.status != 'Published')
         {
             navigate("/home");
         }
