@@ -57,6 +57,7 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
             addLessonToDatabase(lesson.lessonId, lesson.title, lesson.description, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status)
             .then(() => setErrorMessages(["Successfully created a lesson!"]))
             .catch((error) => setErrorMessages([error]));
+            navigate(`/home/courses`);
         }
         else
         {
