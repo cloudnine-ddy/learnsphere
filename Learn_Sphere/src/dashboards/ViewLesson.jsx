@@ -36,7 +36,8 @@ function ViewLesson({userData}) {
     }
 
     const handleEdit = () => {
-        navigate("/editLesson")
+        console.log("Editing lesson with id: " + id)
+        navigate(`/home/editLesson/${id}`, { state: {lesson}}) ;
     }
 
     return (
@@ -53,7 +54,7 @@ function ViewLesson({userData}) {
                     <div className={styles.lessonStatus}>
                         {lesson != null ? lesson.status : "null"}
                     </div>
-                    {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}} onClick ={() => handleEdit}>Edit</button>}
+                    {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}} onClick = {handleEdit}>Edit</button>}
                     {userData != null && userData.role != 'student' && <button className={styles.smallButton} onClick={() => setShowDelete(true)}>Delete</button>}
 
                 </div>
@@ -74,7 +75,7 @@ function ViewLesson({userData}) {
                 </div>
             </div>
 
-            {showDelete && <MessageBox onCancel={() => setShowDelete(false)} onConfirm={handleDelete}/>}
+            {showDelete && <MessageBox onCancel={() => setShowDelete(false)} onConfirm={() =>handleDelete}/>}
         </div>
     );
 }
