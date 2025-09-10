@@ -88,7 +88,7 @@ function RegisterForm({selectedRole}) {
                 <InputField label="Last Name" id="lastName" placeholder="Enter last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                 <InputField label="Email" id="email" placeholder="Enter email"  value={email} onChange={(e) => setEmail(e.target.value)} />
 
-                <PasswordField label="Password" id="password" placeholder="Enter password"  value={password} onChange={(e) => setPassword(e.target.value)} />
+                <PasswordField label="Password" id="password" placeholder="Password must be at least 6 characters"  value={password} onChange={(e) => setPassword(e.target.value)} />
                 <PasswordField label="Confirm Password" id="confirmPassword" placeholder="Re-enter password"  value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                 <InputField label="Token" id="token" placeholder="Enter token"  value={token} onChange={(e) => setToken(e.target.value)} />
             </div>
