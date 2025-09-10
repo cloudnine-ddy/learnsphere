@@ -21,12 +21,34 @@ function ViewLesson({userData}) {
     
     useEffect(() => {
         //Runs on the first render only
-        getLesson(id, userData).then(
+        if (userData == null)
+        {
+            getCurrentUser().then(
+                (user) => {
+                    return getUserInfo(user);
+                })
+                .then((info) => {
+                    userData = info;
+                });
+        }
+    }, []);
+
+    useEffect(() => {
+        if (userData != null)
+        {
+            getLesson(id, userData).then(
             (lesson) => {
                 setLesson(lesson);
-            });
-        
-    }, []);
+            }); 
+        }
+    }, [userData])
+
+    useEffect(() => {
+        if (userData != null && userData.role == "student" && lesson.status != 'Published')
+        {
+            navigate("/home");
+        }
+    }, [userData, lesson])
 
     const handleDelete = () => {
         deleteLessonFromDatabase(id)
