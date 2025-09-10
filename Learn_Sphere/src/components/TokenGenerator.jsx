@@ -45,7 +45,7 @@ function TokenGenerator({label="Generate", role="student", prefix="STUDENT"}) {
         <div className={styles.wholeField}>
             <button type="submit" onClick={generateToken} className={styles.button}>{label}</button>
 
-            <div>
+            <div className={styles.wrapper}>
                 {tokens.map((token, index) => (
                     <div key={index} className={styles.tokenField}>
                         <span className={styles.token}>

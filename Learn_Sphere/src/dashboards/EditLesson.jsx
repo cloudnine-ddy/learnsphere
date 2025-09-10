@@ -195,8 +195,17 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
             </div>
             
             <div className={styles.infoFooter}>
-                <Button onClick={handleCancel} label="Cancel"/>
-                <Button onClick={submitForm} label="Save Change"/>
+                <button 
+                    onClick={handleCancel} 
+                    className={styles.smallButton}
+                    style={{background: "#beb2a4", marginLeft: "auto"}}
+                    >Cancel
+                </button>
+                <button 
+                    onClick={submitForm} 
+                    className={styles.smallButton}>
+                        Save Change
+                </button>
                 {errorMessages.length>0 && (
                 <div>
                   {errorMessages.map((msg,idx) => (
