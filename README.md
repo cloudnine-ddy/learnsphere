@@ -16,6 +16,7 @@ Developers: <br>
 
 - **Jira**: [KAN Board](https://fit2101-team3-my-thurs.atlassian.net/jira/software/projects/KAN/boards/1?jql=&atlOrigin=eyJpIjoiOWMyMmExNzM0NTZkNDM2YTkzMDk5ODU5YTA2OTc3ZDgiLCJwIjoiaiJ9)
 - **Google Drive Folder**: [Project Files](https://drive.google.com/drive/folders/1hc3fUFpyoa_sdVji-5RgK7a7k_acnl8N?usp=drive_link)
+- **Git repository**: [MA_Thursday5pm_Team3](https://git.infotech.monash.edu/fit2101/fit2101-s2-2025/group-repo/MA_Thursday5pm_Team3/-/tree/1281453c403289bd85037d0a3e4664107604bde9/)
 
 ### Documentation
 
