@@ -19,6 +19,7 @@ import styles from "./EditLesson.module.css";
 function EditLesson( { instructorList, prerequisiteOptions }) {
 
     const { id } = useParams();
+    prerequisiteOptions = prerequisiteOptions.filter(unit => unit.id != id);
     const location = useLocation();
     const lessonData = location.state.lesson;
 
