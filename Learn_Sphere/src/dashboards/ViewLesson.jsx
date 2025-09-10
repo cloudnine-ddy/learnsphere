@@ -39,16 +39,14 @@ function ViewLesson({userData}) {
             getLesson(id, userData).then(
             (lesson) => {
                 setLesson(lesson);
+
+                if (lesson == null)
+                {
+                    navigate("/home");
+                }
             }); 
         }
     }, [userData])
-
-    useEffect(() => {
-        if (userData != null && lesson != null && userData.role == "student" && lesson.status != 'Published')
-        {
-            navigate("/home");
-        }
-    }, [userData, lesson])
 
     const handleDelete = () => {
         deleteLessonFromDatabase(id)
