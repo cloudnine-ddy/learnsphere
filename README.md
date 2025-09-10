@@ -34,7 +34,7 @@ All meeting minutes can be found in the "Meeting Minutes" folder on Google Drive
 
 ### Burndown Chart
 
-- **Burndown Chart**: [Burndown Chart](https://docs.google.com/spreadsheets/d/1Nnl-8U9HL-qvFf7NCMwIhgS9wmn3RPYU3EmKVtgzONE/edit?usp=drive_link)
+- **Burndown Chart**: [Burndown Chart](https://drive.google.com/file/d/1Jem9nNLuCOnOTv3MPkXZI_mTzSJcDmr9/view?usp=sharing)
 
 ### Contribution/Work Log
 
