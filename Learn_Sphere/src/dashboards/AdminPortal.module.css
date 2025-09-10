@@ -1,0 +1,62 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.infoHeader {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.infoTitle {
+    margin: 0;
+    font-size: 30px;
+    color: black;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 0 0 10px 0;
+}
+
+.tokenArea {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.tokenTitle {
+    margin: 0;
+    font-size: 25px;
+    color: black;
+}
+
+.generatorArea {
+    display: flex;
+    flex-direction: row;
+}
+
+.studentGenerator {
+    display: flex;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    /* background-color: blue; */
+}
+
+.instructorGenerator {
+    display: flex;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    /* background-color: yellow; */
+}
