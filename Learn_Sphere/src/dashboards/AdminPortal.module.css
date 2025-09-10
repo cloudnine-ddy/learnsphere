@@ -8,7 +8,6 @@
 .infoHeader {
     display: flex;
     flex: 0 0 auto;
-    justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
@@ -45,11 +44,19 @@
 }
 
 .studentGenerator {
+    display: flex;
     width: 50%;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
     /* background-color: blue; */
 }
 
 .instructorGenerator {
+    display: flex;
     width: 50%;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
     /* background-color: yellow; */
 }

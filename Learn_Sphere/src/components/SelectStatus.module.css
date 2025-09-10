@@ -36,7 +36,7 @@
 .selectingPart select option {
     width: 100%;
     font-size: 18px;
-    color: #4af195;
+    color: black;
     border: none;
-    background: red;
+    background: B2C8CF;
 }

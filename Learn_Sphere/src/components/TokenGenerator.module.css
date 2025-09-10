@@ -6,13 +6,13 @@
 
 .button {
     width: 100%;
-    padding: 12px;
-    background: #C4E4D3;
+    padding: 16px;
+    background: #ffcc70;
     border: 2px solid transparent;
     border-radius: 15px;
     font-weight: bold;
     color: black;
-    font-size: 18px;
+    font-size: 22px;
     cursor: pointer;
     transition: 0.2s ease;
 }
@@ -21,25 +21,26 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0,0,0,0.2);
   outline: none;
-  border-color: #C4E4D3;
+  border-color: transparent;
 }
 
 .button:focus {
     outline: none;
-    border-color: #C4E4D3;
+    border-color: transparent;
 }
 
 .tokenField {
-    height: 30px;
+    height: 50px;
     display: flex;
     flex-direction: row;
-    font: 18px;
-    border-radius: 25px;
+    font-size: 20px;
+    border-radius: 18px;
     border: none;
     background-color: #e4cea5;
     justify-content: space-between;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    align-items: center;
     margin-top: 8px;
 }
 
@@ -50,77 +51,10 @@
 
 .tokenStatusAvailable {
     font: 20px;
-    color: green;
+    color: rgb(38, 144, 237);
 }
 
 .tokenStatusUsed {
     font: 20px;
     color: red;
 }
-/* .wholeFiled {
-    display: flex;
-    flex-direction: column;
-}
-
-.addingPart {
-    display: flex;
-    flex-direction: row;
-    gap: 10px
-}
-
-.addButton {
-  padding: 12px;
-  background: purple;
-  border: 2px solid transparent;
-  border-radius: 15px;
-  font-weight: bold;
-  color: white;
-  font-size: 18px;
-  cursor: pointer;
-  transition: 0.2s ease;
-  width: 10%;
-  height: 10%;
-  margin-top: 30px;
-  align-items: flex-end;
-}
-
-.readingList {
-  list-style: none;
-  padding: 0;
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.readingItem {
-  background-color: #4af195;
-  padding: 10px 14px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  flex: 1;
-  font-size: 18px;
-  border: 1px solid transparent;
-  background: #B2C8CF;
-  justify-content: space-between;
-}
-
-.readingItem:hover {
-  background-color: yellow;
-}
-
-.deleteButton {
-  background: #ff4d4f;
-  border: none;
-  color: white;
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 12px;
-  align-items: flex-end;
-}
-
-.deleteButton:hover {
-  background: blue;
-} */

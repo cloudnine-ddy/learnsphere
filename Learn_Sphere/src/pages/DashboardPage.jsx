@@ -62,7 +62,7 @@ function DashboardPage() {
                         <Link to="/home/courses">
                             <h3 className={styles.menuItem}>
                                 <img src="../images/icons/course.png" className={styles.menuIcon} />
-                                Courses
+                                My Lesson
                             </h3>
                         </Link>
 
@@ -70,20 +70,20 @@ function DashboardPage() {
                         <Link to="/home/newcourse">
                         <h3 className={styles.menuItem}>
                             <img src="../images/icons/lesson.png" className={styles.menuIcon} />
-                            Lessons
+                            Add Lesson
                         </h3>
                         </Link>}
 
-                        <h3 className={styles.menuItem}>
+                        {/* <h3 className={styles.menuItem}>
                             <img src="../images/icons/classroom.png" className={styles.menuIcon} />
                             Classroom
-                        </h3>
+                        </h3> */}
 
                         {userData != null && userData.role != "student" && 
                         <Link to="/home/report">
                         <h3 className={styles.menuItem}>
                             <img src="../images/icons/view_report.png" className={styles.menuIcon} />
-                            View Report
+                            Admin Portal
                         </h3>
                         </Link>}
 
