@@ -113,7 +113,8 @@ function DashboardPage() {
                             {userData != null && userData.role != "student" && 
                                 <Route path="/report" element={<AdminPortal />} 
                             />}
-                            <Route path="/editLesson" element={<EditLesson />} />
+                            <Route path="/editLesson/:id" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>
+/>} />
                         </Routes>
                     </div>
                 </div>
