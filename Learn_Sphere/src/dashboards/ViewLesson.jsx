@@ -75,7 +75,7 @@ function ViewLesson({userData}) {
                 </div>
             </div>
 
-            {showDelete && <MessageBox onCancel={() => setShowDelete(false)} onConfirm={() =>handleDelete}/>}
+            {showDelete && <MessageBox onCancel={() => setShowDelete(false)} onConfirm={handleDelete}/>}
         </div>
     );
 }
