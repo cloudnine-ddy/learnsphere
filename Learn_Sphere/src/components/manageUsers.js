@@ -3,6 +3,11 @@ import {collection, doc, query, where, getDoc, setDoc, getDocs, updateDoc } from
 import { auth, db } from "./firebaseConfig";
 import { use } from "react";
 
+export function logOut()
+{
+    cookieStore.delete('user');
+}
+
 export async function signInUser(email, password)
 {
     let user = null;
@@ -67,7 +72,7 @@ export async function getCurrentUser()
 {
     let userCredential = await cookieStore.get('user');
 
-    if (userCredential)
+    if (userCredential != null)
     {
         return JSON.parse(userCredential.value).user;
     }
