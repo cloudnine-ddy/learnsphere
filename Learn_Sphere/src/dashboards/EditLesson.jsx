@@ -43,7 +43,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
     const [errorMessages, setErrorMessages] = useState([]);
 
     const handleCancel = () => {
-        navigate(`/home/courses/${id}`);
+        navigate(`/home/lessons/${id}`);
     }
 
     useEffect(() => {
@@ -78,7 +78,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
             updateLessonInDatabase(id, updates)
             .then(() => {
                 setErrorMessages(["Successfully updated a lesson!"]);
-                navigate(`/home/courses/${id}`);
+                navigate(`/home/lessons/${id}`);
             })
             .catch((error) => setErrorMessages([error]));
             } else {

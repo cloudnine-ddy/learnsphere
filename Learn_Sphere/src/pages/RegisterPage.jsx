@@ -5,6 +5,7 @@ import RegisterForm from "../forms/RegisterForm"
 import { useState } from "react";
 
 import styles from "./RegisterPage.module.css";
+import MessageBox from "../components/MessageBox";
 
 function RegisterPage() {
 

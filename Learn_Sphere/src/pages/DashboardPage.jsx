@@ -61,7 +61,7 @@ function DashboardPage() {
 
                     <div className={styles.sidebarMenu}>
                         
-                        <Link to="/home/courses">
+                        <Link to="/home/lessons">
                             <h3 className={styles.menuItem}>
                                 <img src="../images/icons/course.png" className={styles.menuIcon} />
                                 My Lesson
@@ -69,7 +69,7 @@ function DashboardPage() {
                         </Link>
 
                         {userData != null && userData.role != "student" && 
-                        <Link to="/home/newcourse">
+                        <Link to="/home/newlesson">
                         <h3 className={styles.menuItem}>
                             <img src="../images/icons/lesson.png" className={styles.menuIcon} />
                             Add Lesson
@@ -104,8 +104,8 @@ function DashboardPage() {
                 <div className={styles.contentArea}>
                     <div className={styles.infoSection}>
                         <Routes>
-                            <Route path="/" element={<Navigate to="courses" replace />} />
-                            <Route path="/courses/*" element={<LessonDashboard userData={userData} />} />
+                            <Route path="/" element={<Navigate to="lessons" replace />} />
+                            <Route path="/lessons/*" element={<LessonDashboard userData={userData} />} />
 
 
 
@@ -115,9 +115,9 @@ function DashboardPage() {
 
 
 
-                            <Route path="/courses/:id" element={<ViewLesson userData={userData} />} />
+                            <Route path="/lessons/:id" element={<ViewLesson userData={userData} />} />
                             {userData != null && userData.role != "student" &&
-                                <Route path="/newcourse" element={<AddLesson 
+                                <Route path="/newlesson" element={<AddLesson 
                                 instructorList={instructors} 
                                 prerequisiteOptions={currentUnits} 
                             />} />}
@@ -125,7 +125,7 @@ function DashboardPage() {
                                 <Route path="/report" element={<AdminPortal />} 
                             />}
                             {userData != null && userData.role != "student" &&
-                            <Route path="/courses/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
+                            <Route path="/lessons/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
                         </Routes>
                     </div>
                 </div>
