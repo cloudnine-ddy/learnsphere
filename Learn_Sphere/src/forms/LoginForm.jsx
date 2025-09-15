@@ -1,11 +1,16 @@
 import React, {useState} from "react";
-import InputField from "../components/InputField";
-import PasswordField from "../components/PasswordField";
-import Button from "../components/Button";
+
 import { useNavigate } from "react-router-dom";
 
-import styles from "./LoginForm.module.css";
 import { signInUser } from "../components/manageUsers";
+
+import styles from "./LoginForm.module.css";
+
+import InputField from "../components/typable/InputField";
+import PasswordField from "../components/typable/PasswordField";
+import Button from "../components/clickable/Button";
+
+
 
 function LoginForm({showError, setShowError}) {
   const navigate = useNavigate();

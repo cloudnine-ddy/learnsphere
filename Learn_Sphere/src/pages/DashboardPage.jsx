@@ -1,22 +1,27 @@
 import React, { use, useState, useEffect } from "react";
-import DashbaordHeader from "../layout/DashboardHeader";
-import LessonDashboard from "../dashboards/LessonDashboard";
-import CourseDashboard from "../dashboards/CourseDashboard";
-import AddLesson from "../dashboards/AddLesson";
-import AdminPortal from "../dashboards/AdminPortal";
-import ViewLesson from "../dashboards/ViewLesson";
-import LoginForm from "../forms/LoginForm";
-import FilterDropdown from "../components/FilterDropdown";
-import LessonCard from "../components/LessonCard";
+
+import {BrowserRouter, Routes, Route, Navigate, Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+
 import { getCurrentUser, getUserInfo, getAllInstructorsInfo, logOut } from "../components/manageUsers";
 import { getLessons } from "../components/getLessons";
-import {BrowserRouter, Routes, Route, Navigate, Link, useParams } from "react-router-dom";
 
 import styles from "./DashboardPage.module.css";
-import TokenGenerator from "../components/TokenGenerator";
-import EditLesson from "../dashboards/EditLesson";
-import ViewCourse from "../dashboards/ViewCourse";
+
+import DashbaordHeader from "../layout/DashboardHeader";
+
+import LessonDashboard from "../dashboards/lesson/LessonDashboard";
+import AddLesson from "../dashboards/lesson/AddLesson";
+import EditLesson from "../dashboards/lesson/EditLesson";
+import ViewLesson from "../dashboards/lesson/ViewLesson";
+
+import CourseDashboard from "../dashboards/course/CourseDashboard";
+import ViewCourse from "../dashboards/course/ViewCourse";
+import AddCourse from "../dashboards/course/AddCourse";
+
+import AdminPortal from "../dashboards/admin/AdminPortal";
+
+
 
 function DashboardPage() {
     const navigate = useNavigate();
@@ -26,30 +31,31 @@ function DashboardPage() {
     const [currentUnits, setCurrentUnits] = useState([]);
 
     useEffect(() => {
-    //Runs only on the first render or everytime the user is changed
-        getCurrentUser().then(
-            (user) => {
-                user != null ? setUser(user) : navigate("/reg");
-                return getUserInfo(user);
-            })
-            .then((userInfo) => {
-                setUserData(userInfo);
-            });
+      //Runs only on the first render or everytime the user is changed
+      getCurrentUser()
+        .then((user) => {
+          user != null ? setUser(user) : navigate("/reg");
+          return getUserInfo(user); 
+        //   TODO: wanna ask cen yee no need check null or not meh
+        })
+        .then((userInfo) => {
+          setUserData(userInfo);
+        });
+        
+      getAllInstructorsInfo().then((instructors) => {
+        setInstructors(instructors);
+      });
 
-        getAllInstructorsInfo().then(
-            (instructors) => {setInstructors(instructors);}
-        );
-
-        getLessons(true, userData).then(
-            (lessons) => {setCurrentUnits(lessons);}
-        );
-    }, [user])
+      getLessons(true, userData).then((lessons) => {
+        setCurrentUnits(lessons);
+      });
+    }, [user]);
 
     const logOutUser = () => {
         logOut();
         setUser(null);
         setUserData(null);
-    }
+    };
 
     return (
         <div className={styles.mainContent}>
@@ -64,15 +70,15 @@ function DashboardPage() {
                         <Link to="/home/lessons">
                             <h3 className={styles.menuItem}>
                                 <img src="../images/icons/course.png" className={styles.menuIcon} />
-                                My Lesson
+                                Lesson
                             </h3>
                         </Link>
 
                         {userData != null && userData.role != "student" && 
-                        <Link to="/home/newlesson">
+                        <Link to="/home/courses">
                         <h3 className={styles.menuItem}>
                             <img src="../images/icons/lesson.png" className={styles.menuIcon} />
-                            Add Lesson
+                            Course
                         </h3>
                         </Link>}
 
@@ -106,26 +112,19 @@ function DashboardPage() {
                         <Routes>
                             <Route path="/" element={<Navigate to="lessons" replace />} />
                             <Route path="/lessons/*" element={<LessonDashboard userData={userData} />} />
-
-
-
-                            <Route path="/courses/wiiiii" element={<CourseDashboard userData={userData} />} />
-                            <Route path="/courses/wooooo" element={<ViewCourse userData={userData} />} />
-
-
-
-
                             <Route path="/lessons/:id" element={<ViewLesson userData={userData} />} />
                             {userData != null && userData.role != "student" &&
-                                <Route path="/newlesson" element={<AddLesson 
-                                instructorList={instructors} 
-                                prerequisiteOptions={currentUnits} 
-                            />} />}
+                                <Route path="/newlesson" element={<AddLesson instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
                             {userData != null && userData.role != "student" && 
-                                <Route path="/report" element={<AdminPortal />} 
-                            />}
+                                <Route path="/report" element={<AdminPortal />} />}
                             {userData != null && userData.role != "student" &&
-                            <Route path="/lessons/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
+                                <Route path="/lessons/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
+                            
+                            <Route path="/courses/*" element={<CourseDashboard userData={userData} />} />
+                            {/* <Route path="/courses/:id" element={<ViewCourse userData={userData} />} /> */}
+                            {userData != null && userData.role != "student" &&
+                                <Route path="/newcourse" element={<AddCourse instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
+
                         </Routes>
                     </div>
                 </div>

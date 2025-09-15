@@ -1,15 +1,19 @@
-// need to import each of the components here
 import React, { useState } from "react";
-import InputField from "../components/InputField";
-import PasswordField from "../components/PasswordField";
-import TermsCheckbox from "../components/TermsCheckbox";
-import Button from "../components/Button";
-import ErrorMessage from "../components/ErrorMessage";
-import TitleDropdown from "../components/TitleDropdown";
+
 import { useNavigate } from "react-router-dom";
 
-import styles from "./RegisterForm.module.css";
 import { registerUser } from "../components/manageUsers";
+
+import styles from "./RegisterForm.module.css";
+
+import InputField from "../components/typable/InputField";
+import PasswordField from "../components/typable/PasswordField";
+import TermsCheckbox from "../components/clickable/TermsCheckbox";
+import Button from "../components/clickable/Button";
+import ErrorMessage from "../components/display/ErrorMessage";
+import TitleDropdown from "../components/selectable_addable/TitleDropdown";
+
+
 
 function RegisterForm({selectedRole}) {
     const navigate = useNavigate();
