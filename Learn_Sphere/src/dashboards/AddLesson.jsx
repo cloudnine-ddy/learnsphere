@@ -91,9 +91,7 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
                     Add Lesson
                 </div>
             </div>
-
             
-
 
             <div className={styles.infoScroll}>
                 <div className={styles.container}>
