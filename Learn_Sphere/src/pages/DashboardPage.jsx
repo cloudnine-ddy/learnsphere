@@ -1,6 +1,7 @@
 import React, { use, useState, useEffect } from "react";
 import DashbaordHeader from "../layout/DashboardHeader";
 import LessonDashboard from "../dashboards/LessonDashboard";
+import CourseDashboard from "../dashboards/CourseDashboard";
 import AddLesson from "../dashboards/AddLesson";
 import AdminPortal from "../dashboards/AdminPortal";
 import ViewLesson from "../dashboards/ViewLesson";
@@ -15,6 +16,7 @@ import {BrowserRouter, Routes, Route, Navigate, Link, useParams } from "react-ro
 import styles from "./DashboardPage.module.css";
 import TokenGenerator from "../components/TokenGenerator";
 import EditLesson from "../dashboards/EditLesson";
+import ViewCourse from "../dashboards/ViewCourse";
 
 function DashboardPage() {
     const navigate = useNavigate();
@@ -104,6 +106,15 @@ function DashboardPage() {
                         <Routes>
                             <Route path="/" element={<Navigate to="courses" replace />} />
                             <Route path="/courses/*" element={<LessonDashboard userData={userData} />} />
+
+
+
+                            <Route path="/courses/wiiiii" element={<CourseDashboard userData={userData} />} />
+                            <Route path="/courses/wooooo" element={<ViewCourse userData={userData} />} />
+
+
+
+
                             <Route path="/courses/:id" element={<ViewLesson userData={userData} />} />
                             {userData != null && userData.role != "student" &&
                                 <Route path="/newcourse" element={<AddLesson 
