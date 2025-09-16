@@ -3,7 +3,7 @@ import { db } from "./firebaseConfig";
 
 // To get all the courses
 
-export async function getCourses(status, userdata) {
+export async function getCourses(status, userData) {
     const courses = [];
 
     if (userData != null) {
@@ -21,7 +21,7 @@ export async function getCourses(status, userdata) {
 
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
-            lessons.push(doc);
+            courses.push(doc);
         });
     }
 

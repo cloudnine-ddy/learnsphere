@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 
-import { getCourses } from "../../components/getCourses";
+import { getLessons } from "../../components/getLessons";
 
 import styles from "./CourseDashboard.module.css";
 
@@ -14,10 +14,10 @@ import AddCourseCard from "../../components/clickable/AddCourseCard";
 function CourseDashboard({userData}) {
     const [filter, setFilter] = useState(true);
     const [label, setLabel] = useState("All Lessons");
-    const [courses, setCourses] = useState([]);
+    const [lessons, setLessons] = useState([]);
 
     const options = [
-        {label: "All Lessons", state: true},
+        {label: "All Courses", state: true},
         {label: "Draft", state: 'Draft'},
         {label: "Published", state: 'Published'},
         {label: "Archived", state: 'Archived'}
@@ -28,11 +28,13 @@ function CourseDashboard({userData}) {
         setLabel(e.target.text);
     }
 
-    //Runs when filter is updated
-    getCourses(filter, userData).then(
-        (courses) => {
-            setCourses(courses);
-        });
+    useEffect(() => {
+        //Runs when filter is updated
+        getCourses(filter, userData).then(
+            (courses) => {
+                setCourses(courses);
+            });
+    }, [filter, userData]);
 
     return (
         <>
@@ -45,7 +47,7 @@ function CourseDashboard({userData}) {
             <div className={styles.infoScroll}>
                 <div className={styles.cardContainer}>
                     {userData != null && ( userData.role != "student" ? <AddCourseCard lessonID={"Add Course"} lessonTitle={"Your Lessons"} creditPoint={0} instructorName={"Student"} href={"/home/newcourse"}/> : null)}
-                    {courses.map((course) => <CourseCard key={course.id} lessonID={course.data().courseID} lessonTitle={course.data().courseTitle} courseTotalCreditpoint={course.data().courseTotalCreditpoint} instructorName={course.data().courseSupervisor} href={`/home/courses/wooooo`}/>)}
+                    {lessons.map((lesson) => <CourseCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().title} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/courses/wooooo`}/>)}
                 </div>
             </div>
         </>

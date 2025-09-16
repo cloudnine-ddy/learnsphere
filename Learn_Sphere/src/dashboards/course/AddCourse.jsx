@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-import { addLessonToDatabase } from "../../components/addLessons";
+import { addCoursesToDatabase } from "../../components/addCourses";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 
 import styles from "./AddCourse.module.css";
@@ -17,24 +17,19 @@ import SelectStatus from "../../components/selectable_addable/SelectStatus";
 
 
 
-function AddCourse( { instructorList, prerequisiteOptions }) {
-    const [lesson, setLesson] = useState({
-        lessonId: "",
+function AddCourse( { instructorList,  prerequisiteOptions}) {
+    const [course, setCourse] = useState({
+        courseId: "",
         title: "",
         description: "",
-        creditPoints: 0,
-        instructor: "",
+        totalCreditPoints: 0,
+        supervisor: "",
         status: ""
     });
 
     let navigate = useNavigate();
-    const [readingList, setReadingList] = useState([]);
-    const [currentBook, setCurrentBook] = useState("");
 
-    const [assignmentList, setAssignmentList] = useState([]);
-    const [currentAssignment, setCurrentAssignment] = useState("");
-
-    const [prerequisites, setPrerequisites] = useState([]);
+    const [courseLessons, setCourseLessons] = useState([]);
     const [errorMessages, setErrorMessages] = useState([]);
 
     useEffect(() => {
@@ -51,15 +46,31 @@ function AddCourse( { instructorList, prerequisiteOptions }) {
             });
     }, [])
 
+    useEffect(() => {
+        const totalCreditPoints = courseLessons.reduce((sum, lessonString) => {
+            const lessonid = lessonString.split(":")[0].trim();
+            const lesson = prerequisiteOptions.find(lesson => lesson.data().lessonID == lessonid);
+            return sum + lesson.data().creditPoint;
+        }, 0);
+
+        console.log(totalCreditPoints);
+
+        setCourse({
+            ...course,
+            totalCreditPoints: totalCreditPoints
+        });
+
+    }, [courseLessons])
+
     function submitForm(e)
     {
         if (isValid())
         {
-            console.log(lesson.lessonId, lesson.title, lesson.description, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status);
-            addLessonToDatabase(lesson.lessonId, lesson.title, lesson.description, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status)
-            .then(() => setErrorMessages(["Successfully created a lesson!"]))
+            console.log(course.courseId, course.title, course.description, courseLessons, course.totalCreditPoints, course.supervisor, course.status);
+            addCoursesToDatabase(course.courseId, course.title, course.description, courseLessons, course.totalCreditPoints, course.supervisor, course.status)
+            .then(() => setErrorMessages(["Successfully created a course!"]))
             .catch((error) => setErrorMessages([error]));
-            navigate("/home/lessons");
+            navigate("/home/courses");
         }
         else
         {
@@ -69,7 +80,8 @@ function AddCourse( { instructorList, prerequisiteOptions }) {
 
     function isValid()
     {
-        for (const [key, value] of Object.entries(lesson)) {
+        console.log(course.courseId, course.title, course.description, courseLessons, course.totalCreditPoints, course.supervisor, course.status);
+        for (const [key, value] of Object.entries(course)) {
             if (value == "")
             {
                 return false;
@@ -79,9 +91,9 @@ function AddCourse( { instructorList, prerequisiteOptions }) {
         return true;
     }
 
-    const handleLessonChange = (e) => {
+    const handleCourseChange = (e) => {
         const { name, value } = e.target;
-        setLesson(prev => ({ ...prev, [name]: value }));
+        setCourse(prev => ({ ...prev, [name]: value }));
 
         if (errorMessages.length > 0) {setErrorMessages([]);}
     };
@@ -100,12 +112,12 @@ function AddCourse( { instructorList, prerequisiteOptions }) {
             <div className={styles.infoScroll}>
                 <div className={styles.container}>
                     <InputField
-                        label="Lesson ID"
+                        label="Course ID"
                         type="text"
-                        id="lessonId"
-                        name="lessonId"
-                        value={lesson.lessonId}
-                        onChange={handleLessonChange}
+                        id="courseId"
+                        name="courseId"
+                        value={course.courseId}
+                        onChange={handleCourseChange}
                         required
                     />
 
@@ -114,8 +126,8 @@ function AddCourse( { instructorList, prerequisiteOptions }) {
                         type="text"
                         id="title"
                         name="title"
-                        value={lesson.title}
-                        onChange={handleLessonChange}
+                        value={course.title}
+                        onChange={handleCourseChange}
                         required
                     />
 
@@ -124,8 +136,8 @@ function AddCourse( { instructorList, prerequisiteOptions }) {
                         type="textarea"
                         id="description"
                         name="description"
-                        value={lesson.description}
-                        onChange={handleLessonChange}
+                        value={course.description}
+                        onChange={handleCourseChange}
                     />
 
                     {/* <AddToList
@@ -149,8 +161,8 @@ function AddCourse( { instructorList, prerequisiteOptions }) {
                     <AddFromList 
                         label={"Lessons Included"}
                         placeholder={"Please select lessons needed to be included"}
-                        prerequisites={prerequisites}
-                        setPrerequisites={setPrerequisites}
+                        prerequisites={courseLessons}
+                        setPrerequisites={setCourseLessons}
                         prerequisiteOptions={prerequisiteOptions.map(option => `${option.data().lessonID}: ${option.data().title}`)}
                     />
 
@@ -165,8 +177,8 @@ function AddCourse( { instructorList, prerequisiteOptions }) {
                         required
                     /> */}
 
-                    <SelectOneFromList name="instructor" label="Instructor" object={lesson} list = {[""].concat(instructorList.map(instructor => `${instructor.title} ${instructor.firstName} ${instructor.lastName}`))} onChange={handleLessonChange}/>
-                    <SelectStatus name="status" label="Status" object={lesson} onChange={handleLessonChange}/>
+                    <SelectOneFromList name="supervisor" label="Supervisor" object={course} list = {[""].concat(instructorList.map(instructor => `${instructor.title} ${instructor.firstName} ${instructor.lastName}`))} onChange={handleCourseChange}/>
+                    <SelectStatus name="status" label="Status" object={course} onChange={handleCourseChange}/>
 
                 </div>
             </div>

@@ -26,13 +26,13 @@
     text-align:left;
 }
 
-.lessonTitle {
+.courseTitle {
     font-size: 35px;
     color: black;
     font-weight: bold;
 }
 
-.lessonStatus {
+.courseStatus {
     flex: 1;
     text-align: left;
     margin-left: 25px;

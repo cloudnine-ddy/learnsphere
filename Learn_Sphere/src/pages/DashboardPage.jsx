@@ -121,7 +121,7 @@ function DashboardPage() {
                                 <Route path="/lessons/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
                             
                             <Route path="/courses/*" element={<CourseDashboard userData={userData} />} />
-                            {/* <Route path="/courses/:id" element={<ViewCourse userData={userData} />} /> */}
+                            <Route path="/courses/:id" element={<ViewCourse userData={userData} />} />
                             {userData != null && userData.role != "student" &&
                                 <Route path="/newcourse" element={<AddCourse instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
 

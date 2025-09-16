@@ -3,8 +3,8 @@ import { db } from "./firebaseConfig";
 import { getCurrentUser, getUserInfo } from "./manageUsers";
 
 
-export async function addCoursesToDatabase(courseID, courseTitle, courseDescription, courseLessons, courseTotalCreditPoint, courseProgress, courseSupervior, courseCreateDate, courseUpdateDate)
-{
+    export async function addCoursesToDatabase(courseID, courseTitle, courseDescription, courseLessons, courseTotalCreditPoint, courseSupervisor, courseStatus)
+    {
     let user = await getCurrentUser();
     let userinfo = await getUserInfo(user); 
 
@@ -16,10 +16,10 @@ export async function addCoursesToDatabase(courseID, courseTitle, courseDescript
             courseDescription: courseDescription,
             courseLessons: courseLessons.map(s => s.trim()).filter(Boolean),
             courseTotalCreditpoint: Number.parseInt(courseTotalCreditPoint),
-            courseProgress: courseProgress,
-            courseSupervisor: courseSupervior,
-            courseCreateDate: courseCreateDate,
-            courseUpdateDate: courseUpdateDate,
+            courseSupervisor: courseSupervisor,
+            courseCreateDate: new Date().toISOString(),
+            courseUpdateDate: new Date().toISOString(),
+            courseStatus: courseStatus,
         };
 
         // Save the course data to Firestore 
