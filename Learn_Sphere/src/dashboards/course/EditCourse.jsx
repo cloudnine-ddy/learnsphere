@@ -3,13 +3,12 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
-import { updateLessonInDatabase } from "../../components/updateLessons";
+import { updateCourseInDatabase } from "../../components/updateCourses";
 
 import styles from "./EditCourse.module.css";
 
 import InputField from "../../components/typable/InputField";
 import TextArea from "../../components/typable/TextArea";
-import AddToList from "../../components/selectable_addable/AddToList";
 import AddFromList from "../../components/selectable_addable/AddFromList";
 import SelectOneFromList from "../../components/selectable_addable/SelectOneFromList";
 import SelectStatus from "../../components/selectable_addable/SelectStatus";
@@ -21,24 +20,20 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
     const { id } = useParams();
     prerequisiteOptions = prerequisiteOptions.filter(unit => unit.id != id);
     const location = useLocation();
-    const lessonData = location.state.lesson;
+    const courseData = location.state.course;
 
-    const [lesson, setLesson] = useState({
-        lessonId: lessonData?.lessonID || "",
-        title: lessonData?.title || "",
-        description: lessonData?.description || "",
-        creditPoints: lessonData?.creditPoint || 0,
-        instructor: lessonData?.owner || "",
-        status: lessonData?.status || ""
+    const [course, setCourse] = useState({
+        courseID: courseData?.courseID || "",
+        courseTitle: courseData?.courseTitle || "",
+        courseDescription: courseData?.courseDescription || "",
+        courseTotalCreditpoint: courseData?.courseTotalCreditpoint || 0,
+        courseSupervisor: courseData?.courseSupervisor || "",
+        courseStatus: courseData?.courseStatus || ""
     });
 
-    const [readingList, setReadingList] = useState(lessonData?.readingList || []);
-    const [assignmentList, setAssignmentList] = useState(lessonData?.assignments || []);
-    const [prerequisites, setPrerequisites] = useState(lessonData?.prerequisites || []);
+    const [courseLessons, setCourseLessons] = useState(courseData?.courseLessons || []);
 
     let navigate = useNavigate();
-    const [currentBook, setCurrentBook] = useState("");
-    const [currentAssignment, setCurrentAssignment] = useState("");
 
     const [errorMessages, setErrorMessages] = useState([]);
 
@@ -64,21 +59,20 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
     {
         if (isValid()){
             const updates = {
-                title: lesson.title,
-                description: lesson.description,
-                readingList: readingList,
-                prerequisites: prerequisites,
-                assignments: assignmentList,
-                creditPoint: lesson.creditPoints,
-                owner: lesson.instructor,
-                status: lesson.status
+                courseID: course.courseID,
+                courseTitle: course.courseTitle,
+                courseDescription: course.courseDescription,
+                courseTotalCreditpoint: course.courseTotalCreditpoint,
+                courseSupervisor: course.courseSupervisor,
+                courseStatus: course.courseStatus,
+                courseLessons: courseLessons,
             };
 
             console.log(updates);
-            updateLessonInDatabase(id, updates)
+            updateCourseInDatabase(id, updates)
             .then(() => {
                 setErrorMessages(["Successfully updated a course!"]);
-                navigate(`/home/lessons/${id}`);
+                navigate(`/home/courses/${id}`);
             })
             .catch((error) => setErrorMessages([error]));
             } else {
@@ -88,7 +82,7 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
 
     function isValid()
     {
-        for (const [key, value] of Object.entries(lesson)) {
+        for (const [key, value] of Object.entries(course)) {
             if (value == "")
             {
                 return false;
@@ -98,9 +92,9 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
         return true;
     }
 
-    const handleLessonChange = (e) => {
+    const handleCourseChange = (e) => {
         const { name, value } = e.target;
-        setLesson(prev => ({ ...prev, [name]: value }));
+        setCourse(prev => ({ ...prev, [name]: value }));
 
         if (errorMessages.length > 0) {setErrorMessages([]);}
     };
@@ -119,32 +113,32 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
             <div className={styles.infoScroll}>
                 <div className={styles.container}>
                     <InputField
-                        label="Lesson ID"
+                        label="Course ID"
                         type="text"
-                        id="lessonId"
-                        name="lessonId"
-                        value={lesson.lessonId}
-                        onChange={handleLessonChange}
+                        id="courseID"
+                        name="courseID"
+                        value={course.courseID}
+                        onChange={handleCourseChange}
                         required
                     />
 
                     <InputField
                         label="Title"
                         type="text"
-                        id="title"
-                        name="title"
-                        value={lesson.title}
-                        onChange={handleLessonChange}
+                        id="courseTitle"
+                        name="courseTitle"
+                        value={course.courseTitle}
+                        onChange={handleCourseChange}
                         required
                     />
 
                 <TextArea
                     label="Description"
                     type="textarea"
-                    id="description"
-                    name="description"
-                    value={lesson.description}
-                    onChange={handleLessonChange}
+                    id="courseDescription"
+                    name="courseDescription"
+                    value={course.courseDescription}
+                    onChange={handleCourseChange}
                 />
 
                 {/* <AddToList
@@ -168,9 +162,9 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
                 <AddFromList 
                     label={"Lessons Included"}
                     placeholder={"Please select lessons needed to be included"}
-                    prerequisites={prerequisites}
-                    setPrerequisites={setPrerequisites}
-                    prerequisiteOptions={prerequisiteOptions.map(option => `${option.data().lessonID}: ${option.data().title}`)}
+                    prerequisites={courseLessons}
+                    setPrerequisites={setCourseLessons}
+                    prerequisiteOptions={prerequisiteOptions.map(option => `${option.data().courseID}: ${option.data().courseTitle}`)}
                 />
 
                 {/* <InputField
@@ -191,8 +185,8 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
                     ))}
                 </select> */}
 
-                <SelectOneFromList name="instructor" label="Instructor" object={lesson} list = {[""].concat(instructorList.map(instructor => `${instructor.title} ${instructor.firstName} ${instructor.lastName}`))} onChange={handleLessonChange}/>
-                <SelectStatus name="status" label="Status" object={lesson} onChange={handleLessonChange}/>
+                <SelectOneFromList name="courseSupervisor" label="Supervisor" object={course} list = {[""].concat(instructorList.map(instructor => `${instructor.title} ${instructor.firstName} ${instructor.lastName}`))} onChange={handleCourseChange}/>
+                <SelectStatus name="courseStatus" label="Status" object={course} onChange={handleCourseChange}/>
 
                 </div>
             </div>

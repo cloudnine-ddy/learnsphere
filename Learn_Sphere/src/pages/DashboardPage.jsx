@@ -37,7 +37,6 @@ function DashboardPage() {
         .then((user) => {
           user != null ? setUser(user) : navigate("/reg");
           return getUserInfo(user); 
-        //   TODO: wanna ask cen yee no need check null or not meh
         })
         .then((userInfo) => {
           setUserData(userInfo);
