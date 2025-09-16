@@ -31,6 +31,9 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
     const [readingList, setReadingList] = useState([]);
     const [currentBook, setCurrentBook] = useState("");
 
+    const [objectives, setObjectives] = useState([]);
+    const [currentObjectives, setCurrentObjectives] = useState("");
+
     const [assignmentList, setAssignmentList] = useState([]);
     const [currentAssignment, setCurrentAssignment] = useState("");
 
@@ -124,6 +127,15 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
                         name="description"
                         value={lesson.description}
                         onChange={handleLessonChange}
+                    />
+
+                    <AddToList
+                    label="Lesson Objectives"
+                    placeholder = "Enter objective"
+                    currentItem={currentObjectives}
+                    setCurrentItem={setCurrentObjectives}
+                    itemList={objectives}
+                    setItemList={setObjectives}
                     />
 
                     <AddToList

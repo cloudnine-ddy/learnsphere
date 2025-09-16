@@ -1,7 +1,6 @@
 import React, { use, useState, useEffect } from "react";
 
-import {BrowserRouter, Routes, Route, Navigate, Link, useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import {BrowserRouter, Routes, Route, Navigate, Link, useParams, useNavigate } from "react-router-dom";
 
 import { getCurrentUser, getUserInfo, getAllInstructorsInfo, logOut } from "../components/manageUsers";
 import { getLessons } from "../components/getLessons";
@@ -31,25 +30,27 @@ function DashboardPage() {
     const [instructors, setInstructors] = useState([]);
     const [currentUnits, setCurrentUnits] = useState([]);
 
-    useEffect(() => {
-      //Runs only on the first render or everytime the user is changed
-      getCurrentUser()
+    //Runs only on the first render or everytime the user is changed
+    getCurrentUser()
         .then((user) => {
-          user != null ? setUser(user) : navigate("/reg");
-          return getUserInfo(user); 
+            user != null ? setUser(user) : navigate("/reg");
+            return getUserInfo(user); 
         })
         .then((userInfo) => {
-          setUserData(userInfo);
+            setUserData(userInfo);
         });
-        
-      getAllInstructorsInfo().then((instructors) => {
+    
+                
+    if (user != null)
+    {
+        getAllInstructorsInfo().then((instructors) => {
         setInstructors(instructors);
-      });
+        });
 
-      getLessons(true, userData).then((lessons) => {
+        getLessons(true, userData).then((lessons) => {
         setCurrentUnits(lessons);
-      });
-    }, [user]);
+        });
+    }
 
     const logOutUser = () => {
         logOut();
@@ -110,7 +111,7 @@ function DashboardPage() {
                 <div className={styles.contentArea}>
                     <div className={styles.infoSection}>
                         <Routes>
-                            <Route path="/" element={<Navigate to="lessons" replace />} />
+                            <Route path="/" element={<Navigate to="lessons"/>} />
                             <Route path="/lessons/*" element={<LessonDashboard userData={userData} />} />
                             <Route path="/lessons/:id" element={<ViewLesson userData={userData} />} />
                             {userData != null && userData.role != "student" &&
