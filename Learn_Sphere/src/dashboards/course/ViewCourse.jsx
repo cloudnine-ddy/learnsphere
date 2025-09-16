@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import { getCourse } from "../../components/getCourses";
+import { getLessonByIDAndName } from "../../components/getLessons";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { deleteLessonFromDatabase, deletePrereq } from "../../components/deleteLessons";
 
@@ -20,6 +21,7 @@ function ViewCourse({userData}) {
 
     const {id} = useParams();
     const [course, setCourse] = useState(null);
+    const [lessons, setLessons] = useState([]);
 
     const [showDelete, setShowDelete] = useState(false);
     
@@ -51,6 +53,18 @@ function ViewCourse({userData}) {
             }); 
         }
     }, [userData])
+
+    useEffect(() => {
+        if (userData != null && course != null) {
+            Promise.all(
+                course.courseLessons.map((lessonString) =>
+                    getLessonByIDAndName(lessonString, userData)
+                )
+            ).then((results) => {
+                setLessons(results.filter(Boolean)); // remove nulls
+            });
+        }
+    }, [course, userData]);
 
     const handleDelete = () => {
         // deleteLessonFromDatabase(id)
@@ -94,17 +108,13 @@ function ViewCourse({userData}) {
                     <InfoBlock title="Date Created" content={course != null ? `${new Date(course.courseCreateDate).toDateString()} ${new Date(course.courseCreateDate).toTimeString()}` : "null"}/>
                     <InfoBlock title="Last Updated" content={course != null ? `${new Date(course.courseUpdateDate).toDateString()} ${new Date(course.courseUpdateDate).toTimeString()}` : "null"}/>
                     <InfoBlock title="Course Description" content={course != null ? course.courseDescription : "null"}/>
-                    <InfoBlock title="Lessons" content={course != null ? course.courseLessons.length > 0 ? course.courseLessons : "No Lessons" : "No Lessons"}/>
+                    {/* <InfoBlock title="Lessons" content={course != null ? course.courseLessons.length > 0 ? course.courseLessons : "No Lessons" : "No Lessons"}/> */}
                     
                     {/* I take this from the LessonDashboard, becauses I need the LessonCard to be here */}
                     {/* I mean now for visualization, I put them manually, but it should be changed to the commented one */}
                     {/* <InfoBlock title="course included" /> */}
                     <div className={styles.cardContainer}>
-                        {/* <LessonCard />
-                        <LessonCard />
-                        <LessonCard />
-                        <LessonCard /> */}
-                        {/* {lessons.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().title} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/courses/${lesson.id}`}/>)} */}
+                        {lessons.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().title} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/lessons/${lesson.id}`}/>)}
                     </div>
 
 

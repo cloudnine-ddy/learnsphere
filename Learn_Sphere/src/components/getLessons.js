@@ -57,3 +57,31 @@ export async function getLesson(id, userData)
 
     return null;
 }
+
+export async function getLessonByIDAndName(lessonString, userData)
+{
+    if (userData != null && lessonString) {
+        const lessonID = lessonString.split(":")[0].trim();
+
+        const q = query(collection(db, "lessons"), where("lessonID", "==", lessonID));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            const docSnap = querySnapshot.docs[0]; // should be unique
+
+            const data = docSnap.data();
+
+            // Restrict students from non-published lessons
+            if (data.status !== "Published" && userData.role === "student") {
+                return null;
+            }
+
+            return docSnap; // consistent with getLessons
+        }
+
+        return null;
+    }
+
+    return null;
+
+}
