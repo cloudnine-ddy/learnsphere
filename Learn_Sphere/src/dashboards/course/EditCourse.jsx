@@ -55,6 +55,23 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
             });
     }, [])
 
+
+    useEffect(() => {
+        const totalCreditPoints = courseLessons.reduce((sum, lessonString) => {
+            const lessonid = lessonString.split(":")[0].trim();
+            const lesson = prerequisiteOptions.find(lesson => lesson.data().lessonID == lessonid);
+            return sum + lesson.data().creditPoint;
+        }, 0);
+
+        console.log(totalCreditPoints);
+
+        setCourse({
+            ...course,
+            courseTotalCreditpoint: totalCreditPoints
+        });
+
+    }, [courseLessons])
+
     function submitForm(e)
     {
         if (isValid()){
@@ -164,8 +181,9 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
                     placeholder={"Please select lessons needed to be included"}
                     prerequisites={courseLessons}
                     setPrerequisites={setCourseLessons}
-                    prerequisiteOptions={prerequisiteOptions.map(option => `${option.data().courseID}: ${option.data().courseTitle}`)}
+                    prerequisiteOptions={prerequisiteOptions.map(option => `${option.data().lessonID}: ${option.data().title}`)}
                 />
+                <a>{`Total credit points: ${course.courseTotalCreditpoint}`}</a>
 
                 {/* <InputField
                     label="Credit Points"

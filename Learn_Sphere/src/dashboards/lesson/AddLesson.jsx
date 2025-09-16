@@ -58,8 +58,8 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
     {
         if (isValid())
         {
-            console.log(lesson.lessonId, lesson.title, lesson.description, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status);
-            addLessonToDatabase(lesson.lessonId, lesson.title, lesson.description, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status)
+            console.log(lesson.lessonId, lesson.title, lesson.description, objectives, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status);
+            addLessonToDatabase(lesson.lessonId, lesson.title, lesson.description, objectives, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status)
             .then(() => setErrorMessages(["Successfully created a lesson!"]))
             .catch((error) => setErrorMessages([error]));
             navigate("/home/lessons");

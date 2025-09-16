@@ -93,6 +93,7 @@ function ViewLesson({userData}) {
                     <InfoBlock title="Date Created" content={lesson != null ? `${new Date(lesson.createdAt).toDateString()} ${new Date(lesson.createdAt).toTimeString()}` : "null"}/>
                     <InfoBlock title="Last Updated" content={lesson != null ? `${new Date(lesson.updatedAt).toDateString()} ${new Date(lesson.updatedAt).toTimeString()}` : "null"}/>
                     <InfoBlock title="Lesson Description" content={lesson != null ? lesson.description : "null"}/>
+                    <InfoBlock title="Objectives" content={lesson != null ? lesson?.objectives && lesson.objectives.length > 0 ? lesson.objectives : "No Objectives" : "No Objectives"}/>
                     <InfoBlock title="Reading List" content={lesson != null ? lesson.readingList.length > 0 ? lesson.readingList : "No Reading List" : "No Reading List"}/>
                     <InfoBlock title="Assignments" content={lesson != null ? lesson.assignments.length > 0 ? lesson.assignments : "No Assignments" : "No Assignments"}/>
                     <InfoBlock title="Prerequisites" content={lesson != null ? lesson.prerequisites.length > 0 ? lesson.prerequisites : "No Prerequisites" : "No Prerequisites"}/>

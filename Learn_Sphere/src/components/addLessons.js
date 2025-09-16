@@ -2,7 +2,7 @@ import {setDoc, doc} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-fir
 import { db } from "./firebaseConfig";
 import { getCurrentUser, getUserInfo } from "./manageUsers";
 
-export async function addLessonToDatabase(lessonID, title, description, readingList, prerequisites, assignments, creditPoint, owner, status)
+export async function addLessonToDatabase(lessonID, title, description, objectives, readingList, prerequisites, assignments, creditPoint, owner, status)
 {
     let user = await getCurrentUser();
     let userInfo = await getUserInfo(user);
@@ -13,6 +13,7 @@ export async function addLessonToDatabase(lessonID, title, description, readingL
             lessonID: lessonID,
             title: title,
             description: description,
+            objectives: objectives.map(s => s.trim()).filter(Boolean),
             readingList: readingList.map(s => s.trim()).filter(Boolean),
             prerequisites: prerequisites.map(s => s.trim()).filter(Boolean),
             assignments: assignments.map(s => s.trim()).filter(Boolean),

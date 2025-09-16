@@ -33,11 +33,13 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
     });
 
     const [readingList, setReadingList] = useState(lessonData?.readingList || []);
+    const [objectives, setObjectives] = useState(lessonData?.objectives || []);
     const [assignmentList, setAssignmentList] = useState(lessonData?.assignments || []);
     const [prerequisites, setPrerequisites] = useState(lessonData?.prerequisites || []);
 
     let navigate = useNavigate();
     const [currentBook, setCurrentBook] = useState("");
+    const [currentObjectives, setCurrentObjectives] = useState("");
     const [currentAssignment, setCurrentAssignment] = useState("");
 
     const [errorMessages, setErrorMessages] = useState([]);
@@ -66,6 +68,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
             const updates = {
                 title: lesson.title,
                 description: lesson.description,
+                objectives: objectives,
                 readingList: readingList,
                 prerequisites: prerequisites,
                 assignments: assignmentList,
@@ -145,6 +148,15 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
                     name="description"
                     value={lesson.description}
                     onChange={handleLessonChange}
+                />
+
+                <AddToList
+                label="Lesson Objectives"
+                placeholder = "Enter objective"
+                currentItem={currentObjectives}
+                setCurrentItem={setCurrentObjectives}
+                itemList={objectives}
+                setItemList={setObjectives}
                 />
 
                 <AddToList
