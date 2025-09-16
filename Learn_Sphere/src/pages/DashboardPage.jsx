@@ -34,28 +34,43 @@ function DashboardPage() {
     getCurrentUser()
         .then((user) => {
             user != null ? setUser(user) : navigate("/reg");
-            return getUserInfo(user); 
-        })
-        .then((userInfo) => {
-            setUserData(userInfo);
         });
-    
-                
-    if (user != null)
-    {
-        getAllInstructorsInfo().then((instructors) => {
+
+    getAllInstructorsInfo().then((instructors) => {
+        setInstructors(instructors);
+        })
+    .catch((error) => console.log(error));
+
+    useEffect(() => {
+        getUserInfo(user)
+            .then((userInfo) => {
+                setUserData(userInfo);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, [user])
+
+    useEffect(() => {
+        getLessons(true, userData)
+            .then((lessons) => {
+                setCurrentUnits(lessons);
+            })
+    }, [userData])
+
+    /*
+    getAllInstructorsInfo().then((instructors) => {
         setInstructors(instructors);
         });
 
-        getLessons(true, userData).then((lessons) => {
+    getLessons(true, userData).then((lessons) => {
         setCurrentUnits(lessons);
-        });
-    }
+    });
+    */
+    
 
     const logOutUser = () => {
         logOut();
-        setUser(null);
-        setUserData(null);
     };
 
     return (
@@ -110,25 +125,27 @@ function DashboardPage() {
 
                 <div className={styles.contentArea}>
                     <div className={styles.infoSection}>
-                        <Routes>
-                            <Route path="/" element={<Navigate to="lessons"/>} />
-                            <Route path="/lessons/*" element={<LessonDashboard userData={userData} />} />
-                            <Route path="/lessons/:id" element={<ViewLesson userData={userData} />} />
-                            {userData != null && userData.role != "student" &&
-                                <Route path="/newlesson" element={<AddLesson instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
-                            {userData != null && userData.role != "student" && 
-                                <Route path="/report" element={<AdminPortal />} />}
-                            {userData != null && userData.role != "student" &&
-                                <Route path="/lessons/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
-                            
-                            <Route path="/courses/*" element={<CourseDashboard userData={userData} />} />
-                            <Route path="/courses/:id" element={<ViewCourse userData={userData} />} />
-                            {userData != null && userData.role != "student" &&
-                                <Route path="/newcourse" element={<AddCourse instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
-                            {userData != null && userData.role != "student" &&
-                                <Route path="/courses/:id/edit" element={<EditCourse instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
+                        {userData != null &&
+                            <Routes>
+                                <Route path="/" element={<Navigate to="lessons"/>} />
+                                <Route path="/lessons/*" element={<LessonDashboard userData={userData} />} />
+                                <Route path="/lessons/:id" element={<ViewLesson userData={userData} />} />
+                                {userData != null && userData.role != "student" &&
+                                    <Route path="/newlesson" element={<AddLesson instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
+                                {userData != null && userData.role != "student" && 
+                                    <Route path="/report" element={<AdminPortal />} />}
+                                {userData != null && userData.role != "student" &&
+                                    <Route path="/lessons/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
+                                
+                                <Route path="/courses/*" element={<CourseDashboard userData={userData} />} />
+                                <Route path="/courses/:id" element={<ViewCourse userData={userData} />} />
+                                {userData != null && userData.role != "student" &&
+                                    <Route path="/newcourse" element={<AddCourse instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
+                                {userData != null && userData.role != "student" &&
+                                    <Route path="/courses/:id/edit" element={<EditCourse instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
 
-                        </Routes>
+                            </Routes>
+                        }
                     </div>
                 </div>
             </div>

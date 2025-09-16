@@ -85,13 +85,21 @@ export async function getCurrentUser()
 export async function getUserInfo(user)
 {
     //get the user credentials to look for, pass down user
-    const docRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(docRef);
 
-    //if they exist, return the credentials
-    if (docSnap.exists())
+    if (user != null)
     {
-        return docSnap.data();
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        //if they exist, return the credentials
+        if (docSnap.exists())
+        {
+            return docSnap.data();
+        }
+        else
+        {
+            return null;
+        }
     }
     else
     {
