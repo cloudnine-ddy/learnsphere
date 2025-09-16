@@ -75,8 +75,8 @@ function ViewCourse({userData}) {
     }
 
     const handleEdit = () => {
-        // console.log("Editing lesson with id: " + id)
-        // navigate(`/home/courses/${id}/edit`, { state: {lesson}}) ;
+        console.log("Editing lesson with id: " + id)
+        navigate(`/home/courses/${id}/edit`, { state: {course}}) ;
     }
 
     return (

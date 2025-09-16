@@ -16,8 +16,9 @@ import EditLesson from "../dashboards/lesson/EditLesson";
 import ViewLesson from "../dashboards/lesson/ViewLesson";
 
 import CourseDashboard from "../dashboards/course/CourseDashboard";
-import ViewCourse from "../dashboards/course/ViewCourse";
 import AddCourse from "../dashboards/course/AddCourse";
+import EditCourse from "../dashboards/course/EditCourse";
+import ViewCourse from "../dashboards/course/ViewCourse";
 
 import AdminPortal from "../dashboards/admin/AdminPortal";
 
@@ -124,6 +125,8 @@ function DashboardPage() {
                             <Route path="/courses/:id" element={<ViewCourse userData={userData} />} />
                             {userData != null && userData.role != "student" &&
                                 <Route path="/newcourse" element={<AddCourse instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
+                            {userData != null && userData.role != "student" &&
+                                <Route path="/courses/:id/edit" element={<EditCourse instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
 
                         </Routes>
                     </div>

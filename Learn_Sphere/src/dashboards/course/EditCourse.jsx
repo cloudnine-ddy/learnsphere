@@ -5,7 +5,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { updateLessonInDatabase } from "../../components/updateLessons";
 
-import styles from "./EditLesson.module.css";
+import styles from "./EditCourse.module.css";
 
 import InputField from "../../components/typable/InputField";
 import TextArea from "../../components/typable/TextArea";
@@ -16,7 +16,7 @@ import SelectStatus from "../../components/selectable_addable/SelectStatus";
 
 
 
-function EditLesson( { instructorList, prerequisiteOptions }) {
+function EditCourse( { instructorList, prerequisiteOptions }) {
 
     const { id } = useParams();
     prerequisiteOptions = prerequisiteOptions.filter(unit => unit.id != id);
@@ -43,7 +43,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
     const [errorMessages, setErrorMessages] = useState([]);
 
     const handleCancel = () => {
-        navigate(`/home/lessons/${id}`);
+        navigate(`/home/courses/${id}`);
     }
 
     useEffect(() => {
@@ -77,7 +77,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
             console.log(updates);
             updateLessonInDatabase(id, updates)
             .then(() => {
-                setErrorMessages(["Successfully updated a lesson!"]);
+                setErrorMessages(["Successfully updated a course!"]);
                 navigate(`/home/lessons/${id}`);
             })
             .catch((error) => setErrorMessages([error]));
@@ -109,7 +109,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
         <div className={styles.wrapper}>
             <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>
-                    Edit Lesson
+                    Edit Course
                 </div>
             </div>
 
@@ -147,33 +147,33 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
                     onChange={handleLessonChange}
                 />
 
-                <AddToList
+                {/* <AddToList
                 label="Reading List"
                 placeholder = "Enter book name"
                 currentItem={currentBook}
                 setCurrentItem={setCurrentBook}
                 itemList={readingList}
                 setItemList={setReadingList}
-                />
+                /> */}
 
-                <AddToList
+                {/* <AddToList
                 label="Assignment"
                 placeholder = "Enter assignment"
                 currentItem={currentAssignment}
                 setCurrentItem={setCurrentAssignment}
                 itemList={assignmentList}
                 setItemList={setAssignmentList}
-                />
+                /> */}
 
                 <AddFromList 
-                    label={"Prerequisite Lessons"}
-                    placeholder={"Please select prerequisite lessons"}
+                    label={"Lessons Included"}
+                    placeholder={"Please select lessons needed to be included"}
                     prerequisites={prerequisites}
                     setPrerequisites={setPrerequisites}
                     prerequisiteOptions={prerequisiteOptions.map(option => `${option.data().lessonID}: ${option.data().title}`)}
                 />
 
-                <InputField
+                {/* <InputField
                     label="Credit Points"
                     type="number"
                     id="creditPoints"
@@ -182,7 +182,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
                     onChange={handleLessonChange}
                     min="0"
                     required
-                />
+                /> */}
 
                 {/* <label>Owner/Creator</label>
                 <select name="owner" value={lesson.owner} onChange={handleLessonChange}>
@@ -223,4 +223,4 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
     );
 }
 
-export default EditLesson;
+export default EditCourse;
