@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 
-import { getLessons } from "../../components/getLessons";
+import { getCourses } from "../../components/getCourses";
 
 import styles from "./CourseDashboard.module.css";
 
@@ -14,7 +14,7 @@ import AddCourseCard from "../../components/clickable/AddCourseCard";
 function CourseDashboard({userData}) {
     const [filter, setFilter] = useState(true);
     const [label, setLabel] = useState("All Lessons");
-    const [lessons, setLessons] = useState([]);
+    const [courses, setCourses] = useState([]);
 
     const options = [
         {label: "All Lessons", state: true},
@@ -28,13 +28,11 @@ function CourseDashboard({userData}) {
         setLabel(e.target.text);
     }
 
-    useEffect(() => {
-        //Runs when filter is updated
-        getLessons(filter, userData).then(
-            (lessons) => {
-                setLessons(lessons);
-            });
-    }, [filter, userData]);
+    //Runs when filter is updated
+    getCourses(filter, userData).then(
+        (courses) => {
+            setCourses(courses);
+        });
 
     return (
         <>
@@ -47,7 +45,7 @@ function CourseDashboard({userData}) {
             <div className={styles.infoScroll}>
                 <div className={styles.cardContainer}>
                     {userData != null && ( userData.role != "student" ? <AddCourseCard lessonID={"Add Course"} lessonTitle={"Your Lessons"} creditPoint={0} instructorName={"Student"} href={"/home/newcourse"}/> : null)}
-                    {lessons.map((lesson) => <CourseCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().title} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/courses/wooooo`}/>)}
+                    {courses.map((course) => <CourseCard key={course.id} lessonID={course.data().courseID} lessonTitle={course.data().courseTitle} courseTotalCreditpoint={course.data().courseTotalCreditpoint} instructorName={course.data().courseSupervisor} href={`/home/courses/wooooo`}/>)}
                 </div>
             </div>
         </>

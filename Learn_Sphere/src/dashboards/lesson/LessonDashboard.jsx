@@ -28,13 +28,11 @@ function LessonDashboard({userData}) {
         setLabel(e.target.text);
     }
 
-    useEffect(() => {
-        //Runs when filter is updated
-        getLessons(filter, userData).then(
-            (lessons) => {
-                setLessons(lessons);
-            });
-    }, [filter, userData]);
+    //Runs when filter is updated
+    getLessons(filter, userData).then(
+        (lessons) => {
+            setLessons(lessons);
+        });
 
     return (
         <>
