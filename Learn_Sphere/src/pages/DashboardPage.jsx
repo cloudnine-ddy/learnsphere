@@ -20,6 +20,7 @@ import EditCourse from "../dashboards/course/EditCourse";
 import ViewCourse from "../dashboards/course/ViewCourse";
 
 import AdminPortal from "../dashboards/admin/AdminPortal";
+import JoinCourse from "../dashboards/course/JoinCourse";
 
 
 
@@ -90,13 +91,12 @@ function DashboardPage() {
                             </h3>
                         </Link>
 
-                        {userData != null && userData.role != "student" && 
                         <Link to="/home/courses">
                         <h3 className={styles.menuItem}>
                             <img src="../images/icons/lesson.png" className={styles.menuIcon} />
                             Course
                         </h3>
-                        </Link>}
+                        </Link>
 
                         {/* <h3 className={styles.menuItem}>
                             <img src="../images/icons/classroom.png" className={styles.menuIcon} />
@@ -141,6 +141,8 @@ function DashboardPage() {
                                 <Route path="/courses/:id" element={<ViewCourse userData={userData} />} />
                                 {userData != null && userData.role != "student" &&
                                     <Route path="/newcourse" element={<AddCourse instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
+                                {userData != null && userData.role == "student" &&
+                                    <Route path="/joincourse" element={<JoinCourse userData={userData}/>} />}
                                 {userData != null && userData.role != "student" &&
                                     <Route path="/courses/:id/edit" element={<EditCourse instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
 

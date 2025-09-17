@@ -1,0 +1,82 @@
+.courseCard {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: rgb(199, 182, 122);
+    border-radius: 40px;
+    max-height: 120px;
+    width: 500px;
+    padding: 15px;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0,5);
+}
+
+.courseIcon {
+    width: 30%;
+    height: auto;
+}
+
+.courseIcon img {
+    width: 100px;
+    height: 100px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.courseInfo {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    align-items:first baseline;
+    text-align: left;
+}
+
+.courseId {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    opacity: 0.5;
+}
+
+.courseTitle {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    opacity: 1.0;
+}
+
+.totalCreditPoint {
+    margin: 0;
+    font-size: 15px;
+    color: black;
+    opacity: 0.5;
+}
+
+.courseSupervisor {
+    margin-top: auto;
+    margin: 0;
+    font-size: 18px;
+    font-style: italic;
+    color: black;
+    opacity: 0.7;
+}
+
+.courseJoin {
+    width: 30%;
+    margin-left: auto;
+}
+
+.smallButton {
+    background: #ffa21f;
+    padding: 5px 15px 5px 15px;
+    border: 2px solid transparent;
+    border-radius: 15px;
+    width: auto;
+    height: 50px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+}

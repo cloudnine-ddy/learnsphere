@@ -13,7 +13,7 @@ import AddCourseCard from "../../components/clickable/AddCourseCard";
 
 function CourseDashboard({userData}) {
     const [filter, setFilter] = useState(true);
-    const [label, setLabel] = useState("All courses");
+    const [label, setLabel] = useState("All Courses");
     const [courses, setCourses] = useState([]);
 
     const options = [
@@ -42,11 +42,11 @@ function CourseDashboard({userData}) {
                 <div className={styles.infoTitle}>
                     My Courses
                 </div>
-                {userData != null && ( userData.role == "student" ? <FilterDropdown label={"Your courses"} options={[{label: "Your courses", state: 'Published'}]} changeEvent={changeEvent} /> : <FilterDropdown label={label} options={options} changeEvent={changeEvent} />)}
+                {userData != null && ( userData.role == "student" ? <FilterDropdown label={"Your Courses"} options={[{label: "Your Courses", state: 'Published'}]} changeEvent={changeEvent} /> : <FilterDropdown label={label} options={options} changeEvent={changeEvent} />)}
             </div>
             <div className={styles.infoScroll}>
                 <div className={styles.cardContainer}>
-                    {userData != null && ( userData.role != "student" ? <AddCourseCard courseID={"Add Course"} courseTitle={"Your courses"} creditPoint={0} instructorName={"Student"} href={"/home/newcourse"}/> : null)}
+                    {userData != null && ( userData.role != "student" ? <AddCourseCard courseID={"Add Course"} courseTitle={"Your Courses"} creditPoint={0} instructorName={"Student"} href={"/home/newcourse"}/> : <AddCourseCard courseID={"Join Course"} userData={userData} href={"/home/joincourse"}/>)}
                     {courses.map((course) => <CourseCard key={course.id} lessonID={course.data().courseID} lessonTitle={course.data().courseTitle} creditPoint={course.data().courseTotalCreditpoint} instructorName={course.data().courseSupervisor} href={`/home/courses/${course.id}`}/>)}
                 </div>
             </div>

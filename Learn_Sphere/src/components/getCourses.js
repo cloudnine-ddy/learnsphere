@@ -14,8 +14,8 @@ export async function getCourses(status, userData) {
 
         //if the user is a student, then only allow access to published courses
         //else, return courses by the filter selected (true indicates all lessons, false indicates no lessons)
-        const q = userData.role == "student" ? query(collection(db, "courses"), where("status", "==", "Published")) :
-            status === true ? query(collection(db, "courses")) : query(collection(db, "courses"), where("status", "==", status));
+        const q = userData.role == "student" ? query(collection(db, "courses"), where("courseStatus", "==", "Published")) :
+            status === true ? query(collection(db, "courses")) : query(collection(db, "courses"), where("courseStatus", "==", status));
 
         const querySnapshot = await getDocs(q);
 
@@ -37,7 +37,7 @@ export async function getCourse(id, userData) {
         
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-            if (docSnap.data().status != 'Published' && userData.role == 'student') {
+            if (docSnap.data().courseStatus != 'Published' && userData.role == 'student') {
                 return null;
             }
             
