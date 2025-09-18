@@ -46,6 +46,11 @@ export async function registerUser(firstName, lastName, email, password, title, 
             role: selectedRole
         };
 
+        if (selectedRole == "student")
+        {
+            userData.courseList = [];
+        }
+
         // Save user data to Firestore
         let docRef = doc(db, "users", user.uid);
         setDoc(docRef, userData)
