@@ -7,6 +7,7 @@ import { getCourse } from "../../components/getCourses";
 import { getLessonByIDAndName } from "../../components/getLessons";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { deleteLessonFromDatabase, deletePrereq } from "../../components/deleteLessons";
+import { unEnrollCourseInDatabase } from "../../components/enrollCourses";
 
 import styles from "./ViewCourse.module.css";
 
@@ -74,6 +75,20 @@ function ViewCourse({userData}) {
         // .catch((error) => console.error("Error deleting lesson:", error));
     }
 
+    const handleCancel = async (courseID) => {
+        if (userData != null && userData.role == "student")
+        {
+            try {
+                console.log("Removing course:", courseID);
+                console.log("User ID:", userData.id);
+                await unEnrollCourseInDatabase(userData, courseID); 
+                navigate("/home/courses");
+            } catch (err) {
+                console.error("Failed to remove:", err);
+            }
+        }
+    }
+
     const handleEdit = () => {
         console.log("Editing lesson with id: " + id)
         navigate(`/home/courses/${id}/edit`, { state: {course}}) ;
@@ -95,7 +110,7 @@ function ViewCourse({userData}) {
                     </div>
                     {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}} onClick = {handleEdit}>Edit</button>}
                     {userData != null && userData.role != 'student' && <button className={styles.smallButton} onClick={() => setShowDelete(true)}>Delete</button>}
-
+                    {userData != null && userData.role == 'student' && <button className={styles.smallButton} onClick={() => handleCancel(id)}>Cancel</button>}
                 </div>
 
             </div>

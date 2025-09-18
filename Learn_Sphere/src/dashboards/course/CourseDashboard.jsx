@@ -55,7 +55,10 @@ function CourseDashboard({userData}) {
             <div className={styles.infoScroll}>
                 <div className={styles.cardContainer}>
                     {userData != null && ( userData.role != "student" ? <AddCourseCard courseID={"Add Course"} courseTitle={"Your Courses"} creditPoint={0} instructorName={"Student"} href={"/home/newcourse"}/> : <AddCourseCard courseID={"Join Course"} userData={userData} href={"/home/joincourse"}/>)}
-                    {courses.map((course) => <CourseCard key={course.id} lessonID={course.data().courseID} lessonTitle={course.data().courseTitle} creditPoint={course.data().courseTotalCreditpoint} instructorName={course.data().courseSupervisor} href={`/home/courses/${course.id}`}/>)}
+                    {courses.map((course) => <CourseCard 
+                        key={course.id} courseID={course.data().courseID} courseTitle={course.data().courseTitle} creditPoint={course.data().courseTotalCreditpoint} instructorName={course.data().courseSupervisor} 
+                        href={`/home/courses/${course.id}`} handleCancel={(e) => {userData != null && userData.role == "student" ? handleCancel(course.id) : null}}
+                    />)}
                 </div>
             </div>
         </>

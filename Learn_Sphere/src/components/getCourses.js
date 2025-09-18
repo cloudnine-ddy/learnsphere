@@ -103,7 +103,7 @@ export async function getCoursesNonEnroll(student) {
     const studentData = studentSnap.data();
     const enrolledCourseIDs = Array.isArray(studentData.courseList) ? studentData.courseList : [];
 
-    const allCoursesSnap = await getDocs(collection(db, "courses"));
+    const allCoursesSnap = await getDocs(query(collection(db, "courses"), where("courseStatus", "==", "Published")));
 
     allCoursesSnap.forEach((docSnap) => {
         if (!enrolledCourseIDs.includes(docSnap.id)) {
