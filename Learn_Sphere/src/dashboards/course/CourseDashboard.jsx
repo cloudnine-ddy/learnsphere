@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 
 import { getCourses } from "../../components/getCourses";
+import { getCoursesByStudent } from "../../components/getCourses";
 
 import styles from "./CourseDashboard.module.css";
 
@@ -30,10 +31,17 @@ function CourseDashboard({userData}) {
 
     useEffect(() => {
         //Runs when filter is updated
+        if (userData.role == "student") {
+            getCoursesByStudent(userData.id).then(
+                (courses) => {
+                    setCourses(courses);
+                });
+        } else {
         getCourses(filter, userData).then(
             (courses) => {
                 setCourses(courses);
             });
+        }
     }, [filter, userData]);
 
     return (

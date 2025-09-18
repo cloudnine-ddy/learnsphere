@@ -1,4 +1,4 @@
-import { updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { updateDoc, doc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 import { getCurrentUser, getUserInfo } from "./manageUsers";
 
@@ -17,9 +17,7 @@ export async function enrollCourseInDatabase(student, courseID){
             });
 
 
-            await updateDoc(docRef, updates);
-
-            console.log("Course updated successfully:", courseDocId);
+            console.log("Course updated successfully:", courseID);
             return;
         } catch (error) {
             console.error("Error updating course:", error);

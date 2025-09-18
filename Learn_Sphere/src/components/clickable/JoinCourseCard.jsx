@@ -6,7 +6,7 @@ import styles from "./JoinCourseCard.module.css";
 
 
 
-function JoinCourseCard({courseID, courseTitle, creditPoint, supervisorName, href}) {
+function JoinCourseCard({courseID, courseTitle, creditPoint, supervisorName, href, onClick}) {
     return (
         <div className={styles.courseCard}>
             <div className={styles.courseIcon}>
@@ -28,7 +28,7 @@ function JoinCourseCard({courseID, courseTitle, creditPoint, supervisorName, hre
             </div>
             <div className={styles.courseJoin}>
                 <button
-                    // onClick={handleJoin}
+                    onClick = {onClick}
                     className={styles.smallButton}
                     style={{ background: "#ff9419ff", marginLeft: "auto" }}
                 >

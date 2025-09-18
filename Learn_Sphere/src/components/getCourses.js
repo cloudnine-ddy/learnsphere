@@ -48,3 +48,68 @@ export async function getCourse(id, userData) {
         }
     }
 }
+
+
+export async function getCoursesByStudent(studentID) {
+    const courses = [];
+
+    // Step 1: Get student doc
+    const studentRef = doc(db, "users", studentID);
+    const studentSnap = await getDoc(studentRef);
+
+    if (!studentSnap.exists()) {
+        console.error("Student not found:", studentID);
+        return courses; // return empty array
+    }
+
+    const studentData = studentSnap.data();
+    const enrolledCourseIDs = studentData.courseList || [];
+
+    if (enrolledCourseIDs.length === 0) {
+        return courses;
+    }
+
+    // Step 2: Fetch each course by its Firestore document ID
+    for (const courseDocId of enrolledCourseIDs) {
+        const courseRef = doc(db, "courses", courseDocId);
+        const courseSnap = await getDoc(courseRef);
+        if (courseSnap.exists()) {
+            courses.push(courseSnap); // keep as DocumentSnapshot
+        } else {
+            console.warn(`Course not found for ID: ${courseDocId}`);
+        }
+    }
+
+    return courses;
+}
+
+
+export async function getCoursesNonEnroll(student) {
+    const courses = [];
+
+    if (!student?.id) {
+        console.error("Invalid student object:", student);
+        return courses;
+    }
+
+    const studentRef = doc(db, "users", student.id);
+    const studentSnap = await getDoc(studentRef);
+
+    if (!studentSnap.exists()) {
+        console.error("Student not found:", student.id);
+        return courses;
+    }
+
+    const studentData = studentSnap.data();
+    const enrolledCourseIDs = Array.isArray(studentData.courseList) ? studentData.courseList : [];
+
+    const allCoursesSnap = await getDocs(collection(db, "courses"));
+
+    allCoursesSnap.forEach((docSnap) => {
+        if (!enrolledCourseIDs.includes(docSnap.id)) {
+            courses.push(docSnap);
+        }
+    });
+
+    return courses; 
+}
