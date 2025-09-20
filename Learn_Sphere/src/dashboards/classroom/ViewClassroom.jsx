@@ -69,11 +69,12 @@ function ViewClassroom({ userData }) {
         courseTitle: "Biology",
         supervisor: "Dr. John Smith",
         status: "Published",
-        lessons: ["Genetics", "Cell Structure", "Photosynthesis"],
+        lessons: ["Genetic"],
+        // lessons: ["Genetics", "Cell Structure", "Photosynthesis"],
         students: ["Tommy", "Lucy", "Ali", "Min-Jae"],
-        classroomStartingDate: 1212,
-        classroomCreateDate: 12121,
-        classroomUpdateDate: 12121
+        classroomStartingDate: 1111-12-12,
+        classroomCreateDate: 1111-12-12,
+        classroomUpdateDate: 1111-12-12
         }
     ;
     setClassroom(testData);

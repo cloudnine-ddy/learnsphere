@@ -187,9 +187,21 @@ const mockStudentUser = {
   role: "student",
   firstName: "Tom",
   lastName: "Lee",
+//   title: "Mr.",
+  classroomList: ["mock-classroom-001", "mock-classroom-002"]
+};
+
+const mockInstructorUser = {
+  id: "mock-student-001",
+  role: "instructor",
+  firstName: "Tom",
+  lastName: "Lee",
   title: "Mr.",
   classroomList: ["mock-classroom-001", "mock-classroom-002"]
 };
+
+const mockCurrentUnits = ["a", "b", "c"]
+
 
     return (
         <div className={styles.mainContent}>
@@ -275,11 +287,13 @@ const mockStudentUser = {
 
                                 <Route
                                     path="/classrooms"
-                                    element={ <ClassroomDashboard userData={mockStudentUser} /> }
+                                    element={ <ClassroomDashboard userData={mockInstructorUser} /> }
                                 />
 
-                                <Route path="/classrooms/:id" element={<ViewClassroom userData={userData} />} />
+                                <Route path="/classrooms/:id" element={<ViewClassroom userData={mockInstructorUser} />} />
 
+                                {userData.role !== "student" &&
+                                    <Route path="/classrooms/:id/edit" element={<EditClassroom studentList = {mockCurrentUnits} instructorList={instructors} prerequisiteOptions={currentUnits}/>} />}
 
                                 {/* <Route
                                     path="/classrooms/new"
