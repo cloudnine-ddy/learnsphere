@@ -1,4 +1,4 @@
-import { collection, doc, query, where, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+﻿import { collection, doc, query, where, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 
 // To get all the courses
@@ -49,17 +49,15 @@ export async function getCourse(id, userData) {
     }
 }
 
-
 export async function getCoursesByStudent(studentID) {
     const courses = [];
 
-    // Step 1: Get student doc
     const studentRef = doc(db, "users", studentID);
     const studentSnap = await getDoc(studentRef);
 
     if (!studentSnap.exists()) {
         console.error("Student not found:", studentID);
-        return courses; // return empty array
+        return courses;
     }
 
     const studentData = studentSnap.data();
@@ -69,20 +67,25 @@ export async function getCoursesByStudent(studentID) {
         return courses;
     }
 
-    // Step 2: Fetch each course by its Firestore document ID
-    for (const courseDocId of enrolledCourseIDs) {
-        const courseRef = doc(db, "courses", courseDocId);
-        const courseSnap = await getDoc(courseRef);
-        if (courseSnap.exists()) {
-            courses.push(courseSnap); // keep as DocumentSnapshot
-        } else {
-            console.warn(`Course not found for ID: ${courseDocId}`);
-        }
-    }
+    const courseSnapshots = await Promise.all(
+        enrolledCourseIDs.map(async (courseDocId) => {
+            try {
+                const courseRef = doc(db, "courses", courseDocId);
+                const courseSnap = await getDoc(courseRef);
+                if (courseSnap.exists()) {
+                    return courseSnap;
+                }
+                console.warn(`Course not found for ID: ${courseDocId}`);
+                return null;
+            } catch (error) {
+                console.error(`Failed to fetch course ${courseDocId}:`, error);
+                return null;
+            }
+        })
+    );
 
-    return courses;
+    return courseSnapshots.filter(Boolean);
 }
-
 
 export async function getCoursesNonEnroll(student) {
     const courses = [];
@@ -113,3 +116,4 @@ export async function getCoursesNonEnroll(student) {
 
     return courses; 
 }
+

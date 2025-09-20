@@ -1,6 +1,6 @@
-import React, { use, useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 
-import {BrowserRouter, Routes, Route, Navigate, Link, useParams, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
 
 import { getCurrentUser, getUserInfo, getAllInstructorsInfo, logOut } from "../components/manageUsers";
 import { getLessons } from "../components/getLessons";
@@ -22,8 +22,6 @@ import ViewCourse from "../dashboards/course/ViewCourse";
 import AdminPortal from "../dashboards/admin/AdminPortal";
 import JoinCourse from "../dashboards/course/JoinCourse";
 
-
-
 function DashboardPage() {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
@@ -31,44 +29,109 @@ function DashboardPage() {
     const [instructors, setInstructors] = useState([]);
     const [currentUnits, setCurrentUnits] = useState([]);
 
-    //Runs only on the first render or everytime the user is changed
-    getCurrentUser()
-        .then((user) => {
-            user != null ? setUser(user) : navigate("/reg");
-        });
+    useEffect(() => {
+        let cancelled = false;
 
-    getAllInstructorsInfo().then((instructors) => {
-        setInstructors(instructors);
-        })
-    .catch((error) => console.log(error));
+        async function resolveCurrentUser() {
+            try {
+                const currentUser = await getCurrentUser();
+
+                if (cancelled) {
+                    return;
+                }
+
+                if (currentUser) {
+                    setUser(currentUser);
+                } else {
+                    navigate("/reg");
+                }
+            } catch (error) {
+                console.error("Failed to get current user:", error);
+                if (!cancelled) {
+                    navigate("/reg");
+                }
+            }
+        }
+
+        resolveCurrentUser();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [navigate]);
 
     useEffect(() => {
-        getUserInfo(user)
-            .then((userInfo) => {
-                setUserData(userInfo);
+        if (!user) {
+            setUserData(null);
+            return;
+        }
+
+        let cancelled = false;
+
+        async function fetchUserData() {
+            try {
+                const info = await getUserInfo(user);
+
+                if (!cancelled) {
+                    setUserData(info || null);
+                }
+            } catch (error) {
+                console.error("Failed to get user info:", error);
+            }
+        }
+
+        fetchUserData();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [user]);
+
+    useEffect(() => {
+        if (!userData || userData.role === "student") {
+            setInstructors([]);
+            return;
+        }
+
+        let cancelled = false;
+
+        getAllInstructorsInfo()
+            .then((list) => {
+                if (!cancelled) {
+                    setInstructors(list || []);
+                }
             })
             .catch((error) => {
-                console.log(error);
+                console.error("Failed to load instructors:", error);
             });
-    }, [user])
+
+        return () => {
+            cancelled = true;
+        };
+    }, [userData]);
 
     useEffect(() => {
+        if (!userData || userData.role === "student") {
+            setCurrentUnits([]);
+            return;
+        }
+
+        let cancelled = false;
+
         getLessons(true, userData)
             .then((lessons) => {
-                setCurrentUnits(lessons);
+                if (!cancelled) {
+                    setCurrentUnits(lessons || []);
+                }
             })
-    }, [userData])
+            .catch((error) => {
+                console.error("Failed to load lessons:", error);
+            });
 
-    /*
-    getAllInstructorsInfo().then((instructors) => {
-        setInstructors(instructors);
-        });
-
-    getLessons(true, userData).then((lessons) => {
-        setCurrentUnits(lessons);
-    });
-    */
-    
+        return () => {
+            cancelled = true;
+        };
+    }, [userData]);
 
     const logOutUser = () => {
         logOut();
