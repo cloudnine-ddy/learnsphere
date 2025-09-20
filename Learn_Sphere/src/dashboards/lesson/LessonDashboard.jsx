@@ -1,5 +1,5 @@
-import React from "react";
-import { useState, useEffect } from "react";
+﻿import React, { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 
 import { getLessons } from "../../components/getLessons";
 
@@ -7,46 +7,112 @@ import styles from "./LessonDashboard.module.css";
 
 import FilterDropdown from "../../components/selectable_addable/FilterDropdown";
 import LessonCard from "../../components/clickable/LessonCard";
-import AddLessonCard from "../../components/clickable/AddLessonCard";
 
+const INSTRUCTOR_MY_LESSONS = "INSTRUCTOR_MY_LESSONS";
 
-
-function LessonDashboard({userData}) {
+function LessonDashboard({ userData }) {
     const [filter, setFilter] = useState(true);
     const [label, setLabel] = useState("All Lessons");
     const [lessons, setLessons] = useState([]);
 
-    const options = [
-        {label: "All Lessons", state: true},
-        {label: "Draft", state: 'Draft'},
-        {label: "Published", state: 'Published'},
-        {label: "Archived", state: 'Archived'}
+    const instructorDisplayName = useMemo(() => {
+        if (!userData || userData.role === "student") {
+            return "";
+        }
+
+        const parts = [userData.title, userData.firstName, userData.lastName].filter(Boolean);
+        return parts.join(" ").replace(/\s+/g, " ").trim();
+    }, [userData]);
+
+    useEffect(() => {
+        if (!userData) {
+            setLessons([]);
+            return;
+        }
+
+        let cancelled = false;
+
+        async function loadLessons() {
+            try {
+                let fetchedLessons = [];
+
+                if (userData.role === "student") {
+                    fetchedLessons = await getLessons(true, userData);
+                } else if (filter === INSTRUCTOR_MY_LESSONS) {
+                    if (!instructorDisplayName) {
+                        setLessons([]);
+                        return;
+                    }
+                    fetchedLessons = await getLessons(true, userData, { ownerName: instructorDisplayName });
+                } else {
+                    fetchedLessons = await getLessons(filter, userData);
+                }
+
+                if (!cancelled) {
+                    setLessons(fetchedLessons);
+                }
+            } catch (error) {
+                console.error("Failed to load lessons:", error);
+                if (!cancelled) {
+                    setLessons([]);
+                }
+            }
+        }
+
+        loadLessons();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [filter, userData, instructorDisplayName]);
+
+    const changeEvent = (event, state) => {
+        event.preventDefault();
+        setFilter(state);
+        setLabel(event.target.text);
+    };
+
+    const instructorOptions = [
+        { label: "All Lessons", state: true },
+        { label: "My Lessons", state: INSTRUCTOR_MY_LESSONS },
+        { label: "Draft", state: "Draft" },
+        { label: "Published", state: "Published" },
+        { label: "Archived", state: "Archived" }
     ];
 
-    const changeEvent = (e, state) => {
-        setFilter(state);
-        setLabel(e.target.text);
-    }
+    const studentOptions = [
+        { label: "All Lessons", state: true }
+    ];
 
-    //Runs when filter is updated
-    getLessons(filter, userData).then(
-        (lessons) => {
-            setLessons(lessons);
-        });
+    const filterOptions = userData?.role === "student" ? studentOptions : instructorOptions;
 
     return (
         <>
             <div className={styles.infoHeader}>
-                <div className={styles.infoTitle}>
-                    My Lessons
+                <div className={styles.infoTitleRow}>
+                    <div className={styles.infoTitle}>My Lessons</div>
+                    {userData?.role !== "student" && (
+                        <Link to="/home/newlesson" className={styles.actionButton}>
+                            Add Lesson
+                        </Link>
+                    )}
                 </div>
-                {userData != null && ( userData.role == "student" ? <FilterDropdown label={"Your Lessons"} options={[{label: "Your Lessons", state: 'Published'}]} changeEvent={changeEvent} /> : <FilterDropdown label={label} options={options} changeEvent={changeEvent} />)}
+                {userData && (
+                    <FilterDropdown label={label} options={filterOptions} changeEvent={changeEvent} />
+                )}
             </div>
             <div className={styles.infoScroll}>
                 <div className={styles.cardContainer}>
-                    {/* TODO: need to modify a bit */}
-                    {userData != null && ( userData.role != "student" ? <AddLessonCard href={"/home/newlesson"}/> : null)}
-                    {lessons.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().title} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/lessons/${lesson.id}`}/>)}
+                    {lessons.map((lesson) => (
+                        <LessonCard
+                            key={lesson.id}
+                            lessonID={lesson.data().lessonID}
+                            lessonTitle={lesson.data().title}
+                            creditPoint={lesson.data().creditPoint}
+                            instructorName={lesson.data().owner}
+                            href={`/home/lessons/${lesson.id}`}
+                        />
+                    ))}
                 </div>
             </div>
         </>

@@ -1,14 +1,38 @@
-.infoHeader {
+﻿.infoHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
+.infoTitleRow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 .infoTitle {
     margin: 0;
     font-size: 30px;
     color: black;
+}
+
+.actionButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background: #ffa21f;
+    color: #fff;
+    border-radius: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: filter 0.2s ease;
+}
+
+.actionButton:hover {
+    filter: brightness(0.95);
 }
 
 .infoScroll {

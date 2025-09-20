@@ -1,35 +1,66 @@
-import {collection, doc, query, where, getDoc, getDocs} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+﻿import { collection, doc, query, where, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 
-export async function getLessons(status, userData)
-{
-    /*
-    Get lessons based on the parameters:
-    status = the status of the lessons to be selected. Irrelevant if user is a student.
-    userData = check the identify of the user. Students only get published lessons, and non-users will not get any lesson.
-    */
+export async function getLessons(filter, userData, options = {}) {
+    const lessons = [];
 
-    const lessons = []
-
-    if (userData != null)
-    {
-        if ((status !== true || status !== false) && (typeof(status) == String && !(['Draft', 'Published', 'Archived'].includes(status))))
-        {
-            status = true;
-        }
-    
-        //if the user is a student, then only allow access to published lessons
-        //else, return lessons by the filter selected (true indicates all lessons, false indicates no lessons)
-        const q = userData.role == "student" ? query(collection(db, "lessons"), where("status", "==", "Published")) : 
-            status === true ? query(collection(db, "lessons")) : query(collection(db, "lessons"), where("status", "==", status));
-
-        const querySnapshot = await getDocs(q);
-
-        querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            lessons.push(doc);
-        });
+    if (!userData) {
+        return lessons;
     }
+
+    const { ownerName, lessonStrings } = options;
+
+    if (userData.role === "student") {
+        if (Array.isArray(lessonStrings) && lessonStrings.length > 0) {
+            const results = await Promise.all(
+                lessonStrings.map((lessonString) => getLessonByIDAndName(lessonString, userData))
+            );
+
+            return results.filter(Boolean);
+        }
+
+        const publishedQuery = query(collection(db, "lessons"), where("status", "==", "Published"));
+        const querySnapshot = await getDocs(publishedQuery);
+
+        querySnapshot.forEach((docSnap) => {
+            lessons.push(docSnap);
+        });
+
+        return lessons;
+    }
+
+    if (ownerName) {
+        const constraints = [where("owner", "==", ownerName)];
+
+        if (typeof filter === "string" && ["Draft", "Published", "Archived"].includes(filter)) {
+            constraints.push(where("status", "==", filter));
+        }
+
+        const ownerQuery = query(collection(db, "lessons"), ...constraints);
+        const querySnapshot = await getDocs(ownerQuery);
+
+        querySnapshot.forEach((docSnap) => lessons.push(docSnap));
+        return lessons;
+    }
+
+    let resolvedFilter = filter;
+    if (
+        resolvedFilter !== true &&
+        resolvedFilter !== false &&
+        !(typeof resolvedFilter === "string" && ["Draft", "Published", "Archived"].includes(resolvedFilter))
+    ) {
+        resolvedFilter = true;
+    }
+
+    const baseQuery = resolvedFilter === true
+        ? query(collection(db, "lessons"))
+        : query(collection(db, "lessons"), where("status", "==", resolvedFilter));
+
+    const querySnapshot = await getDocs(baseQuery);
+
+    querySnapshot.forEach((docSnap) => {
+        lessons.push(docSnap);
+    });
 
     return lessons;
 }
@@ -58,30 +89,104 @@ export async function getLesson(id, userData)
     return null;
 }
 
-export async function getLessonByIDAndName(lessonString, userData)
-{
-    if (userData != null && lessonString) {
-        const lessonID = lessonString.split(":")[0].trim();
+async function fetchLessonByField(field, value) {
+    const lessonQuery = query(collection(db, "lessons"), where(field, "==", value));
+    const querySnapshot = await getDocs(lessonQuery);
 
-        const q = query(collection(db, "lessons"), where("lessonID", "==", lessonID));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-            const docSnap = querySnapshot.docs[0]; // should be unique
-
-            const data = docSnap.data();
-
-            // Restrict students from non-published lessons
-            if (data.status !== "Published" && userData.role === "student") {
-                return null;
-            }
-
-            return docSnap; // consistent with getLessons
-        }
-
+    if (querySnapshot.empty) {
         return null;
     }
 
-    return null;
+    return querySnapshot.docs[0];
+}
 
+function normaliseLessonString(lessonString) {
+    if (typeof lessonString !== "string") {
+        return { lessonId: null, lessonTitle: null, raw: "" };
+    }
+
+    const raw = lessonString.trim();
+
+    if (!raw) {
+        return { lessonId: null, lessonTitle: null, raw: "" };
+    }
+
+    const colonIndex = raw.indexOf(":");
+
+    if (colonIndex === -1) {
+        return { lessonId: null, lessonTitle: raw, raw };
+    }
+
+    const lessonId = raw.slice(0, colonIndex).trim();
+    const lessonTitle = raw.slice(colonIndex + 1).trim();
+
+    return {
+        lessonId: lessonId || null,
+        lessonTitle: lessonTitle || null,
+        raw
+    };
+}
+
+export async function getLessonByIDAndName(lessonString, userData)
+{
+    if (!userData || !lessonString) {
+        return null;
+    }
+
+    const { lessonId, lessonTitle, raw } = normaliseLessonString(lessonString);
+
+    const candidateQueries = [];
+
+    if (lessonId) {
+        candidateQueries.push({ field: "lessonID", value: lessonId });
+    }
+
+    if (lessonTitle) {
+        candidateQueries.push({ field: "title", value: lessonTitle });
+    }
+
+    if (!lessonId && !lessonTitle && raw) {
+        candidateQueries.push({ field: "title", value: raw });
+    }
+
+    for (const candidate of candidateQueries) {
+        const docSnap = await fetchLessonByField(candidate.field, candidate.value);
+
+        if (!docSnap) {
+            continue;
+        }
+
+        const data = docSnap.data();
+
+        if (userData.role === "student" && data.status !== "Published") {
+            continue;
+        }
+
+        return docSnap;
+    }
+
+    return null;
+}
+
+export async function getLessonsForCourse(courseID, userData) {
+    if (!courseID || !userData) {
+        return [];
+    }
+
+    const courseRef = doc(db, "courses", courseID);
+    const courseSnap = await getDoc(courseRef);
+
+    if (!courseSnap.exists()) {
+        console.warn("Course not found while requesting lessons:", courseID);
+        return [];
+    }
+
+    const courseData = courseSnap.data();
+    const lessonStrings = Array.isArray(courseData.courseLessons) ? courseData.courseLessons.filter(Boolean) : [];
+
+    if (lessonStrings.length === 0) {
+        return [];
+    }
+
+    return getLessons(true, userData, { lessonStrings });
 }

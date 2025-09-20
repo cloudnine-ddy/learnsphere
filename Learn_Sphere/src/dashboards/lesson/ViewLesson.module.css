@@ -1,4 +1,4 @@
-.wrapper {
+﻿.wrapper {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -106,4 +106,34 @@
     flex-direction: column;
     gap: 0px;
     padding: 0 0 10px 0;
+}
+
+.pageFooter {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.backButton {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    border: none;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 12px;
+    transition: background 0.2s ease;
+}
+
+.backButton:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.backIcon {
+    width: 24px;
+    height: 24px;
 }

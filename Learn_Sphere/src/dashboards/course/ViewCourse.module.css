@@ -70,6 +70,26 @@
     border-color: transparent;
 }
 
+.cancelEnrollButton {
+    background: #ffa21f;
+    padding: 12px 18px;
+    border: 2px solid transparent;
+    border-radius: 15px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: auto;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.cancelEnrollButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    outline: none;
+    border-color: transparent;
+}
+
 .infoScroll {
     flex: 1 1 auto;
     margin-top: 10px;

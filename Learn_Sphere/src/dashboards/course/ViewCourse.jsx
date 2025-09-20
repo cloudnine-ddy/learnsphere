@@ -7,6 +7,7 @@ import { getCourse } from "../../components/getCourses";
 import { getLessonByIDAndName } from "../../components/getLessons";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { deleteLessonFromDatabase, deletePrereq } from "../../components/deleteLessons";
+import { unEnrollCourseInDatabase } from "../../components/enrollCourses";
 
 import styles from "./ViewCourse.module.css";
 
@@ -22,6 +23,7 @@ function ViewCourse({userData}) {
     const [lessons, setLessons] = useState([]);
 
     const [showDelete, setShowDelete] = useState(false);
+    const [showCancelConfirm, setShowCancelConfirm] = useState(false);
     
     useEffect(() => {
         //Runs on the first render only
@@ -77,6 +79,16 @@ function ViewCourse({userData}) {
         navigate(`/home/courses/${id}/edit`, { state: {course}}) ;
     }
 
+    const handleCancelEnrollment = async () => {
+        try {
+            await unEnrollCourseInDatabase(userData, id);
+            setShowCancelConfirm(false);
+            navigate("/home/courses");
+        } catch (error) {
+            console.error("Failed to cancel enrollment:", error);
+        }
+    }
+
     const handleBack = () => {
         navigate(-1);
     }
@@ -97,6 +109,15 @@ function ViewCourse({userData}) {
                     </div>
                     {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}} onClick = {handleEdit}>Edit</button>}
                     {userData != null && userData.role != 'student' && <button className={styles.smallButton} onClick={() => setShowDelete(true)}>Delete</button>}
+                    {userData != null && userData.role == 'student' && (
+                        <button
+                            className={styles.cancelEnrollButton}
+                            type="button"
+                            onClick={() => setShowCancelConfirm(true)}
+                        >
+                            Cancel Enroll
+                        </button>
+                    )}
                 </div>
 
             </div>
@@ -125,12 +146,22 @@ function ViewCourse({userData}) {
 
             <div className={styles.pageFooter}>
                 <button type="button" className={styles.backButton} onClick={handleBack}>
-                    <img src="images/icons/back.svg" alt="Back" className={styles.backIcon} />
+                    <img src="images/icons/goback.png" alt="Back" className={styles.backIcon} />
                     <span>Back</span>
                 </button>
             </div>
 
             {showDelete && <MessageBox onCancel={() => setShowDelete(false)} onConfirm={handleDelete}/>}
+            {showCancelConfirm && (
+                <MessageBox
+                    label="Cancel Enrollment"
+                    message={`Are you sure you want to leave ${course?.courseTitle ?? "this course"}?`}
+                    button_1="Keep Course"
+                    button_2="Confirm"
+                    onCancel={() => setShowCancelConfirm(false)}
+                    onConfirm={handleCancelEnrollment}
+                />
+            )}
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import { getAuth, signInWithEmailAndPassword, deleteUser, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-auth.js";
+﻿import { getAuth, signInWithEmailAndPassword, deleteUser, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-auth.js";
 import {collection, doc, query, where, getDoc, setDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { auth, db } from "./firebaseConfig";
 import { use } from "react";
@@ -49,6 +49,7 @@ export async function registerUser(firstName, lastName, email, password, title, 
         if (selectedRole == "student")
         {
             userData.courseList = [];
+            userData.lessonList = [];
         }
 
         // Save user data to Firestore

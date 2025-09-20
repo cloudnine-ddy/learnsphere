@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -15,9 +15,7 @@ import AddFromList from "../../components/selectable_addable/AddFromList";
 import SelectOneFromList from "../../components/selectable_addable/SelectOneFromList";
 import SelectStatus from "../../components/selectable_addable/SelectStatus";
 
-
-
-function AddLesson( { instructorList, prerequisiteOptions }) {
+function AddLesson({ instructorList, prerequisiteOptions }) {
     const [lesson, setLesson] = useState({
         lessonId: "",
         title: "",
@@ -27,7 +25,7 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
         status: ""
     });
 
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const [readingList, setReadingList] = useState([]);
     const [currentBook, setCurrentBook] = useState("");
 
@@ -41,62 +39,59 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
     const [errorMessages, setErrorMessages] = useState([]);
 
     useEffect(() => {
-    //Runs only at first render to kick out students
-        getCurrentUser().then(
-            (user) => {
-                return getUserInfo(user);
-            })
+        getCurrentUser()
+            .then((user) => getUserInfo(user))
             .then((info) => {
-                if (info.role == "student")
-                {
+                if (info?.role === "student") {
                     navigate("/home");
                 }
             });
-    }, [])
+    }, [navigate]);
 
-    function submitForm(e)
-    {
-        if (isValid())
-        {
-            console.log(lesson.lessonId, lesson.title, lesson.description, objectives, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status);
-            addLessonToDatabase(lesson.lessonId, lesson.title, lesson.description, objectives, readingList, prerequisites, assignmentList, lesson.creditPoints, lesson.instructor, lesson.status)
-            .then(() => setErrorMessages(["Successfully created a lesson!"]))
-            .catch((error) => setErrorMessages([error]));
+    function submitForm() {
+        if (isValid()) {
+            addLessonToDatabase(
+                lesson.lessonId,
+                lesson.title,
+                lesson.description,
+                objectives,
+                readingList,
+                prerequisites,
+                assignmentList,
+                lesson.creditPoints,
+                lesson.instructor,
+                lesson.status
+            )
+                .then(() => setErrorMessages(["Successfully created a lesson!"]))
+                .catch((error) => setErrorMessages([error]));
             navigate("/home/lessons");
-        }
-        else
-        {
+        } else {
             setErrorMessages(["Missing and invalid values! Check the form again."]);
         }
-    };
+    }
 
-    function isValid()
-    {
-        for (const [key, value] of Object.entries(lesson)) {
-            if (value == "")
-            {
-                return false;
-            }
-        }
-
-        return true;
+    function isValid() {
+        return Object.values(lesson).every((value) => value !== "");
     }
 
     const handleLessonChange = (e) => {
         const { name, value } = e.target;
-        setLesson(prev => ({ ...prev, [name]: value }));
+        setLesson((prev) => ({ ...prev, [name]: value }));
 
-        if (errorMessages.length > 0) {setErrorMessages([]);}
+        if (errorMessages.length > 0) {
+            setErrorMessages([]);
+        }
+    };
+
+    const handleBack = () => {
+        navigate(-1);
     };
 
     return (
         <div className={styles.wrapper}>
             <div className={styles.infoHeader}>
-                <div className={styles.infoTitle}>
-                    Add Lesson
-                </div>
+                <div className={styles.infoTitle}>Add Lesson</div>
             </div>
-            
 
             <div className={styles.infoScroll}>
                 <div className={styles.container}>
@@ -130,38 +125,40 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
                     />
 
                     <AddToList
-                    label="Lesson Objectives"
-                    placeholder = "Enter objective"
-                    currentItem={currentObjectives}
-                    setCurrentItem={setCurrentObjectives}
-                    itemList={objectives}
-                    setItemList={setObjectives}
+                        label="Lesson Objectives"
+                        placeholder="Enter objective"
+                        currentItem={currentObjectives}
+                        setCurrentItem={setCurrentObjectives}
+                        itemList={objectives}
+                        setItemList={setObjectives}
                     />
 
                     <AddToList
-                    label="Reading List"
-                    placeholder = "Enter book name"
-                    currentItem={currentBook}
-                    setCurrentItem={setCurrentBook}
-                    itemList={readingList}
-                    setItemList={setReadingList}
+                        label="Reading List"
+                        placeholder="Enter book name"
+                        currentItem={currentBook}
+                        setCurrentItem={setCurrentBook}
+                        itemList={readingList}
+                        setItemList={setReadingList}
                     />
 
                     <AddToList
-                    label="Assignment"
-                    placeholder = "Enter assignment"
-                    currentItem={currentAssignment}
-                    setCurrentItem={setCurrentAssignment}
-                    itemList={assignmentList}
-                    setItemList={setAssignmentList}
+                        label="Assignment"
+                        placeholder="Enter assignment"
+                        currentItem={currentAssignment}
+                        setCurrentItem={setCurrentAssignment}
+                        itemList={assignmentList}
+                        setItemList={setAssignmentList}
                     />
 
-                    <AddFromList 
+                    <AddFromList
                         label={"Prerequisite Lessons"}
                         placeholder={"Please select prerequisite lessons"}
                         prerequisites={prerequisites}
                         setPrerequisites={setPrerequisites}
-                        prerequisiteOptions={prerequisiteOptions.map(option => `${option.data().lessonID}: ${option.data().title}`)}
+                        prerequisiteOptions={prerequisiteOptions.map(
+                            (option) => `${option.data().lessonID}: ${option.data().title}`
+                        )}
                     />
 
                     <InputField
@@ -175,23 +172,38 @@ function AddLesson( { instructorList, prerequisiteOptions }) {
                         required
                     />
 
-                    <SelectOneFromList name="instructor" label="Instructor" object={lesson} list = {[""].concat(instructorList.map(instructor => `${instructor.title} ${instructor.firstName} ${instructor.lastName}`))} onChange={handleLessonChange}/>
-                    <SelectStatus name="status" label="Status" object={lesson} onChange={handleLessonChange}/>
-
+                    <SelectOneFromList
+                        name="instructor"
+                        label="Instructor"
+                        object={lesson}
+                        list={[""].concat(
+                            instructorList.map(
+                                (instructor) => `${instructor.title} ${instructor.firstName} ${instructor.lastName}`
+                            )
+                        )}
+                        onChange={handleLessonChange}
+                    />
+                    <SelectStatus name="status" label="Status" object={lesson} onChange={handleLessonChange} />
                 </div>
             </div>
-            
-            <div className={styles.infoFooter}>
-                <Button onClick={submitForm} label="Add" />
 
-                {errorMessages.length>0 && (
-                <div>
-                  {errorMessages.map((msg,idx) => (
-                      <p key = {idx} style={{ color: "red"}}>
-                        {msg}
-                      </p>
-                  ))}
+            <div className={styles.infoFooter}>
+                <div className={styles.footerActions}>
+                    <button type="button" className={styles.backButton} onClick={handleBack}>
+                        <img src="images/icons/goback.png" alt="Back" className={styles.backIcon} />
+                        <span>Back</span>
+                    </button>
+                    <Button onClick={submitForm} label="Add" />
                 </div>
+
+                {errorMessages.length > 0 && (
+                    <div>
+                        {errorMessages.map((msg, idx) => (
+                            <p key={idx} style={{ color: "red" }}>
+                                {msg}
+                            </p>
+                        ))}
+                    </div>
                 )}
             </div>
         </div>

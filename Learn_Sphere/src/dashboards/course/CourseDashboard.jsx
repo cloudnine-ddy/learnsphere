@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import { getCourses, getCoursesByStudent } from "../../components/getCourses";
@@ -7,19 +7,22 @@ import styles from "./CourseDashboard.module.css";
 
 import FilterDropdown from "../../components/selectable_addable/FilterDropdown";
 import CourseCard from "../../components/clickable/CourseCard";
-import AddCourseCard from "../../components/clickable/AddCourseCard";
+
+const INSTRUCTOR_MY_COURSES = "INSTRUCTOR_MY_COURSES";
 
 function CourseDashboard({ userData }) {
     const [filter, setFilter] = useState(true);
     const [label, setLabel] = useState("All Courses");
     const [courses, setCourses] = useState([]);
 
-    const options = [
-        { label: "All Courses", state: true },
-        { label: "Draft", state: "Draft" },
-        { label: "Published", state: "Published" },
-        { label: "Archived", state: "Archived" }
-    ];
+    const instructorDisplayName = useMemo(() => {
+        if (!userData || userData.role === "student") {
+            return "";
+        }
+
+        const parts = [userData.title, userData.firstName, userData.lastName].filter(Boolean);
+        return parts.join(" ").replace(/\s+/g, " ").trim();
+    }, [userData]);
 
     const changeEvent = (event, state) => {
         setFilter(state);
@@ -35,50 +38,62 @@ function CourseDashboard({ userData }) {
             getCoursesByStudent(userData.id).then((studentCourses) => {
                 setCourses(studentCourses);
             });
+            return;
+        }
+
+        if (filter === INSTRUCTOR_MY_COURSES) {
+            getCourses(true, userData).then((allCourses) => {
+                const filtered = allCourses.filter((course) => {
+                    const supervisor = course.data().courseSupervisor || "";
+                    return instructorDisplayName
+                        ? supervisor.trim().toLowerCase() === instructorDisplayName.trim().toLowerCase()
+                        : false;
+                });
+                setCourses(filtered);
+            });
         } else {
             getCourses(filter, userData).then((allCourses) => {
                 setCourses(allCourses);
             });
         }
-    }, [filter, userData]);
+    }, [filter, userData, instructorDisplayName]);
 
-    const renderHeaderAction = () => {
-        if (!userData) {
-            return null;
-        }
+    const instructorOptions = [
+        { label: "All Courses", state: true },
+        { label: "My Courses", state: INSTRUCTOR_MY_COURSES },
+        { label: "Draft", state: "Draft" },
+        { label: "Published", state: "Published" },
+        { label: "Archived", state: "Archived" }
+    ];
 
-        if (userData.role === "student") {
-            return (
-                <Link to="/home/joincourse" className={styles.joinButton}>
-                    Join Course
-                </Link>
-            );
-        }
+    const studentOptions = [
+        { label: "All Courses", state: true }
+    ];
 
-        return (
-            <FilterDropdown label={label} options={options} changeEvent={changeEvent} />
-        );
-    };
+    const filterOptions = userData?.role === "student" ? studentOptions : instructorOptions;
 
     return (
         <>
             <div className={styles.infoHeader}>
-                <div className={styles.infoTitle}>
-                    My Courses
+                <div className={styles.infoTitleRow}>
+                    <div className={styles.infoTitle}>My Courses</div>
+                    {userData?.role === "student" && (
+                        <Link to="/home/joincourse" className={styles.actionButton}>
+                            Join Course
+                        </Link>
+                    )}
+                    {userData?.role !== "student" && (
+                        <Link to="/home/newcourse" className={styles.actionButton}>
+                            Add Course
+                        </Link>
+                    )}
                 </div>
-                {renderHeaderAction()}
+                {userData && (
+                    <FilterDropdown label={label} options={filterOptions} changeEvent={changeEvent} />
+                )}
             </div>
             <div className={styles.infoScroll}>
                 <div className={styles.cardContainer}>
-                    {userData && userData.role !== "student" && (
-                        <AddCourseCard
-                            courseID={"Add Course"}
-                            courseTitle={"Your Courses"}
-                            creditPoint={0}
-                            instructorName={"Student"}
-                            href="/home/newcourse"
-                        />
-                    )}
                     {courses.map((course) => (
                         <CourseCard
                             key={course.id}

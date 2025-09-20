@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+﻿import React, {useState, useEffect} from "react";
 
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import styles from "./ViewLesson.module.css";
 
 import InfoBlock from "../../components/display/InfoBlock";
 import MessageBox from "../../components/display/MessageBox";
+
 
 
 
@@ -64,6 +65,10 @@ function ViewLesson({userData}) {
         navigate(`/home/lessons/${id}/edit`, { state: {lesson}}) ;
     }
 
+    const handleBack = () => {
+        navigate(-1);
+    }
+
     return (
         <div className={styles.wrapper}>
             <div className={styles.infoHeader}>
@@ -98,6 +103,13 @@ function ViewLesson({userData}) {
                     <InfoBlock title="Assignments" content={lesson != null ? lesson.assignments.length > 0 ? lesson.assignments : "No Assignments" : "No Assignments"}/>
                     <InfoBlock title="Prerequisites" content={lesson != null ? lesson.prerequisites.length > 0 ? lesson.prerequisites : "No Prerequisites" : "No Prerequisites"}/>
                 </div>
+            </div>
+
+            <div className={styles.pageFooter}>
+                <button type="button" className={styles.backButton} onClick={handleBack}>
+                    <img src="images/icons/goback.png" alt="Back" className={styles.backIcon} />
+                    <span>Back</span>
+                </button>
             </div>
 
             {showDelete && <MessageBox onCancel={() => setShowDelete(false)} onConfirm={handleDelete}/>}
