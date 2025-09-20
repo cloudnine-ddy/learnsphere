@@ -1,0 +1,126 @@
+﻿.card {
+    /* display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+    border-radius: 24px;
+    background: rgba(255, 240, 165, 0.75);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    min-width: 260px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    outline: none; */
+    display: flex;
+    flex-direction: column;
+    background: rgb(252, 255, 152);
+    border-radius: 40px;
+    height: auto;
+    width: 80%;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+.card:hover,
+.card:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 4px 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+
+.lessonInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    align-items:first baseline;
+    text-align: left;
+    padding: 15px;
+    gap: 10px;
+}
+
+.lessonId {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    opacity: 0.5;
+}
+
+.lessonTitle {
+    flex: 1;
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    opacity: 1.0;
+}
+
+.lessonCreditPoint {
+    margin: 0;
+    font-size: 15px;
+    color: black;
+    opacity: 0.5;
+}
+
+.lessonInstructor {
+    margin-top: auto;
+    margin: 0;
+    font-size: 18px;
+    font-style: italic;
+    color: black;
+    opacity: 0.7;
+}
+
+.lessonExtraArea {
+    display: flex;
+    flex-direction: row;
+    height: 30%;
+    width: 100%;
+    background-color: rgb(252, 244, 80);
+    padding: 15px;
+    align-items: center;
+}
+
+.headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.identifier {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.label {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.primary {
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.78);
+}
+
+.contentArea {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.secondary {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.65);
+}

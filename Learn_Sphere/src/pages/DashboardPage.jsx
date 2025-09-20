@@ -1,9 +1,10 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 
-import { Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, Link, useNavigate, useParams } from "react-router-dom";
 
 import { getCurrentUser, getUserInfo, getAllInstructorsInfo, logOut } from "../components/manageUsers";
 import { getLessons } from "../components/getLessons";
+import { getClassroom } from "../components/getClassroom";
 
 import styles from "./DashboardPage.module.css";
 
@@ -19,6 +20,11 @@ import AddCourse from "../dashboards/course/AddCourse";
 import EditCourse from "../dashboards/course/EditCourse";
 import ViewCourse from "../dashboards/course/ViewCourse";
 
+import ClassroomDashboard from "../dashboards/classroom/ClassroomDashboard";
+import AddClassroom from "../dashboards/classroom/AddClassroom";
+import EditClassroom from "../dashboards/classroom/EditClassroom";
+import ViewClassroom from "../dashboards/classroom/ViewClassroom";
+
 import AdminPortal from "../dashboards/admin/AdminPortal";
 import JoinCourse from "../dashboards/course/JoinCourse";
 
@@ -28,6 +34,7 @@ function DashboardPage() {
     const [userData, setUserData] = useState(null);
     const [instructors, setInstructors] = useState([]);
     const [currentUnits, setCurrentUnits] = useState([]);
+    const [classrooms, setClassrooms] = useState([]);
 
     useEffect(() => {
         let cancelled = false;
@@ -133,9 +140,56 @@ function DashboardPage() {
         };
     }, [userData]);
 
+    
+
     const logOutUser = () => {
         logOut();
     };
+
+    // const handleViewClassroom = (room) => {
+    //     const targetId = room?.id || room?.classroomId;
+    //     if (targetId) {
+    //         navigate(`/home/classrooms/${targetId}`);
+    //     }
+    // };
+
+    // const handleEditClassroom = (room) => {
+    //     const targetId = room?.id || room?.classroomId;
+    //     if (targetId) {
+    //         navigate(`/home/classrooms/${targetId}/edit`);
+    //     }
+    // };
+
+    // const ViewClassroomRoute = () => {
+    //     const { id } = useParams();
+    //     const classroom = classrooms.find((room) => room.id === id || room.classroomId === id);
+    //     return <ViewClassroom userData={userData} classroomData={classroom} classrooms={classrooms} />;
+    // };
+
+    // const EditClassroomRoute = () => {
+    //     const { id } = useParams();
+    //     const classroom = classrooms.find((room) => room.id === id || room.classroomId === id);
+    //     return (
+    //         <EditClassroom
+    //             initialData={classroom}
+    //             classrooms={classrooms}
+    //             courseOptions={courseTitles}
+    //             lessonOptions={lessonsForForms}
+    //             instructorOptions={instructorNames}
+    //             defaultSupervisor={userData ? `${userData.title ?? ""} ${userData.firstName ?? ""} ${userData.lastName ?? ""}`.replace(/\s+/g, " ").trim() : ""}
+    //             onSubmit={(payload) => console.log("TODO update classroom", payload)}
+    //         />
+    //     );
+    // };
+
+const mockStudentUser = {
+  id: "mock-student-001",
+  role: "student",
+  firstName: "Tom",
+  lastName: "Lee",
+  title: "Mr.",
+  classroomList: ["mock-classroom-001", "mock-classroom-002"]
+};
 
     return (
         <div className={styles.mainContent}>
@@ -161,10 +215,12 @@ function DashboardPage() {
                         </h3>
                         </Link>
 
-                        {/* <h3 className={styles.menuItem}>
+                        <Link to="/home/classrooms">
+                        <h3 className={styles.menuItem}>
                             <img src="../images/icons/classroom.png" className={styles.menuIcon} />
                             Classroom
-                        </h3> */}
+                        </h3>
+                        </Link>
 
                         {userData != null && userData.role != "student" && 
                         <Link to="/home/report">
@@ -191,23 +247,56 @@ function DashboardPage() {
                         {userData != null &&
                             <Routes>
                                 <Route path="/" element={<Navigate to="lessons"/>} />
+
                                 <Route path="/lessons/*" element={<LessonDashboard userData={userData} />} />
                                 <Route path="/lessons/:id" element={<ViewLesson userData={userData} />} />
-                                {userData != null && userData.role != "student" &&
+                                {userData.role !== "student" &&
                                     <Route path="/newlesson" element={<AddLesson instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
-                                {userData != null && userData.role != "student" && 
+                                {userData.role !== "student" && 
                                     <Route path="/report" element={<AdminPortal />} />}
-                                {userData != null && userData.role != "student" &&
-                                    <Route path="/lessons/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
-                                
+                                {userData.role !== "student" &&
+                                    <Route path="/lessons/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>} />}
+
                                 <Route path="/courses/*" element={<CourseDashboard userData={userData} />} />
                                 <Route path="/courses/:id" element={<ViewCourse userData={userData} />} />
-                                {userData != null && userData.role != "student" &&
+                                {userData.role !== "student" &&
                                     <Route path="/newcourse" element={<AddCourse instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
-                                {userData != null && userData.role == "student" &&
+                                {userData.role === "student" &&
                                     <Route path="/joincourse" element={<JoinCourse userData={userData}/>} />}
-                                {userData != null && userData.role != "student" &&
-                                    <Route path="/courses/:id/edit" element={<EditCourse instructorList={instructors} prerequisiteOptions={currentUnits}/>}/>}
+                                {userData.role !== "student" &&
+                                    <Route path="/courses/:id/edit" element={<EditCourse instructorList={instructors} prerequisiteOptions={currentUnits}/>} />}
+
+
+
+                                
+
+
+
+
+                                <Route
+                                    path="/classrooms"
+                                    element={ <ClassroomDashboard userData={mockStudentUser} /> }
+                                />
+
+                                <Route path="/classrooms/:id" element={<ViewClassroom userData={userData} />} />
+
+
+                                {/* <Route
+                                    path="/classrooms/new"
+                                    element={
+                                        <AddClassroom
+                                            courseOptions={courseTitles}
+                                            lessonOptions={lessonsForForms}
+                                            instructorOptions={instructorNames}
+                                            defaultSupervisor={userData ? `${userData.title ?? ""} ${userData.firstName ?? ""} ${userData.lastName ?? ""}`.replace(/\s+/g, " ").trim() : ""}
+                                            onSubmit={(payload) => console.log("TODO create classroom", payload)}
+                                        />
+                                    }
+                                />
+                                
+                                {userData.role !== "student" && (
+                                    <Route path="/classrooms/:id/edit" element={<EditClassroomRoute />} />
+                                )} */}
 
                             </Routes>
                         }
