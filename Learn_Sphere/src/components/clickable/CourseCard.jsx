@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 import { Link } from "react-router-dom";
 
@@ -9,8 +9,7 @@ function CourseCard({
   courseTitle,
   creditPoint,
   instructorName,
-  href,
-  handleCancel
+  href
 }) {
   return (
     <Link to={href}>
@@ -24,15 +23,6 @@ function CourseCard({
 
         <div className={styles.lessonExtraArea}>
           <div className={styles.progress}>Progress: 80%</div>
-          {/*
-          <button
-            onClick={handleCancel}
-            className={styles.smallButton}
-            style={{ background: "#ff9419ff", marginLeft: "auto" }}
-          >
-            Cancel
-          </button>
-          */}
         </div>
       </div>
     </Link>

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+﻿import React, {useState, useEffect} from "react";
 
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -7,15 +7,12 @@ import { getCourse } from "../../components/getCourses";
 import { getLessonByIDAndName } from "../../components/getLessons";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { deleteLessonFromDatabase, deletePrereq } from "../../components/deleteLessons";
-import { unEnrollCourseInDatabase } from "../../components/enrollCourses";
 
 import styles from "./ViewCourse.module.css";
 
 import InfoBlock from "../../components/display/InfoBlock";
 import MessageBox from "../../components/display/MessageBox";
 import LessonCard from "../../components/clickable/LessonCard";
-
-
 
 function ViewCourse({userData}) {
     let navigate = useNavigate();
@@ -75,23 +72,13 @@ function ViewCourse({userData}) {
         // .catch((error) => console.error("Error deleting lesson:", error));
     }
 
-    const handleCancel = async (courseID) => {
-        if (userData != null && userData.role == "student")
-        {
-            try {
-                console.log("Removing course:", courseID);
-                console.log("User ID:", userData.id);
-                await unEnrollCourseInDatabase(userData, courseID); 
-                navigate("/home/courses");
-            } catch (err) {
-                console.error("Failed to remove:", err);
-            }
-        }
-    }
-
     const handleEdit = () => {
         console.log("Editing lesson with id: " + id)
         navigate(`/home/courses/${id}/edit`, { state: {course}}) ;
+    }
+
+    const handleBack = () => {
+        navigate(-1);
     }
 
     return (
@@ -110,7 +97,6 @@ function ViewCourse({userData}) {
                     </div>
                     {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}} onClick = {handleEdit}>Edit</button>}
                     {userData != null && userData.role != 'student' && <button className={styles.smallButton} onClick={() => setShowDelete(true)}>Delete</button>}
-                    {userData != null && userData.role == 'student' && <button className={styles.smallButton} onClick={() => handleCancel(id)}>Cancel</button>}
                 </div>
 
             </div>
@@ -135,6 +121,13 @@ function ViewCourse({userData}) {
 
 
                 </div>
+            </div>
+
+            <div className={styles.pageFooter}>
+                <button type="button" className={styles.backButton} onClick={handleBack}>
+                    <img src="images/icons/back.svg" alt="Back" className={styles.backIcon} />
+                    <span>Back</span>
+                </button>
             </div>
 
             {showDelete && <MessageBox onCancel={() => setShowDelete(false)} onConfirm={handleDelete}/>}

@@ -1,42 +1,50 @@
-import React from "react";
+﻿import React from "react";
 
 import { Link } from "react-router-dom";
 
 import styles from "./JoinCourseCard.module.css";
 
+function JoinCourseCard({
+  courseID,
+  courseTitle,
+  creditPoint,
+  courseSupervisor,
+  href,
+  onJoin
+}) {
+  const handleJoinClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
 
+    if (onJoin) {
+      onJoin();
+    }
+  };
 
-function JoinCourseCard({courseID, courseTitle, creditPoint, supervisorName, href, onClick}) {
-    return (
-        <div className={styles.courseCard}>
-            <div className={styles.courseIcon}>
-                <img src="images/icons/atom.png" alt="" />
-            </div>
-            <div className={styles.courseInfo}>
-                <p className={styles.courseId}>
-                    {courseID} 
-                </p>
-                <p className={styles.courseTitle}>
-                    {courseTitle}
-                </p>
-                <p className={styles.totalCreditPoint}>
-                    Total Credit Point: {creditPoint} 
-                </p>
-                <p className={styles.courseSupervisor}>
-                    {supervisorName}
-                </p>
-            </div>
-            <div className={styles.courseJoin}>
-                <button
-                    onClick = {onClick}
-                    className={styles.smallButton}
-                    style={{ background: "#ff9419ff", marginLeft: "auto" }}
-                >
-                    Join
-                </button>
-            </div>
+  return (
+    <Link to={href}>
+      <div className={styles.lessonCard}>
+        <div className={styles.lessonInfo}>
+          <p className={styles.lessonId}>{courseID}</p>
+          <p className={styles.lessonTitle}>{courseTitle}</p>
+          <p className={styles.lessonCreditPoint}>
+            Total Credit Point: {creditPoint}
+          </p>
+          <p className={styles.lessonInstructor}>{courseSupervisor}</p>
         </div>
-    );
+
+        <div className={styles.lessonExtraArea}>
+          <button
+            type="button"
+            onClick={handleJoinClick}
+            className={styles.smallButton}
+          >
+            Join
+          </button>
+        </div>
+      </div>
+    </Link>
+  );
 }
 
 export default JoinCourseCard;
