@@ -126,3 +126,50 @@ export async function getListOfStudentsFromCourse(lessonID) {
   }
 }
 
+/* Data Structure
+const studentLessonData = {
+
+        student_lesson_lessonID: lessonID,
+        student_lesson_studentID: studentID,
+        student_lesson_completion: completion,
+    };
+
+*/ 
+
+export async function deleteStudentLesson(studentID, lessonID) {
+    /*
+        param: 
+            studentID = The "id" field of the user 
+            courseID = The "courseID" field of the document
+    */
+  try {
+    // Step 1: Query for the document(s)
+    const scQuery = query(
+      collection(db, "student_lesson"),
+      where("student_lesson_studentID", "==", studentID),
+      where("student_lesson_lessonID", "==", lessonID)
+    );
+
+    const scSnapshot = await getDocs(scQuery);
+
+    if (scSnapshot.empty) {
+      console.warn("No matching student_lesson found to delete.");
+      return false;
+    }
+
+    // Step 2: Delete each matching doc
+    const deletions = scSnapshot.docs.map((d) => 
+      deleteDoc(doc(db, "student_lesson", d.id))
+    );
+
+    await Promise.all(deletions);
+
+    console.log("✅ Successfully deleted student_course mapping.");
+    return true;
+
+  } catch (error) {
+    console.error("Error deleting student_course:", error);
+    throw error;
+  }
+}
+
