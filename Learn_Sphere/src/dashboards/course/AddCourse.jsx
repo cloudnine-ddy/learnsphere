@@ -14,6 +14,7 @@ import Button from "../../components/clickable/Button";
 import AddFromList from "../../components/selectable_addable/AddFromList";
 import SelectOneFromList from "../../components/selectable_addable/SelectOneFromList";
 import SelectStatus from "../../components/selectable_addable/SelectStatus";
+import InfoBlock from "../../components/display/InfoBlock";
 
 function AddCourse({ instructorList, prerequisiteOptions }) {
     const [course, setCourse] = useState({
@@ -153,7 +154,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
                         )}
                     />
 
-                    <a>{`Total credit points: ${course.totalCreditPoints}`}</a>
+                    <InfoBlock title="Total Credit Point" content={course != null ? course.totalCreditPoints : "null"}/>
 
                     <SelectOneFromList
                         name="supervisor"

@@ -9,9 +9,6 @@ import ClassroomCard from "../../components/clickable/ClassroomCard";
 import styles from "./ClassroomDashboard.module.css";
 
 const INSTRUCTOR_MY_CLASSROOMS = "INSTRUCTOR_MY_CLASSROOMS";
-const STATUS_ACTIVE = "ACTIVE";
-const STATUS_UPCOMING = "UPCOMING";
-const STATUS_COMPLETED = "COMPLETED";
 
 function ClassroomDashboard({ userData }) {
   const [filter, setFilter] = useState(true);
@@ -124,7 +121,7 @@ function ClassroomDashboard({ userData }) {
         <div className={styles.infoTitleRow}>
           <div className={styles.infoTitle}>My Classrooms</div>
           {userData?.role !== "student" && (
-            <Link to="/home/classrooms/new" className={styles.actionButton}>
+            <Link to="/home/newclassroom" className={styles.actionButton}>
               Create Classroom
             </Link>
           )}

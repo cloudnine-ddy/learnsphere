@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 
-import styles from "./AdminPortal.module.css";
+import styles from "./ControlPanel.module.css";
 
 import TokenGenerator from "../../components/functional/TokenGenerator";
 
 
 
-function AdminPortal() {
+function ControlPanel() {
     
     useEffect(() => {
     //Runs only at first render to kick out students
@@ -29,7 +29,7 @@ function AdminPortal() {
 
             <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>
-                    Admin Portal
+                    Control Panel
                 </div>
             </div>
 
@@ -61,4 +61,4 @@ function AdminPortal() {
     );
 }
 
-export default AdminPortal;
+export default ControlPanel;

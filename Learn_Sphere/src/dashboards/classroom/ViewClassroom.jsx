@@ -95,6 +95,14 @@ function ViewClassroom({ userData }) {
         navigate(-1);
     }
 
+  const durationDisplay =
+        classroom != null
+            ? classroom.durationWeeks ??
+              classroom.classroom_durationWeeks ??
+              classroom.classroomDurationWeeks ??
+              "No Duration"
+            : "No Duration";
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.infoHeader}>
@@ -127,29 +135,19 @@ function ViewClassroom({ userData }) {
 
       <div className={styles.infoScroll}>
           <div className={styles.container}>
-            {/* <InfoBlock title="ID" content={classroom != null ? classroom.id : "null"}/>  */}
-            {/* <InfoBlock title="Name" content={classroom != null ? classroom.classroomName : "null"}/> */}
-            <InfoBlock title="Title" content={classroom != null ? classroom.courseTitle : "null"}/>
-              <InfoBlock title="Supervisor" content={classroom != null ? classroom.supervisor : "null"}/>
-              {/* <InfoBlock title="Total Credit Point" content={classroom != null ? course.courseTotalCreditpoint : "null"}/> */}
-              <InfoBlock title="Date Created" content={classroom != null ? `${new Date(classroom.classroomCreateDate).toDateString()} ${new Date(classroom.classroomCreateDate).toTimeString()}` : "null"}/>
-              <InfoBlock title="Last Updated" content={classroom != null ? `${new Date(classroom.classroomUpdateDate).toDateString()} ${new Date(classroom.classroomUpdateDate).toTimeString()}` : "null"}/>
-              <InfoBlock title="Starting Date" content={classroom != null ? `${new Date(classroom.classroomStartingDate).toDateString()} ${new Date(classroom.classroomStartingDate).toTimeString()}` : "null"}/>
-              <InfoBlock title="Classroom Description" content={classroom != null ? classroom.description : "null"}/>
-              {/* <InfoBlock title="Lessons" content={course != null ? course.courseLessons.length > 0 ? course.courseLessons : "No Lessons" : "No Lessons"}/> */}
-              
-              {/* I take this from the LessonDashboard, becauses I need the LessonCard to be here */}
-              {/* I mean now for visualization, I put them manually, but it should be changed to the commented one */}
-              {/* <InfoBlock title="course included" /> */}
-              {/* <div className={styles.cardContainer}>
-                  {lessons.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().title} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/lessons/${lesson.id}`}/>)}
-              </div> */}
-              {/* <InfoBlock title="Lessons" content={classroom != null ? classroom.lessons?.length > 0 ? classroom.lessons : "No Lessson" : "No Lesson"}/> */}
-              <InfoBlock title="Students" content={classroom != null ? classroom.students?.length > 0 ? classroom.students : "No Student" : "No Student"}/>
-              <InfoBlock title="course included" />
-              <div className={styles.cardContainer}>
-                  {classroom.lessons?.map((lesson) => <LessonCard key="aaa" lessonID="aaa" lessonTitle="aaa" creditPoint="6" instructorName="bibu" />)}
-              </div>
+            <InfoBlock title="Course"           content={classroom != null ? classroom.courseTitle : "null"}/>
+            <InfoBlock title="Supervisor"       content={classroom != null ? classroom.supervisor : "null"}/>
+            <InfoBlock title="Date Created"     content={classroom != null ? `${new Date(classroom.classroomCreateDate).toDateString()} ${new Date(classroom.classroomCreateDate).toTimeString()}` : "null"}/>
+            <InfoBlock title="Last Updated"     content={classroom != null ? `${new Date(classroom.classroomUpdateDate).toDateString()} ${new Date(classroom.classroomUpdateDate).toTimeString()}` : "null"}/>
+            <InfoBlock title="Starting Date"    content={classroom != null ? `${new Date(classroom.classroomStartingDate).toDateString()} ${new Date(classroom.classroomStartingDate).toTimeString()}` : "null"}/>
+            <InfoBlock title="Duration (weeks)" content={durationDisplay}/>
+            <InfoBlock title="Description"      content={classroom != null ? classroom.description : "null"}/>
+            <InfoBlock title="Students"         content={classroom != null ? classroom.students?.length > 0 ? classroom.students : "No Student" : "No Student"}/>
+            <InfoBlock title="Lesson included" />
+
+            <div className={styles.cardContainer}>
+                {classroom.lessons?.map((lesson) => <LessonCard key="aaa" lessonID="aaa" lessonTitle="aaa" creditPoint="6" instructorName="bibu" />)}
+            </div>
               
 
 

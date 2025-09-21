@@ -24,8 +24,9 @@ import ClassroomDashboard from "../dashboards/classroom/ClassroomDashboard";
 import {addClassroomsToDatabase} from "../components/addClassrooms";
 import EditClassroom from "../dashboards/classroom/EditClassroom";
 import ViewClassroom from "../dashboards/classroom/ViewClassroom";
+import AddClassroom from "../dashboards/classroom/AddClassroom";
 
-import AdminPortal from "../dashboards/admin/AdminPortal";
+import ControlPanel from "../dashboards/admin/ControlPanel";
 import JoinCourse from "../dashboards/course/JoinCourse";
 
 function DashboardPage() {
@@ -36,6 +37,7 @@ function DashboardPage() {
     const [currentUnits, setCurrentUnits] = useState([]);
     const [classrooms, setClassrooms] = useState([]);
 
+    // User
     useEffect(() => {
         let cancelled = false;
 
@@ -67,6 +69,8 @@ function DashboardPage() {
         };
     }, [navigate]);
 
+
+    // User Data
     useEffect(() => {
         if (!user) {
             setUserData(null);
@@ -94,6 +98,8 @@ function DashboardPage() {
         };
     }, [user]);
 
+
+    // Get ALL Instructors
     useEffect(() => {
         if (!userData || userData.role === "student") {
             setInstructors([]);
@@ -117,6 +123,8 @@ function DashboardPage() {
         };
     }, [userData]);
 
+
+    // Get ALL Units
     useEffect(() => {
         if (!userData || userData.role === "student") {
             setCurrentUnits([]);
@@ -221,25 +229,33 @@ const mockCurrentUnits = ["a", "b", "c"]
                         </Link>
 
                         <Link to="/home/courses">
-                        <h3 className={styles.menuItem}>
-                            <img src="../images/icons/lesson.png" className={styles.menuIcon} />
-                            Course
-                        </h3>
+                            <h3 className={styles.menuItem}>
+                                <img src="../images/icons/lesson.png" className={styles.menuIcon} />
+                                Course
+                            </h3>
                         </Link>
 
                         <Link to="/home/classrooms">
-                        <h3 className={styles.menuItem}>
-                            <img src="../images/icons/classroom.png" className={styles.menuIcon} />
-                            Classroom
-                        </h3>
+                            <h3 className={styles.menuItem}>
+                                <img src="../images/icons/classroom.png" className={styles.menuIcon} />
+                                Classroom
+                            </h3>
                         </Link>
 
-                        {userData != null && userData.role != "student" && 
+                        {/* {userData != null && userData.role != "student" && 
                         <Link to="/home/report">
-                        <h3 className={styles.menuItem}>
-                            <img src="../images/icons/view_report.png" className={styles.menuIcon} />
-                            Admin Portal
-                        </h3>
+                            <h3 className={styles.menuItem}>
+                                <img src="../images/icons/view_report.png" className={styles.menuIcon} />
+                                Report
+                            </h3>
+                        </Link>} */}
+
+                        {userData != null && userData.role != "student" && 
+                        <Link to="/home/control">
+                            <h3 className={styles.menuItem}>
+                                <img src="../images/icons/control_panel.png" className={styles.menuIcon} />
+                                Control Panel
+                            </h3>
                         </Link>}
 
                     </div>
@@ -258,60 +274,43 @@ const mockCurrentUnits = ["a", "b", "c"]
                     <div className={styles.infoSection}>
                         {userData != null &&
                             <Routes>
+                                
                                 <Route path="/" element={<Navigate to="lessons"/>} />
 
+
+                                
                                 <Route path="/lessons/*" element={<LessonDashboard userData={userData} />} />
                                 <Route path="/lessons/:id" element={<ViewLesson userData={userData} />} />
                                 {userData.role !== "student" &&
                                     <Route path="/newlesson" element={<AddLesson instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
-                                {userData.role !== "student" && 
-                                    <Route path="/report" element={<AdminPortal />} />}
+                                
                                 {userData.role !== "student" &&
                                     <Route path="/lessons/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>} />}
 
+
+
                                 <Route path="/courses/*" element={<CourseDashboard userData={userData} />} />
                                 <Route path="/courses/:id" element={<ViewCourse userData={userData} />} />
+                                {userData.role !== "student" && 
+                                    <Route path="/courses/:id/edit" element={<EditCourse instructorList={instructors} prerequisiteOptions={currentUnits}/>} />}
                                 {userData.role !== "student" &&
                                     <Route path="/newcourse" element={<AddCourse instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
                                 {userData.role === "student" &&
                                     <Route path="/joincourse" element={<JoinCourse userData={userData}/>} />}
-                                {userData.role !== "student" &&
-                                    <Route path="/courses/:id/edit" element={<EditCourse instructorList={instructors} prerequisiteOptions={currentUnits}/>} />}
-
-
-
                                 
 
 
-
-
-                                <Route
-                                    path="/classrooms"
-                                    element={ <ClassroomDashboard userData={mockInstructorUser} /> }
-                                />
-
+                                <Route path="/classrooms" element={ <ClassroomDashboard userData={mockInstructorUser} /> } />
                                 <Route path="/classrooms/:id" element={<ViewClassroom userData={mockInstructorUser} />} />
-
                                 {userData.role !== "student" &&
-                                    <Route path="/classrooms/:id/edit" element={<EditClassroom studentList = {mockCurrentUnits} instructorList={instructors} prerequisiteOptions={currentUnits}/>} />}
-
-                                {/* <Route
-                                    path="/classrooms/new"
-                                    element={
-                                        <AddClassroom
-                                            courseOptions={courseTitles}
-                                            lessonOptions={lessonsForForms}
-                                            instructorOptions={instructorNames}
-                                            defaultSupervisor={userData ? `${userData.title ?? ""} ${userData.firstName ?? ""} ${userData.lastName ?? ""}`.replace(/\s+/g, " ").trim() : ""}
-                                            onSubmit={(payload) => console.log("TODO create classroom", payload)}
-                                        />
-                                    }
-                                />
+                                    <Route path="/classrooms/:id/edit" element={<EditClassroom studentList = {mockCurrentUnits} instructorList={instructors} prerequisiteOptions={mockCurrentUnits}/>} />}
+                                {userData.role !== "student" &&
+                                    <Route path="/newclassroom" element={<AddClassroom  courseOptions={mockCurrentUnits} lessonOptions={mockCurrentUnits} instructorList={instructors} studentOptions={mockCurrentUnits} />} />}
                                 
-                                {userData.role !== "student" && (
-                                    <Route path="/classrooms/:id/edit" element={<EditClassroomRoute />} />
-                                )} */}
 
+
+                                {userData.role !== "student" && 
+                                    <Route path="/control" element={<ControlPanel />} />}
                             </Routes>
                         }
                     </div>
