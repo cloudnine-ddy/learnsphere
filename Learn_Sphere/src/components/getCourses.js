@@ -1,5 +1,6 @@
 ﻿import { collection, doc, query, where, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
+import {getListOfCoursesFromStudent} from "./getStudentCourse";
 
 // To get all the courses
 
@@ -87,33 +88,30 @@ export async function getCoursesByStudent(studentID) {
     return courseSnapshots.filter(Boolean);
 }
 
-export async function getCoursesNonEnroll(student) {
-    const courses = [];
+export async function getCoursesNonEnroll(student) { // Change 
+    const allCourses = [];
 
-    if (!student?.id) {
-        console.error("Invalid student object:", student);
-        return courses;
-    }
+    const allCourseRef = collection(db, 'courses');
 
-    const studentRef = doc(db, "users", student.id);
-    const studentSnap = await getDoc(studentRef);
+    getDocs(allCourseRef).then((snapshot) => {
 
-    if (!studentSnap.exists()) {
-        console.error("Student not found:", student.id);
-        return courses;
-    }
+        snapshot.forEach((doc) => {
+            allCourses.push({...doc.data(), id: doc.id})
+        })
+    })
+    .catch( err => {
+        console.log("Error when trying to get all courses. getCourse.js, getCourseNonEnroll")
+        console.log(err.message)
+    })
 
-    const studentData = studentSnap.data();
-    const enrolledCourseIDs = Array.isArray(studentData.courseList) ? studentData.courseList : [];
+    const enrolledCourses= getListOfCoursesFromStudent(student.id);
 
-    const allCoursesSnap = await getDocs(query(collection(db, "courses"), where("courseStatus", "==", "Published")));
+    // enrolledCourses is array of objects, so extract IDs
+    const enrolledIds = new Set(enrolledCourses.map(c => c.id));
 
-    allCoursesSnap.forEach((docSnap) => {
-        if (!enrolledCourseIDs.includes(docSnap.id)) {
-            courses.push(docSnap);
-        }
-    });
+    // 3. Filter: keep only those not in enrolledIds
+    const nonEnrolledCourses = allCourses.filter(course => !enrolledIds.has(course.id));
 
-    return courses; 
+    return nonEnrolledCourses;
 }
 
