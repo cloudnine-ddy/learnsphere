@@ -1,6 +1,7 @@
 ﻿import { updateDoc, doc, arrayUnion, arrayRemove, getDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 import { getCurrentUser, getUserInfo } from "./manageUsers";
+import {deleteStudentCourse} from "./deleteStudentCourse";
 
 async function getValidatedStudentContext(student) {
     const user = await getCurrentUser();
@@ -32,27 +33,23 @@ async function getCourseLessons(courseID) {
 }
 
 export async function unEnrollCourseInDatabase(student, courseID){
-    const { docRef } = await getValidatedStudentContext(student);
-    const courseLessons = await getCourseLessons(courseID);
+    /*
+        Remove the student_course
+    */
+    
+    deleteStudentCourse(student.id, courseID);
 
-    const updatePayload = {
-        courseList: arrayRemove(courseID)
-    };
-
-    if (courseLessons.length > 0) {
-        updatePayload.lessonList = arrayRemove(...courseLessons);
-    }
-
-    try {
-        await updateDoc(docRef, updatePayload);
-        console.log("Course removed successfully:", courseID);
-    } catch (error) {
-        console.error("Error removing course:", error);
-        throw "Error removing course";
-    }
 }
 
 export async function enrollCourseInDatabase(student, courseID){
+
+    /* 
+
+        Add a student_course
+        Add all the lessons to student_lesson
+
+    */
+
     const { docRef } = await getValidatedStudentContext(student);
     const courseLessons = await getCourseLessons(courseID);
 
