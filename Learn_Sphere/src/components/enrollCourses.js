@@ -1,7 +1,10 @@
-﻿import { updateDoc, doc, arrayUnion, arrayRemove, getDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+﻿import { updateDoc, doc, arrayUnion, arrayRemove, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 import { getCurrentUser, getUserInfo } from "./manageUsers";
-import {deleteStudentCourse} from "./deleteStudentCourse";
+import { deleteStudentCourse } from "./deleteStudentCourse";
+import { addStudentCourse } from "./addStudentCourse";
+import { addStudentLesson } from "./studentLesson";
+import { getListOfLessonsFromStudent } from "./studentLesson";
 
 async function getValidatedStudentContext(student) {
     const user = await getCurrentUser();
@@ -32,40 +35,66 @@ async function getCourseLessons(courseID) {
     return lessons;
 }
 
-export async function unEnrollCourseInDatabase(student, courseID){
+export async function unEnrollCourseInDatabase(student, courseID) {
     /*
         Remove the student_course
     */
-    
+
     deleteStudentCourse(student.id, courseID);
 
 }
 
-export async function enrollCourseInDatabase(student, courseID){
+export async function enrollCourseInDatabase(student, courseID) {
+  try {
 
-    /* 
+    // Step 1: Add an entry to student_course
+    await addStudentCourse(student.id, courseID);
 
-        Add a student_course
-        Add all the lessons to student_lesson
+    // Now need to get the list of lessons to be added to student_lesson
 
-    */
+    // Step 2: Get the course document by courseID
+    const courseRefQuery = query(
+      collection(db, "courses"),
+      where("courseID", "==", courseID)
+    );
 
-    const { docRef } = await getValidatedStudentContext(student);
-    const courseLessons = await getCourseLessons(courseID);
+    const snapshot = await getDocs(courseRefQuery);
 
-    const updatePayload = {
-        courseList: arrayUnion(courseID)
-    };
-
-    if (courseLessons.length > 0) {
-        updatePayload.lessonList = arrayUnion(...courseLessons);
+    if (snapshot.empty) {
+      console.log(`❌ No course found with ID: ${courseID}`);
+      return;
     }
 
-    try {
-        await updateDoc(docRef, updatePayload);
-        console.log("Course updated successfully:", courseID);
-    } catch (error) {
-        console.error("Error updating course:", error);
-        throw "Error updating course";
+    const courseDoc = snapshot.docs[0].data();
+    const lessons = courseDoc.courseLessons || [];
+
+    console.log("📚 Lessons found in course:", lessons);
+
+    // Step 3: Get lessons student is already enrolled in
+    const studentLessons = await getListOfLessonsFromStudent(student.id);
+    const enrolledLessonIDs = studentLessons.map(lesson => lesson.lessonID);
+
+    console.log("✅ Already enrolled lessons:", enrolledLessonIDs);
+
+    // Step 4: For each lesson in the course, add to student_lesson if not already enrolled
+    for (const lessonName of lessons) {
+      const lessonSnapshots = await getLessonByIDAndName(lessonName, student);
+
+      for (const snapshot of lessonSnapshots) {
+        const lessonID = snapshot.id; // Firestore doc ID
+
+        if (!enrolledLessonIDs.includes(lessonID)) {
+          await addStudentLesson(lessonID, student.id);
+          console.log(`✅ Added lesson ${lessonID} for student ${student.id}`);
+        } else {
+          console.log(`⚠️ Skipped duplicate: ${lessonID} already enrolled`);
+        }
+      }
     }
+
+    console.log(`🎉 Successfully enrolled student ${student.id} into course ${courseID}`);
+  } catch (error) {
+    console.error("❌ Error enrolling student in course:", error);
+    throw error;
+  }
 }
