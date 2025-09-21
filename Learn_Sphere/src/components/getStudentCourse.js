@@ -80,7 +80,7 @@ export async function getListOfStudentsFromCourse(courseID) {
     // Step 4: combine results
     const results = await Promise.all(chunks);
     const students = results.flatMap(snapshot =>
-      snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      snapshot.docs
     );
 
     return students; // array of student documents

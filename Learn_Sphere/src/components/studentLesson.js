@@ -74,7 +74,7 @@ export async function getListOfLessonsFromStudent(studentID) {
     // Step 4: combine results
     const results = await Promise.all(chunks);
     const lessons = results.flatMap(snapshot =>
-      snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      snapshot.docs
     );
 
     return lessons; // array of lesson documents
@@ -115,7 +115,7 @@ export async function getListOfStudentsFromCourse(lessonID) {
     // Step 4: combine results
     const results = await Promise.all(chunks);
     const students = results.flatMap(snapshot =>
-      snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      snapshot.docs
     );
 
     return students; // array of student documents
