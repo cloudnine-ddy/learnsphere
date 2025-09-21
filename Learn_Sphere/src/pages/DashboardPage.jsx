@@ -67,7 +67,7 @@ function DashboardPage() {
         return () => {
             cancelled = true;
         };
-    }, [navigate]);
+    }, [user]);
 
 
     // User Data
@@ -152,6 +152,7 @@ function DashboardPage() {
 
     const logOutUser = () => {
         logOut();
+        setUser(null);
     };
 
     // const handleViewClassroom = (room) => {

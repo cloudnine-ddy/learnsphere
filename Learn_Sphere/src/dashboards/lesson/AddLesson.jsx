@@ -26,6 +26,8 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
     });
 
     const navigate = useNavigate();
+    const [isEnabled, setEnabled] = useState(true);
+
     const [readingList, setReadingList] = useState([]);
     const [currentBook, setCurrentBook] = useState("");
 
@@ -49,6 +51,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
     }, [navigate]);
 
     function submitForm() {
+        setEnabled(false)
         if (isValid()) {
             addLessonToDatabase(
                 lesson.lessonId,
@@ -66,6 +69,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
                 .catch((error) => setErrorMessages([error]));
             navigate("/home/lessons");
         } else {
+            setEnabled(true)
             setErrorMessages(["Missing and invalid values! Check the form again."]);
         }
     }
@@ -88,7 +92,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
     };
 
     return (
-        <div className={styles.wrapper}>
+        <div className={styles.wrapper} disabled={!isEnabled}>
             <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>Add Lesson</div>
             </div>

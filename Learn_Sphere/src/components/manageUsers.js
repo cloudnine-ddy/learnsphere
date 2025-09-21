@@ -216,7 +216,7 @@ export async function getTokens(role=true)
 {
     let user = await getCurrentUser();
 
-    if (role !== true && (typeof(role) == string && !(['student', 'instructor'].includes(role))))
+    if (role !== true && (typeof(role) == String && !(['student', 'instructor'].includes(role))))
     {
         role = true;
     }

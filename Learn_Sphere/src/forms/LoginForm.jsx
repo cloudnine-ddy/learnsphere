@@ -14,12 +14,15 @@ import Button from "../components/clickable/Button";
 
 function LoginForm({showError, setShowError}) {
   const navigate = useNavigate();
+
+  const [isEnabled, setEnabled] = useState(true);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessages, setErrorMessages] = useState([])
 
   const submitForm = (e) => {
+    setEnabled(false);
     e.preventDefault();
     let message = [];
     let emailPattern = /\w+@\w+\.([a-z])+/;
@@ -34,6 +37,7 @@ function LoginForm({showError, setShowError}) {
 
     if (message.length > 0) {
       setErrorMessages(message);
+      setEnabled(true);
       return;
     }
     else
@@ -57,6 +61,7 @@ function LoginForm({showError, setShowError}) {
         setShowError(true);
         console.error("Error signing in user:", error); // Debugging log
         setErrorMessages([error]);
+        setEnabled(true);
       });
     
     //console.log("login successful")
@@ -64,7 +69,7 @@ function LoginForm({showError, setShowError}) {
   }
 
   return (
-      <form onSubmit={submitForm} className={styles.infoFooter}>
+      <form onSubmit={submitForm} className={styles.infoFooter} disabled={!isEnabled}>
         <div className={styles.infoSection}>
           <div className={styles.infoHeader}>
             <h1 className={styles.infoTitle}>Login</h1>

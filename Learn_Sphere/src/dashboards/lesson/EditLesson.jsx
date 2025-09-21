@@ -32,6 +32,8 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
         status: lessonData?.status || ""
     });
 
+    const [isEnabled, setEnabled] = useState(true);
+
     const [readingList, setReadingList] = useState(lessonData?.readingList || []);
     const [objectives, setObjectives] = useState(lessonData?.objectives || []);
     const [assignmentList, setAssignmentList] = useState(lessonData?.assignments || []);
@@ -64,6 +66,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
 
     function submitForm(e)
     {
+        setEnabled(false)
         if (isValid()){
             const updates = {
                 title: lesson.title,
@@ -86,6 +89,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
             .catch((error) => setErrorMessages([error]));
             } else {
                 setErrorMessages(["Missing and invalid values! Check the form again."]);
+                setEnabled(true);
             }
     };
 
@@ -102,6 +106,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
     }
 
     const handleLessonChange = (e) => {
+        e.target.disabled = true;
         const { name, value } = e.target;
         setLesson(prev => ({ ...prev, [name]: value }));
 
@@ -109,7 +114,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
     };
 
     return (
-        <div className={styles.wrapper}>
+        <div className={styles.wrapper} disabled={!isEnabled}>
             <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>
                     Edit Lesson

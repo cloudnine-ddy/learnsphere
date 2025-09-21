@@ -103,7 +103,7 @@ export async function getCoursesNonEnroll(student) { // Change
         console.log(err.message)
     })
 
-    const enrolledCourses= getListOfCoursesFromStudent(student.id);
+    const enrolledCourses= await getListOfCoursesFromStudent(student.id);
 
     // enrolledCourses is array of objects, so extract IDs
     const enrolledIds = new Set(enrolledCourses.map(c => c.id));

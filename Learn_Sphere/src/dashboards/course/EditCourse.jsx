@@ -31,6 +31,8 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
         courseStatus: courseData?.courseStatus || ""
     });
 
+    const [isEnabled, setEnabled] = useState(true);
+
     const [courseLessons, setCourseLessons] = useState(courseData?.courseLessons || []);
 
     let navigate = useNavigate();
@@ -74,6 +76,7 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
 
     function submitForm(e)
     {
+        setEnabled(false)
         if (isValid()){
             const updates = {
                 courseID: course.courseID,
@@ -94,6 +97,7 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
             .catch((error) => setErrorMessages([error]));
             } else {
                 setErrorMessages(["Missing and invalid values! Check the form again."]);
+                setEnabled(true);
             }
     };
 
@@ -117,7 +121,7 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
     };
 
     return (
-        <div className={styles.wrapper}>
+        <div className={styles.wrapper} disabled={!isEnabled}>
             <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>
                     Edit Course

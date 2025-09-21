@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+﻿import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -17,12 +17,14 @@ function JoinCourse({ userData }) {
     const [courses, setCourses] = useState([]);
     const [pendingCourse, setPendingCourse] = useState(null);
 
-    console.log(userData.id);
+    //console.log(userData.id);
 
-    getCoursesNonEnroll(userData).then((courseSnapshots) => {
-        setCourses(courseSnapshots);
-        console.log(courseSnapshots);
-    });
+    useEffect(() => {
+        getCoursesNonEnroll(userData).then((courseSnapshots) => {
+            setCourses(courseSnapshots);
+            //console.log(courseSnapshots);
+        });
+    }, [])
 
     const enrollInCourse = async (courseID) => {
         try {
@@ -52,7 +54,7 @@ function JoinCourse({ userData }) {
     const handleRequestJoin = (course) => {
         setPendingCourse({
             id: course.id,
-            title: course.data().courseTitle,
+            title: course.courseTitle,
         });
     };
 
@@ -72,10 +74,10 @@ function JoinCourse({ userData }) {
                     {courses.map((course) => (
                         <JoinCourseCard
                             key={course.id}
-                            courseID={course.data().courseID}
-                            courseTitle={course.data().courseTitle}
-                            creditPoint={course.data().courseTotalCreditpoint}
-                            courseSupervisor={course.data().courseSupervisor}
+                            courseID={course.courseID}
+                            courseTitle={course.courseTitle}
+                            creditPoint={course.courseTotalCreditpoint}
+                            courseSupervisor={course.courseSupervisor}
                             href={`/home/courses/${course.id}`}
                             onJoin={() => handleRequestJoin(course)}
                         />

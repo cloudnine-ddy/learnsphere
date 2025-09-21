@@ -19,6 +19,8 @@ function RegisterForm({selectedRole}) {
     const navigate = useNavigate();
     let emailPattern = /\w+@\w+\.([a-z])+/;
 
+    const [isEnabled, setEnabled] = useState(true);
+
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -36,6 +38,7 @@ function RegisterForm({selectedRole}) {
     ];
 
     const submitForm = (e) => { 
+        setEnabled(false);
         e.preventDefault();
         let message = []
         if (password !== confirmPassword) {
@@ -50,6 +53,7 @@ function RegisterForm({selectedRole}) {
         }
         if (message.length > 0) {
             setErrorMessages(message);
+            setEnabled(true);
             return;
         }
         else
@@ -73,6 +77,7 @@ function RegisterForm({selectedRole}) {
             .catch((error) => {
                 console.error("Error creating user:", error); // Debugging log
                 setErrorMessages([error]);
+                setEnabled(true);
             });
         
         //console.log("submit form");
@@ -81,7 +86,7 @@ function RegisterForm({selectedRole}) {
     
 
     return (
-        <form className={styles.infoSection} onSubmit={submitForm}>
+        <form className={styles.infoSection} onSubmit={submitForm} disabled={!isEnabled}>
             <div className={styles.infoHeader}>
                 <h1 className={styles.infoTitle}>Sign Up</h1>
             </div>

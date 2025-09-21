@@ -33,6 +33,7 @@ function AddClassroom({
     });
 
     const navigate = useNavigate();
+    const [isEnabled, setEnabled] = useState(true);
 
     const [classroomLessons, setClassroomLessons] = useState([]);
     const [classroomStudents, setClassroomStudents] = useState([]);
@@ -172,6 +173,7 @@ function AddClassroom({
     }
 
     async function submitForm() {
+        setEnabled(false);
         if (await isValid()) {
             const durationWeeksNumber = Number.parseInt(classroom.durationWeeks, 10);
 
@@ -234,7 +236,7 @@ function AddClassroom({
     const footerWrapperClass = styles.infoFooter || "";
 
     return (
-        <div className={styles.wrapper}>
+        <div className={styles.wrapper} disabled={!isEnabled}>
             <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>Add Classroom</div>
             </div>

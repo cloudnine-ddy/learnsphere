@@ -27,6 +27,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
     });
 
     const navigate = useNavigate();
+    const [isEnabled, setEnabled] = useState(true);
 
     const [courseLessons, setCourseLessons] = useState([]);
     const [errorMessages, setErrorMessages] = useState([]);
@@ -55,6 +56,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
     }, [courseLessons, prerequisiteOptions]);
 
     async function submitForm() {
+        setEnabled(false)
         if (await isValid()) {
             addCoursesToDatabase(
                 course.courseId,
@@ -68,6 +70,10 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
                 .then(() => setErrorMessages(["Successfully created a course!"]))
                 .catch((error) => setErrorMessages([error]));
             navigate("/home/courses");
+        }
+        else
+        {
+            setEnabled(true);
         }
     }
 
@@ -108,7 +114,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
     };
 
     return (
-        <div className={styles.wrapper}>
+        <div className={styles.wrapper} disabled={!isEnabled}>
             <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>Add Course</div>
             </div>

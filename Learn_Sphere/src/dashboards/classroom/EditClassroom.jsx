@@ -35,6 +35,7 @@ function EditClassroom( { studentList, instructorList, currentUnits }) {
   const selectedLessons = ["Math 101", "Biology A", "Programming II"];
 
   const handleSubmit = (formData) => {
+    setEnabled(false);
     console.log("Submitting form with data:", formData);
   };
 
@@ -50,6 +51,8 @@ function EditClassroom( { studentList, instructorList, currentUnits }) {
     classroomUpdateDate: classroomData?.classroomUpdateDate || 11111212,
     durationWeeks: classroomData?.durationWeeks || 6
   });
+
+  const [isEnabled, setEnabled] = useState(true);
 
   const [lessons, setLessons] = useState(classroomData?.lessons || []);
 
@@ -269,7 +272,7 @@ function EditClassroom( { studentList, instructorList, currentUnits }) {
   // };
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} disabled={!isEnabled}>
       <div className={styles.infoHeader}>
         <div className={styles.infoTitle}>Edit Classroom</div>
       </div>
