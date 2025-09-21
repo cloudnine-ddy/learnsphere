@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Firestore Functions</title>
+</head>
+<body>
+  <h2>Test getCoursesForStudent</h2>
+  <label for="studentIdInput">Enter Student ID: </label>
+  <input type="text" id="studentIdInput" placeholder="e.g. student123">
+  <button id="fetchCoursesBtn">Fetch Courses</button>
+  <pre id="outputCourses"></pre>
+
+  <hr>
+
+  <h2>Test getListOfStudentsFromCourse</h2>
+  <label for="courseIdInput">Enter Course ID: </label>
+  <input type="text" id="courseIdInput" placeholder="e.g. course101">
+  <button id="fetchStudentsBtn">Fetch Students</button>
+  <pre id="outputStudents"></pre>
+
+  <script type="module">
+    import { getListOfCoursesFromStudent } from "./Learn_Sphere/src/components/getStudentCourse.js";
+    import { getListOfStudentsFromCourse } from "./Learn_Sphere/src/components/getStudentCourse.js";
+
+    // --- Courses by Student ---
+    const btnCourses = document.getElementById("fetchCoursesBtn");
+    const outputCourses = document.getElementById("outputCourses");
+
+    btnCourses.addEventListener("click", async () => {
+      const studentID = document.getElementById("studentIdInput").value.trim();
+
+      if (!studentID) {
+        outputCourses.textContent = "❌ Please enter a student ID";
+        return;
+      }
+
+      try {
+        const courses = await getListOfCoursesFromStudent(studentID);
+        console.log("Courses array:", courses);
+        outputCourses.textContent = JSON.stringify(courses, null, 2);
+      } catch (err) {
+        console.error("Error:", err);
+        outputCourses.textContent = "❌ Error: " + err.message;
+      }
+    });
+
+    // --- Students by Course ---
+    const btnStudents = document.getElementById("fetchStudentsBtn");
+    const outputStudents = document.getElementById("outputStudents");
+
+    btnStudents.addEventListener("click", async () => {
+      const courseID = document.getElementById("courseIdInput").value.trim();
+
+      if (!courseID) {
+        outputStudents.textContent = "❌ Please enter a course ID";
+        return;
+      }
+
+      try {
+        const students = await getListOfStudentsFromCourse(courseID);
+        console.log("Students array:", students);
+        outputStudents.textContent = JSON.stringify(students, null, 2);
+      } catch (err) {
+        console.error("Error:", err);
+        outputStudents.textContent = "❌ Error: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
