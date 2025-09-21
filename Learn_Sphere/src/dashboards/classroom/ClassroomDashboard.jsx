@@ -32,34 +32,34 @@ function ClassroomDashboard({ userData }) {
 
 
 
-  // useEffect(() => {
-  //     if (!userData) {
-  //         return;
-  //     }
+  useEffect(() => {
+      if (!userData) {
+          return;
+      }
 
-  //     if (userData.role === "student") {
-  //         getClassroomByStudent(userData.id).then((studentClassrooms) => {
-  //             setClassrooms(studentClassrooms);
-  //         });
-  //         return;
-  //     }
+      if (userData.role === "student") {
+          getClassroomByStudent(userData.id).then((studentClassrooms) => {
+              setClassrooms(studentClassrooms);
+          });
+          return;
+      }
 
-  //     if (filter === INSTRUCTOR_MY_COURSES) {
-  //         getClassroom(true, userData).then((allClassrooms) => {
-  //             const filtered = allClassrooms.filter((classroom) => {
-  //                 const supervisor = classroom.data().classroomSupervisor || "";
-  //                 return instructorDisplayName
-  //                     ? supervisor.trim().toLowerCase() === instructorDisplayName.trim().toLowerCase()
-  //                     : false;
-  //             });
-  //             setClassrooms(filtered);
-  //         });
-  //     } else {
-  //         getClassroom(filter, userData).then((allClassrooms) => {
-  //             setClassrooms(allClassrooms);
-  //         });
-  //     }
-  // }, [filter, userData, instructorDisplayName]);
+      if (filter === INSTRUCTOR_MY_CLASSROOMS) {
+          getClassrooms(true, userData).then((allClassrooms) => {
+              const filtered = allClassrooms.filter((classroom) => {
+                  const supervisor = classroom.data().classroomSupervisor || "";
+                  return instructorDisplayName
+                      ? supervisor.trim().toLowerCase() === instructorDisplayName.trim().toLowerCase()
+                      : false;
+              });
+              setClassrooms(filtered);
+          });
+      } else {
+        getClassrooms(filter, userData).then((allClassrooms) => {
+            setClassrooms(allClassrooms);
+        });
+      }
+  }, [filter, userData, instructorDisplayName]);
 
   const instructorOptions = [
         { label: "All Classrooms", state: true },
@@ -78,7 +78,7 @@ function ClassroomDashboard({ userData }) {
 
 
 
-  // temporary wannnnnnnnnnnn
+  /*// temporary wannnnnnnnnnnn
   useEffect(() => {
     const testData = [
         {
@@ -98,22 +98,7 @@ function ClassroomDashboard({ userData }) {
     ];
     setClassrooms(testData);
     }, []);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  */
 
   return (
     <>

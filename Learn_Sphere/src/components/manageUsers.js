@@ -137,6 +137,30 @@ export async function getAllInstructorsInfo()
     }
 }
 
+export async function getAllStudentsInfo()
+{
+    let user = await getCurrentUser();
+
+    if (user)
+    {
+        const lessons = []
+        
+        const q = query(collection(db, "users"), where("role", "==", "student"));
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((user) => {
+            // doc.data() is never undefined for query doc snapshots
+            lessons.push(user.data())
+        });
+
+        return lessons;
+    }
+    else
+    {
+        throw "You are not logged in, so you cannot access this page!"
+    }
+}
+
 export async function deleteCurrentUser()
 {
     let user = await getCurrentUser();

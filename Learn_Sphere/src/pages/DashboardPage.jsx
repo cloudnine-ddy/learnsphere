@@ -2,7 +2,7 @@
 
 import { Routes, Route, Navigate, Link, useNavigate, useParams } from "react-router-dom";
 
-import { getCurrentUser, getUserInfo, getAllInstructorsInfo, logOut } from "../components/manageUsers";
+import { getCurrentUser, getUserInfo, getAllInstructorsInfo, logOut, getAllStudentsInfo } from "../components/manageUsers";
 import { getLessons } from "../components/getLessons";
 import { getClassroom } from "../components/getClassroom";
 
@@ -28,13 +28,16 @@ import AddClassroom from "../dashboards/classroom/AddClassroom";
 
 import ControlPanel from "../dashboards/admin/ControlPanel";
 import JoinCourse from "../dashboards/course/JoinCourse";
+import { getCourses } from "../components/getCourses";
 
 function DashboardPage() {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [userData, setUserData] = useState(null);
     const [instructors, setInstructors] = useState([]);
+    const [students, setStudents] = useState([]);
     const [currentUnits, setCurrentUnits] = useState([]);
+    const [courses, setCourses] = useState([]);
     const [classrooms, setClassrooms] = useState([]);
 
     // User
@@ -101,22 +104,35 @@ function DashboardPage() {
 
     // Get ALL Instructors
     useEffect(() => {
-        if (!userData || userData.role === "student") {
+        if (!userData) {
             setInstructors([]);
             return;
         }
 
         let cancelled = false;
 
-        getAllInstructorsInfo()
+        getAllStudentsInfo()
             .then((list) => {
                 if (!cancelled) {
-                    setInstructors(list || []);
+                    setStudents(list || []);
                 }
             })
             .catch((error) => {
                 console.error("Failed to load instructors:", error);
             });
+
+        if (userData.role !== "student")
+        {
+            getAllInstructorsInfo()
+                .then((list) => {
+                    if (!cancelled) {
+                        setInstructors(list || []);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Failed to load instructors:", error);
+                });
+        }
 
         return () => {
             cancelled = true;
@@ -142,6 +158,16 @@ function DashboardPage() {
             .catch((error) => {
                 console.error("Failed to load lessons:", error);
             });
+        
+        getCourses(true, userData)
+            .then((courses) => {
+                if (!cancelled) {
+                    setCourses(courses);
+                }
+            })
+            .catch((error) => {
+                console.error("Failed to load courses:", error)
+            })
 
         return () => {
             cancelled = true;
@@ -301,12 +327,12 @@ const mockCurrentUnits = ["a", "b", "c"]
                                 
 
 
-                                <Route path="/classrooms" element={ <ClassroomDashboard userData={mockInstructorUser} /> } />
-                                <Route path="/classrooms/:id" element={<ViewClassroom userData={mockInstructorUser} />} />
+                                <Route path="/classrooms" element={ <ClassroomDashboard userData={userData} /> } />
+                                <Route path="/classrooms/:id" element={<ViewClassroom userData={userData} />} />
                                 {userData.role !== "student" &&
-                                    <Route path="/classrooms/:id/edit" element={<EditClassroom studentList = {mockCurrentUnits} instructorList={instructors} prerequisiteOptions={mockCurrentUnits}/>} />}
+                                    <Route path="/classrooms/:id/edit" element={<EditClassroom studentList = {students} instructorList={instructors} currentUnits={currentUnits}/>} />}
                                 {userData.role !== "student" &&
-                                    <Route path="/newclassroom" element={<AddClassroom  courseOptions={mockCurrentUnits} lessonOptions={mockCurrentUnits} instructorList={instructors} studentOptions={mockCurrentUnits} />} />}
+                                    <Route path="/newclassroom" element={<AddClassroom  courseOptions={courses} lessonOptions={currentUnits} instructorList={instructors} studentOptions={students} />} />}
                                 
 
 

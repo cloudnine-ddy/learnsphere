@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { addClassroomsToDatabase } from "../../components/addClassrooms";
@@ -34,6 +34,8 @@ function AddClassroom({
 
     const navigate = useNavigate();
     const [isEnabled, setEnabled] = useState(true);
+    const [validLessonOptions, setValidLessonOptions] = useState([]);
+    const [userData, setUserData] = useState(null);
 
     const [classroomLessons, setClassroomLessons] = useState([]);
     const [classroomStudents, setClassroomStudents] = useState([]);
@@ -45,9 +47,16 @@ function AddClassroom({
             .then((info) => {
                 if (info?.role === "student") {
                     navigate("/home");
+                    return;
+                }
+                else
+                {
+                    setUserData(info);
                 }
             });
     }, [navigate]);
+
+    useEffect(() => {changeLessonOptions(classroom.course)}, [classroom.course])
 
     useEffect(() => {
         setClassroom((prev) => ({
@@ -55,6 +64,24 @@ function AddClassroom({
             totalStudents: classroomStudents.length
         }));
     }, [classroomStudents]);
+
+    const changeLessonOptions = (course) => {
+        if (extractIdentifier(course) != null)
+        {
+            let c = courseOptions.find(c=> c.data().courseID == extractIdentifier(course));
+            
+            if (c)
+            {
+                setValidLessonOptions(lessonOptions.filter((lesson) => {
+                    return c.data().courseLessons.includes(`${lesson.data().lessonID}: ${lesson.data().title}`);
+                }));
+
+                console.log(lessonOptions.filter((lesson) => {
+                    return c.data().courseLessons.includes(`${lesson.data().lessonID}: ${lesson.data().title}`);
+                }));
+            }
+        }
+    }
 
     const handleClassroomChange = (event) => {
         const { name, value } = event.target;
@@ -95,8 +122,8 @@ function AddClassroom({
             .filter(Boolean)
     ];
 
-    const classroomLessonOptions = lessonOptions
-        .map((option) => {
+    const classroomLessonOptions = useMemo(() => {return validLessonOptions
+        ?.map((option) => {
             if (typeof option === "string") {
                 return option;
             }
@@ -114,7 +141,7 @@ function AddClassroom({
 
             return "";
         })
-        .filter(Boolean);
+        .filter(Boolean);}, [validLessonOptions]);
 
     const classroomStudentOptions = studentOptions
         .map((option) => {

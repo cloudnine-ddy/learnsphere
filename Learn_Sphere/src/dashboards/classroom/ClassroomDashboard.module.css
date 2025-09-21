@@ -59,10 +59,12 @@
 
 .cardContainer {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     /* grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); */
     gap: 20px;
     padding-bottom: 10px;
+    overflow-y: auto;
+    height: inherit;
 }
 
 .emptyState {

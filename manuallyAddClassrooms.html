@@ -31,17 +31,17 @@
       event.preventDefault();
 
       const classroomData = {
-        classroom_id: document.getElementById("classroomID").value,
-        classroom_course: document.getElementById("courseID").value,
-        classroom_instructor: document.getElementById("instructorID").value,
-        classroom_name: document.getElementById("classroomName").value,
-        classroom_description: document.getElementById("classroomDescription").value,
-        classroom_lessons: document.getElementById("classroomLessons").value.split(",").map(s => s.trim()).filter(Boolean),
-        classroom_students: document.getElementById("classroomStudents").value.split(",").map(s => s.trim()).filter(Boolean),
-        classroom_startDate: document.getElementById("classroomStartDate").value,
-        classroom_status: document.getElementById("classroomStatus").value,
-        classroom_createdDate: new Date().toISOString(),
-        classroom_updatedDate: new Date().toISOString(),
+        classroomID: document.getElementById("classroomID").value,
+        classroomCourse: document.getElementById("courseID").value,
+        classroomInstructor: document.getElementById("instructorID").value,
+        classroomName: document.getElementById("classroomName").value,
+        classroomDescription: document.getElementById("classroomDescription").value,
+        classroomLessons: document.getElementById("classroomLessons").value.split(",").map(s => s.trim()).filter(Boolean),
+        classroomStudents: document.getElementById("classroomStudents").value.split(",").map(s => s.trim()).filter(Boolean),
+        classroomStartDate: document.getElementById("classroomStartDate").value,
+        classroomStatus: document.getElementById("classroomStatus").value,
+        classroomCreatedDate: new Date().toISOString(),
+        classroomUpdatedDate: new Date().toISOString(),
       };
 
       try {
