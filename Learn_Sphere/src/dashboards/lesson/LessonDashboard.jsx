@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { getLessons } from "../../components/getLessons";
 
 import styles from "./LessonDashboard.module.css";
+import { getListOfLessonsFromStudent } from "../../components/studentLesson";
 
 import FilterDropdown from "../../components/selectable_addable/FilterDropdown";
 import LessonCard from "../../components/clickable/LessonCard";
@@ -37,7 +38,7 @@ function LessonDashboard({ userData }) {
                 let fetchedLessons = [];
 
                 if (userData.role === "student") {
-                    fetchedLessons = await getLessons(true, userData);
+                    fetchedLessons = await getListOfLessonsFromStudent(userData.id);
                 } else if (filter === INSTRUCTOR_MY_LESSONS) {
                     if (!instructorDisplayName) {
                         setLessons([]);

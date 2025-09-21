@@ -39,12 +39,10 @@ const studentLessonData = {
 */ 
 
 export async function getListOfLessonsFromStudent(studentID) {
-
   /*
   param: 
     studentID - the user 'id:'
   */ 
-
   try {
     // Step 1: get student_lesson docs for this student
     const scQuery = query(
@@ -53,32 +51,29 @@ export async function getListOfLessonsFromStudent(studentID) {
     );
     const scSnapshot = await getDocs(scQuery);
 
-    // Step 2: extract all the lessonID related to this studentID
+    // Step 2: extract all the lesson document IDs
     const lessonIds = scSnapshot.docs.map(doc => doc.data().student_lesson_lessonID);
 
     if (lessonIds.length === 0) {
-      return []; // no courses
+      return []; // no lessons
     }
 
-    // Step 3: query courses by courseID (batch if > 10)
+    // Step 3: query lessons by document ID (batch if > 10)
     const chunks = [];
     for (let i = 0; i < lessonIds.length; i += 10) {
       const batch = lessonIds.slice(i, i + 10);
-      const courseQuery = query(
+      const lessonQuery = query(
         collection(db, "lessons"),
-        where("lessonID", "in", batch)
+        where("__name__", "in", batch) // query by Firestore doc IDs
       );
-      chunks.push(getDocs(courseQuery));
+      chunks.push(getDocs(lessonQuery));
     }
 
-    // Step 4: combine results
+    // Step 4: combine results into raw snapshots
     const results = await Promise.all(chunks);
-    const lessons = results.flatMap(snapshot =>
-      snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-    );
+    const lessons = results.flatMap(snapshot => snapshot.docs);
 
-    return lessons; // array of lesson documents
-
+    return lessons; // array of DocumentSnapshots (need .data() later)
   } catch (error) {
     console.error("Error fetching lessons for student:", error);
     throw error;
