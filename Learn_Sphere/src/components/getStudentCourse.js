@@ -13,6 +13,13 @@ import { db } from "./firebaseConfig.js";
 */
 
 export async function getListOfCoursesFromStudent(studentID) {
+
+  /*
+  param: 
+    studentID - the user 'id:'
+
+  */ 
+
   try {
     // Step 1: get student_course docs for this student
     const scQuery = query(
@@ -55,7 +62,7 @@ export async function getListOfCoursesFromStudent(studentID) {
 
 export async function getListOfStudentsFromCourse(courseID) {
   try {
-    // Step 1: get student_course docs for this student
+    // Step 1: get student_course docs for this course
     const scQuery = query(
       collection(db, "student_course"),
       where("student_course_courseId", "==", courseID)
@@ -69,7 +76,7 @@ export async function getListOfStudentsFromCourse(courseID) {
       return []; // no courses
     }
 
-    // Step 3: query courses by courseID (batch if > 10)
+    // Step 3: query student by studentID (batch if > 10)
     const chunks = [];
     for (let i = 0; i < studentIDs.length; i += 10) {
       const batch = studentIDs.slice(i, i + 10);
@@ -86,11 +93,12 @@ export async function getListOfStudentsFromCourse(courseID) {
       snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
     );
 
-    return students; // array of course documents
+    return students; // array of student documents
     
   } catch (error) {
     console.error("Error fetching students from courses:", error);
     throw error;
   }
 }
+
 

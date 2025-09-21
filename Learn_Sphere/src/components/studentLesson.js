@@ -1,0 +1,128 @@
+import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { db } from "./firebaseConfig.js";
+
+export async function addStudentLesson(lessonID, studentID, completion) {
+
+
+    const studentLessonData = {
+        student_lesson_lessonID: lessonID,
+        student_lesson_studentID: studentID,
+        student_lesson_completion: completion,
+    };
+
+    // Save the course data to Firestore 
+
+    try {
+
+        const docRef = await addDoc(collection(db, "student_lesson"), studentLessonData);
+        console.log("student_lesson entry was successfully added with ID:", docRef.id);
+
+        return docRef.id;
+
+    } catch (error) {
+
+        console.error("Error creating the studentLesson:", error);
+        throw new Error("Error creating studentLesson");
+
+    }
+
+}
+
+/* Data Structure
+const studentLessonData = {
+
+        student_lesson_lessonID: lessonID,
+        student_lesson_studentID: studentID,
+        student_lesson_completion: completion,
+    };
+
+*/ 
+
+export async function getListOfLessonsFromStudent(studentID) {
+
+  /*
+  param: 
+    studentID - the user 'id:'
+  */ 
+
+  try {
+    // Step 1: get student_lesson docs for this student
+    const scQuery = query(
+      collection(db, "student_lesson"),
+      where("student_lesson_studentID", "==", studentID)
+    );
+    const scSnapshot = await getDocs(scQuery);
+
+    // Step 2: extract all the lessonID related to this studentID
+    const lessonIds = scSnapshot.docs.map(doc => doc.data().student_lesson_lessonID);
+
+    if (lessonIds.length === 0) {
+      return []; // no courses
+    }
+
+    // Step 3: query courses by courseID (batch if > 10)
+    const chunks = [];
+    for (let i = 0; i < lessonIds.length; i += 10) {
+      const batch = lessonIds.slice(i, i + 10);
+      const courseQuery = query(
+        collection(db, "lessons"),
+        where("lessonID", "in", batch)
+      );
+      chunks.push(getDocs(courseQuery));
+    }
+
+    // Step 4: combine results
+    const results = await Promise.all(chunks);
+    const lessons = results.flatMap(snapshot =>
+      snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+    );
+
+    return lessons; // array of lesson documents
+
+  } catch (error) {
+    console.error("Error fetching lessons for student:", error);
+    throw error;
+  }
+}
+
+export async function getListOfStudentsFromCourse(lessonID) {
+  try {
+    // Step 1: get student_lesson docs for this lesson
+    const scQuery = query(
+      collection(db, "student_lesson"),
+      where("student_lesson_lessonID", "==", lessonID)
+    );
+    const scSnapshot = await getDocs(scQuery);
+
+    // Step 2: extract all student ID
+    const studentIDs = scSnapshot.docs.map(doc => doc.data().student_lesson_studentID);
+
+    if (studentIDs.length === 0) {
+      return []; // no courses
+    }
+
+    // Step 3: query student by studentID (batch if > 10)
+    const chunks = [];
+    for (let i = 0; i < studentIDs.length; i += 10) {
+      const batch = studentIDs.slice(i, i + 10);
+      const studentQuery = query(
+        collection(db, "users"),
+        where("id", "in", batch)
+      );
+      chunks.push(getDocs(studentQuery));
+    }
+
+    // Step 4: combine results
+    const results = await Promise.all(chunks);
+    const students = results.flatMap(snapshot =>
+      snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+    );
+
+    return students; // array of student documents
+    
+  } catch (error) {
+    console.error("Error fetching students from courses:", error);
+    throw error;
+  }
+}
+
