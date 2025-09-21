@@ -24,8 +24,8 @@ export async function addStudentCourse(studentID, courseID, courseCompletion) {
 
     } catch (error) {
 
-        console.error("Error creating the classroom:", error);
-        throw new Error("Error creating classroom");
+        console.error("Error creating the studentCourse:", error);
+        throw new Error("Error creating studentCourse");
 
     }
 
