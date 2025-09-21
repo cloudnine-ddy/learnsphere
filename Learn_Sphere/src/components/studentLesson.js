@@ -1,13 +1,13 @@
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig.js";
 
-export async function addStudentLesson(lessonID, studentID, completion) {
+export async function addStudentLesson(lessonID, studentID) {
 
 
     const studentLessonData = {
         student_lesson_lessonID: lessonID,
         student_lesson_studentID: studentID,
-        student_lesson_completion: completion,
+        student_lesson_completion: 0,
     };
 
     // Save the course data to Firestore 
