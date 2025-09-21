@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { getLesson } from "../../components/getLessons";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
-import { deleteLessonFromDatabase, deletePrereq } from "../../components/deleteLessons";
+import { deleteLessonFromDatabase, deletePrereqAndCourse } from "../../components/deleteLessons";
 
 import styles from "./ViewLesson.module.css";
 
@@ -53,8 +53,8 @@ function ViewLesson({userData}) {
     }, [userData])
 
     const handleDelete = () => {
-        deleteLessonFromDatabase(id)
-        .then(() => deletePrereq(lesson.lessonID))
+        deletePrereqAndCourse(lesson.lessonID)
+        .then(() => deleteLessonFromDatabase(id))
         .then(() => setShowDelete(false))
         .then(() => navigate("/home"))
         .catch((error) => console.error("Error deleting lesson:", error));

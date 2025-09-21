@@ -21,7 +21,7 @@ import EditCourse from "../dashboards/course/EditCourse";
 import ViewCourse from "../dashboards/course/ViewCourse";
 
 import ClassroomDashboard from "../dashboards/classroom/ClassroomDashboard";
-import AddClassroom from "../dashboards/classroom/AddClassroom";
+import {addClassroomsToDatabase} from "../components/addClassrooms";
 import EditClassroom from "../dashboards/classroom/EditClassroom";
 import ViewClassroom from "../dashboards/classroom/ViewClassroom";
 

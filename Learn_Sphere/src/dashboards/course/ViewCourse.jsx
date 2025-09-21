@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getCourse } from "../../components/getCourses";
 import { getLessonByIDAndName } from "../../components/getLessons";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
-import { deleteLessonFromDatabase, deletePrereq } from "../../components/deleteLessons";
+// import { deleteLessonFromDatabase, deletePrereq } from "../../components/deleteLessons";
 import { unEnrollCourseInDatabase } from "../../components/enrollCourses";
 
 import styles from "./ViewCourse.module.css";
