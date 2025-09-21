@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { addCoursesToDatabase } from "../../components/addCourses";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
+import { validateCourseLessons } from "../../components/addCourses";
 
 import styles from "./AddCourse.module.css";
 
@@ -52,8 +53,8 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
         }));
     }, [courseLessons, prerequisiteOptions]);
 
-    function submitForm() {
-        if (isValid()) {
+    async function submitForm() {
+        if (await isValid()) {
             addCoursesToDatabase(
                 course.courseId,
                 course.title,
@@ -66,13 +67,30 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
                 .then(() => setErrorMessages(["Successfully created a course!"]))
                 .catch((error) => setErrorMessages([error]));
             navigate("/home/courses");
-        } else {
-            setErrorMessages(["Missing and invalid values! Check the form again."]);
         }
     }
 
-    function isValid() {
-        return Object.values(course).every((value) => value !== "");
+    async function isValid() {
+        let validation = true;
+      // Check for empty course fields
+        if (Object.values(course).some((value) => value === "")) {
+            validation = false;
+            setErrorMessages(["Missing and invalid values! Check the form again."]);
+        }
+
+        // Check for missing prerequisites
+        const missingDeps = await validateCourseLessons(courseLessons);
+        if (Object.keys(missingDeps).length > 0) {
+            validation = false;
+            setErrorMessages([
+                "Missing prerequisites for some lessons: " +
+                Object.entries(missingDeps)
+                    .map(([lesson, deps]) => `${lesson} → [${deps.join(", ")}]`)
+                    .join("; ")
+            ]);
+        }
+
+        return validation;
     }
 
     const handleCourseChange = (e) => {

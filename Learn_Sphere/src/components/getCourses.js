@@ -30,7 +30,6 @@ export async function getCourses(status, userData) {
 
 }
 
-// To get a specific Course
 
 export async function getCourse(id, userData) {
     if (userData != null) {
@@ -114,4 +113,3 @@ export async function getCoursesNonEnroll(student) { // Change
 
     return nonEnrolledCourses;
 }
-

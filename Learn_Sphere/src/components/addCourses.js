@@ -1,4 +1,4 @@
-import { setDoc, doc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { setDoc, doc, getDocs, collection } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 import { getCurrentUser, getUserInfo } from "./manageUsers";
 
@@ -40,4 +40,34 @@ export async function addCoursesToDatabase(courseID, courseTitle, courseDescript
     } else {
         throw 'Unauthorized Access >:(';
     }
+}
+export async function validateCourseLessons(courseLessons) {
+    // Get all lessons from Firestore once
+    const lessonSnapshot = await getDocs(collection(db, "lessons"));
+    const lessonsMap = {};
+    lessonSnapshot.docs.forEach(doc => {
+        const data = doc.data();
+        lessonsMap[data.lessonID] = data;
+    });
+
+    // Extract IDs from the submitted lessons
+    const submittedLessonIds = courseLessons.map(l => l.split(":")[0].trim());
+
+    // Check each lesson
+    const missingDeps = {};
+    for (const lessonStr of courseLessons) {
+        const lessonId = lessonStr.split(":")[0].trim();
+        const lesson = lessonsMap[lessonId];
+
+        if (lesson && lesson.prerequisites?.length > 0) {
+            const prereqIds = lesson.prerequisites.map(p => p.split(":")[0].trim());
+            const missing = prereqIds.filter(p => !submittedLessonIds.includes(p));
+
+            if (missing.length > 0) {
+                missingDeps[lessonId] = missing;
+            }
+        }
+    }
+
+    return missingDeps; 
 }
