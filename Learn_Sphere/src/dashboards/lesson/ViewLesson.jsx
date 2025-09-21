@@ -53,7 +53,9 @@ function ViewLesson({userData}) {
     }, [userData])
 
     const handleDelete = () => {
-        deletePrereqAndCourse(lesson.lessonID)
+        console.log(id);
+        console.log(lesson.lessonID);
+        deletePrereqAndCourse(lesson.lessonID,id)
         .then(() => deleteLessonFromDatabase(id))
         .then(() => setShowDelete(false))
         .then(() => navigate("/home"))

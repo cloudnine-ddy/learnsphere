@@ -1,4 +1,4 @@
-import {doc, deleteDoc, getDocs, updateDoc, collection, getDoc} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import {doc, deleteDoc, getDocs, updateDoc, collection, getDoc, query, where} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 import { getCurrentUser, getUserInfo } from "./manageUsers";
 
@@ -28,7 +28,7 @@ export async function deleteLessonFromDatabase(lessonDocId)
     }
 }
 
-export async function deletePrereqAndCourse(lessonIdToDelete) {
+export async function deletePrereqAndCourse(lessonIdToDelete,lessonIDRaw) {
     try {
         // --- Step 1: Remove from prerequisites ---
         const lessonSnapshot = await getDocs(collection(db, "lessons"));
@@ -90,7 +90,22 @@ export async function deletePrereqAndCourse(lessonIdToDelete) {
             }
         }
 
-        console.log(`Removed lesson ${lessonIdToDelete} from prerequisites, courses, and recalculated credits`);
+        // --- Step 3: Delete from student_lesson ---
+        const studentLessonQuery = query(
+            collection(db, "student_lesson"),
+            where("student_lesson_lessonID", "==", lessonIDRaw)
+        );
+        const studentLessonSnapshot = await getDocs(studentLessonQuery);
+
+        if (!studentLessonSnapshot.empty) {
+            const deletions = studentLessonSnapshot.docs.map((d) =>
+                deleteDoc(doc(db, "student_lesson", d.id))
+            );
+            await Promise.all(deletions);
+            console.log(`✅ Deleted ${studentLessonSnapshot.size} student_lesson mappings for lesson ${lessonIdToDelete}`);
+        }
+
+        console.log(`Removed lesson ${lessonIdToDelete} from prerequisites, courses, and student lessons`);
     } catch (error) {
         console.error("Error deleting lesson references:", error);
         throw error;
