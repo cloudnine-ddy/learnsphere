@@ -87,29 +87,39 @@ export async function getCoursesByStudent(studentID) {
     return courseSnapshots.filter(Boolean);
 }
 
-export async function getCoursesNonEnroll(student) { // Change 
-    const allCourses = [];
+export async function getCoursesNonEnroll(student) {
+    try {
+        const allCourses = [];
 
-    const allCourseRef = collection(db, 'courses');
-
-    getDocs(allCourseRef).then((snapshot) => {
+        // 1. Get all courses
+        const allCourseRef = collection(db, "courses");
+        const snapshot = await getDocs(allCourseRef);
 
         snapshot.forEach((doc) => {
-            allCourses.push({...doc.data(), id: doc.id})
-        })
-    })
-    .catch( err => {
-        console.log("Error when trying to get all courses. getCourse.js, getCourseNonEnroll")
-        console.log(err.message)
-    })
+            const data = doc.data();
+            // keep only Published courses
+            if (data.courseStatus === "Published") {
+                allCourses.push({ ...data, id: doc.id });
+            }
+        });
 
-    const enrolledCourses= await getListOfCoursesFromStudent(student.id);
+        // 2. Get courses the student is already enrolled in
+        const enrolledCourses = await getListOfCoursesFromStudent(student.id);
 
-    // enrolledCourses is array of objects, so extract IDs
-    const enrolledIds = new Set(enrolledCourses.map(c => c.id));
+        // enrolledCourses is array of course objects with Firestore doc ids
+        const enrolledIds = new Set(enrolledCourses.map((c) => c.id));
 
-    // 3. Filter: keep only those not in enrolledIds
-    const nonEnrolledCourses = allCourses.filter(course => !enrolledIds.has(course.id));
+        // 3. Filter out enrolled ones
+        const nonEnrolledCourses = allCourses.filter(
+            (course) => !enrolledIds.has(course.id)
+        );
 
-    return nonEnrolledCourses;
+        return nonEnrolledCourses;
+    } catch (err) {
+        console.error(
+            "❌ Error when trying to get all courses in getCoursesNonEnroll:",
+            err
+        );
+        throw err;
+    }
 }

@@ -56,26 +56,30 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
     }, [courseLessons, prerequisiteOptions]);
 
     async function submitForm() {
-        setEnabled(false)
+        setEnabled(false);
+      
         if (await isValid()) {
-            addCoursesToDatabase(
-                course.courseId,
-                course.title,
-                course.description,
-                courseLessons,
-                course.totalCreditPoints,
-                course.supervisor,
-                course.status
-            )
-                .then(() => setErrorMessages(["Successfully created a course!"]))
-                .catch((error) => setErrorMessages([error]));
-            navigate("/home/courses");
+          addCoursesToDatabase(
+            course.courseId,
+            course.title,
+            course.description,
+            courseLessons,
+            course.totalCreditPoints,
+            course.supervisor,
+            course.status
+          )
+            .then(() => {
+              setErrorMessages(["✅ Successfully created a course!"]);
+              navigate("/home/courses"); 
+            })
+            .catch((error) => {
+              setErrorMessages([error.message || String(error)]); 
+              setEnabled(true); 
+            });
+        } else {
+          setEnabled(true);
         }
-        else
-        {
-            setEnabled(true);
-        }
-    }
+      }
 
     async function isValid() {
         let validation = true;

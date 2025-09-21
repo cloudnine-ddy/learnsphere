@@ -48,6 +48,8 @@ function ViewCourse({userData}) {
 
                 if (course == null)
                 {
+                    console.log("Course not found");
+                    console.log(id);
                     navigate("/home");
                 }
             }); 
@@ -81,7 +83,7 @@ function ViewCourse({userData}) {
 
     const handleCancelEnrollment = async () => {
         try {
-            await unEnrollCourseInDatabase(userData, id);
+            await unEnrollCourseInDatabase(userData, course.courseID);
             setShowCancelConfirm(false);
             navigate("/home/courses");
         } catch (error) {

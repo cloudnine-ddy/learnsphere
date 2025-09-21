@@ -1,10 +1,11 @@
-﻿import { updateDoc, doc, arrayUnion, arrayRemove, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+﻿import { updateDoc, doc, arrayUnion, arrayRemove, getDoc, getDocs, query, collection, where } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 import { getCurrentUser, getUserInfo } from "./manageUsers";
 import { deleteStudentCourse } from "./deleteStudentCourse";
 import { addStudentCourse } from "./addStudentCourse";
 import { addStudentLesson } from "./studentLesson";
 import { getListOfLessonsFromStudent } from "./studentLesson";
+import { getLessonByIDAndName } from "./getLessons";
 
 async function getValidatedStudentContext(student) {
     const user = await getCurrentUser();
@@ -78,11 +79,15 @@ export async function enrollCourseInDatabase(student, courseID) {
 
     // Step 4: For each lesson in the course, add to student_lesson if not already enrolled
     for (const lessonName of lessons) {
-      const lessonSnapshots = await getLessonByIDAndName(lessonName, student);
-
-      for (const snapshot of lessonSnapshots) {
-        const lessonID = snapshot.id; // Firestore doc ID
-
+        const lessonDoc = await getLessonByIDAndName(lessonName, student);
+      
+        if (!lessonDoc) {
+          console.warn(`⚠️ No lesson found for ${lessonName}`);
+          continue;
+        }
+      
+        const lessonID = lessonDoc.id;
+      
         if (!enrolledLessonIDs.includes(lessonID)) {
           await addStudentLesson(lessonID, student.id);
           console.log(`✅ Added lesson ${lessonID} for student ${student.id}`);
@@ -90,7 +95,6 @@ export async function enrollCourseInDatabase(student, courseID) {
           console.log(`⚠️ Skipped duplicate: ${lessonID} already enrolled`);
         }
       }
-    }
 
     console.log(`🎉 Successfully enrolled student ${student.id} into course ${courseID}`);
   } catch (error) {

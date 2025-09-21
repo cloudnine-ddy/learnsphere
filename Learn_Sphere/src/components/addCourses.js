@@ -1,46 +1,56 @@
-import { setDoc, doc, getDocs, collection } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { setDoc, doc, getDocs, collection, query, where} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 import { getCurrentUser, getUserInfo } from "./manageUsers";
 
 
-export async function addCoursesToDatabase(courseID, courseTitle, courseDescription, courseLessons, courseTotalCreditPoint, courseSupervisor, courseStatus) {
-
+export async function addCoursesToDatabase(
+    courseID,
+    courseTitle,
+    courseDescription,
+    courseLessons,
+    courseTotalCreditPoint,
+    courseSupervisor,
+    courseStatus
+  ) {
     let user = await getCurrentUser();
     let userinfo = await getUserInfo(user);
-
+  
     if (user != null && userinfo.role != "student") {
-        const courseData = {
-            courseID: courseID,
-            courseTitle: courseTitle,
-            courseDescription: courseDescription,
-            courseLessons: courseLessons.map(s => s.trim()).filter(Boolean),
-            courseTotalCreditpoint: Number.parseInt(courseTotalCreditPoint),
-            courseSupervisor: courseSupervisor,
-            courseCreateDate: new Date().toISOString(),
-            courseUpdateDate: new Date().toISOString(),
-            courseStatus: courseStatus,
-        };
-
-        // Save the course data to Firestore 
-
-        const docRef = doc(db, "courses", new Date().getTime().toString()) // New Unique ID based on timestamp
-        console.log(docRef)
-
-        try {
-            // Save the course to Firestore 
-            await setDoc(docRef, courseData);
-
-            console.log("Course was successfully added: ", courseData);
-            return;
-        }
-        catch (error) {
-            console.error("Error creating the lesson: ", error);
-            throw "Error Creating lesson";
-        }
+      // --- Step 1: Check if courseID already exists ---
+      const q = query(collection(db, "courses"), where("courseID", "==", courseID));
+      const snapshot = await getDocs(q);
+  
+      if (!snapshot.empty) {
+        throw `❌ Course with ID "${courseID}" already exists!`;
+      }
+  
+      const courseData = {
+        courseID: courseID,
+        courseTitle: courseTitle,
+        courseDescription: courseDescription,
+        courseLessons: courseLessons.map(s => s.trim()).filter(Boolean),
+        courseTotalCreditpoint: Number.parseInt(courseTotalCreditPoint),
+        courseSupervisor: courseSupervisor,
+        courseCreateDate: new Date().toISOString(),
+        courseUpdateDate: new Date().toISOString(),
+        courseStatus: courseStatus,
+      };
+  
+      const docRef = doc(db, "courses", new Date().getTime().toString()); // timestamp ID
+      try {
+        await setDoc(docRef, courseData);
+        console.log("✅ Course was successfully added:", courseData);
+        return;
+      } catch (error) {
+        console.error("❌ Error creating the course:", error);
+        throw "Error creating course";
+      }
     } else {
-        throw 'Unauthorized Access >:(';
+      throw "Unauthorized Access >:(";
     }
-}
+  }
+
+
 export async function validateCourseLessons(courseLessons) {
     // Get all lessons from Firestore once
     const lessonSnapshot = await getDocs(collection(db, "lessons"));

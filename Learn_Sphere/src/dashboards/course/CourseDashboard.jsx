@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 
 import { getCourses, getCoursesByStudent } from "../../components/getCourses";
+import { getListOfCoursesFromStudent } from "../../components/getStudentCourse";
 
 import styles from "./CourseDashboard.module.css";
 
@@ -35,7 +36,7 @@ function CourseDashboard({ userData }) {
         }
 
         if (userData.role === "student") {
-            getCoursesByStudent(userData.id).then((studentCourses) => {
+            getListOfCoursesFromStudent(userData.id).then((studentCourses) => {
                 setCourses(studentCourses);
             });
             return;

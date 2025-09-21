@@ -53,7 +53,7 @@ function JoinCourse({ userData }) {
 
     const handleRequestJoin = (course) => {
         setPendingCourse({
-            id: course.id,
+            id: course.courseID,
             title: course.courseTitle,
         });
     };

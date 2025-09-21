@@ -1,16 +1,16 @@
-import { setDoc, doc, addDoc} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { setDoc, doc, addDoc, collection } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 import { getCurrentUser, getUserInfo } from "./manageUsers";
 
 
 
-export async function addStudentCourse(studentID, courseID, courseCompletion) {
+export async function addStudentCourse(studentID, courseID) {
 
 
     const studentCourseData = {
         student_course_studentId: studentID,
         student_course_courseId: courseID,
-        student_course_courseCompletion: Number.parseFloat(courseCompletion),
+        student_course_courseCompletion: 0,
     };
 
     // Save the course data to Firestore 

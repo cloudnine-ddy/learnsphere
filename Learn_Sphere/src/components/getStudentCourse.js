@@ -13,13 +13,6 @@ import { db } from "./firebaseConfig.js";
 */
 
 export async function getListOfCoursesFromStudent(studentID) {
-
-  /*
-  param: 
-    studentID - the user 'id:'
-
-  */ 
-
   try {
     // Step 1: get student_course docs for this student
     const scQuery = query(
@@ -28,14 +21,14 @@ export async function getListOfCoursesFromStudent(studentID) {
     );
     const scSnapshot = await getDocs(scQuery);
 
-    // Step 2: extract all the courseID related to this studentID
+    // Step 2: extract all the courseIDs related to this studentID
     const courseIds = scSnapshot.docs.map(doc => doc.data().student_course_courseId);
 
     if (courseIds.length === 0) {
-      return []; // no courses
+      return []; // no courses enrolled
     }
 
-    // Step 3: query courses by courseID (batch if > 10)
+    // Step 3: Firestore only allows max 10 values in an "in" query
     const chunks = [];
     for (let i = 0; i < courseIds.length; i += 10) {
       const batch = courseIds.slice(i, i + 10);
@@ -46,14 +39,11 @@ export async function getListOfCoursesFromStudent(studentID) {
       chunks.push(getDocs(courseQuery));
     }
 
-    // Step 4: combine results
+    // Step 4: combine results into an array of DocumentSnapshots
     const results = await Promise.all(chunks);
-    const courses = results.flatMap(snapshot =>
-      snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-    );
+    const courseDocs = results.flatMap(snapshot => snapshot.docs);
 
-    return courses; // array of course documents
-
+    return courseDocs; // ⬅️ returns DocumentSnapshots, so you can do .data()
   } catch (error) {
     console.error("Error fetching courses for student:", error);
     throw error;
