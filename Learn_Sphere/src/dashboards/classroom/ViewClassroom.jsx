@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { getClassroom } from "../../components/getClassroom";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
+import { getLessonByIDAndName } from "../../components/getLessons";
 
 
 import styles from "./ViewClassroom.module.css";
@@ -16,7 +17,8 @@ function ViewClassroom({ userData }) {
   let navigate = useNavigate();
 
   const { id } = useParams();
-  const [classroom, setClassroom] = useState([]);
+  const [classroom, setClassroom] = useState(null);
+  const [lessons, setLessons] = useState([]);
 
   useEffect(() => {
       //Runs on the first render only
@@ -34,32 +36,36 @@ function ViewClassroom({ userData }) {
 
 
 
+  useEffect(() => {
+      if (userData != null)
+      {
+          getClassroom(id, userData).then(
+          (classroom) => {
+                setClassroom(classroom);
+                if (classroom == null)
+                {
+                    navigate("/home");
+                }
+          }); 
+      }
+  }, [userData])
 
-
-  // useEffect(() => {
-  //     if (userData != null)
-  //     {
-  //         getClassroom(id, userData).then(
-  //         (classroom) => {
-  //             setClassroom(classroom);
-
-  //             if (classroom == null)
-  //             {
-  //                 navigate("/home");
-  //             }
-  //         }); 
-  //     }
-  // }, [userData])
-
-
-
-  // I think need to get Lessons right?
-
+    useEffect(() => {
+        if (userData != null && classroom != null) {
+            Promise.all(
+                classroom.classroom_lessons.map((lessonString) =>
+                    getLessonByIDAndName(lessonString, userData)
+                )
+            ).then((results) => {
+                setLessons(results.filter(Boolean)); // remove nulls
+            });
+        }
+    }, [userData]);
 
   // const handleDelete = () => {
   // }
 
-  // temporary wannnnnnnnnnnn
+/*   // temporary wannnnnnnnnnnn
   useEffect(() => {
     const testData = 
         {
@@ -78,7 +84,7 @@ function ViewClassroom({ userData }) {
         }
     ;
     setClassroom(testData);
-      }, []);
+      }, []); */
 
 
 
@@ -108,14 +114,14 @@ function ViewClassroom({ userData }) {
       <div className={styles.infoHeader}>
 
           <div className={styles.smallRow}>
-              {classroom != null ? classroom.id : "null"}
+              {classroom != null ? classroom.classroom_id : "null"}
           </div>
           <div className={styles.bigRow}>
               <div className={styles.courseTitle}>
-                  {classroom != null ? classroom.classroomName : "null"}
+                  {classroom != null ? classroom.classroom_name : "null"}
               </div>
               <div className={styles.courseStatus}>
-                  {classroom != null ? classroom.courseStatus : "null"}
+                  {classroom != null ? classroom.classroom_status : "null"}
               </div>
               {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}} onClick = {handleEdit}>Edit</button>}
               {userData != null && userData.role != 'student' && <button className={styles.smallButton} onClick={() => setShowDelete(true)}>Delete</button>}
@@ -135,18 +141,18 @@ function ViewClassroom({ userData }) {
 
       <div className={styles.infoScroll}>
           <div className={styles.container}>
-            <InfoBlock title="Course"           content={classroom != null ? classroom.courseTitle : "null"}/>
-            <InfoBlock title="Supervisor"       content={classroom != null ? classroom.supervisor : "null"}/>
-            <InfoBlock title="Date Created"     content={classroom != null ? `${new Date(classroom.classroomCreateDate).toDateString()} ${new Date(classroom.classroomCreateDate).toTimeString()}` : "null"}/>
-            <InfoBlock title="Last Updated"     content={classroom != null ? `${new Date(classroom.classroomUpdateDate).toDateString()} ${new Date(classroom.classroomUpdateDate).toTimeString()}` : "null"}/>
-            <InfoBlock title="Starting Date"    content={classroom != null ? `${new Date(classroom.classroomStartingDate).toDateString()} ${new Date(classroom.classroomStartingDate).toTimeString()}` : "null"}/>
+            <InfoBlock title="Course"           content={classroom != null ? classroom.classroom_course : "null"}/>
+            <InfoBlock title="Supervisor"       content={classroom != null ? classroom.classroom_instructor : "null"}/>
+            <InfoBlock title="Date Created"     content={classroom != null ? `${new Date(classroom.classroom_createdDate).toDateString()} ${new Date(classroom.classroom_createdDate).toTimeString()}` : "null"}/>
+            <InfoBlock title="Last Updated"     content={classroom != null ? `${new Date(classroom.classroom_updatedDate).toDateString()} ${new Date(classroom.classroom_updatedDate).toTimeString()}` : "null"}/>
+            <InfoBlock title="Starting Date"    content={classroom != null ? `${new Date(classroom.classroom_startDate).toDateString()} ${new Date(classroom.classroom_startDate).toTimeString()}` : "null"}/>
             <InfoBlock title="Duration (weeks)" content={durationDisplay}/>
-            <InfoBlock title="Description"      content={classroom != null ? classroom.description : "null"}/>
-            <InfoBlock title="Students"         content={classroom != null ? classroom.students?.length > 0 ? classroom.students : "No Student" : "No Student"}/>
+            <InfoBlock title="Description"      content={classroom != null ? classroom.classroom_description : "null"}/>
+            <InfoBlock title="Students"         content={classroom != null ? classroom.classroom_students?.length > 0 ? classroom.classroom_students : "No Student" : "No Student"}/>
             <InfoBlock title="Lesson included" />
 
             <div className={styles.cardContainer}>
-                {classroom.lessons?.map((lesson) => <LessonCard key="aaa" lessonID="aaa" lessonTitle="aaa" creditPoint="6" instructorName="bibu" />)}
+                {lessons?.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().title} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} />)}
             </div>
               
 

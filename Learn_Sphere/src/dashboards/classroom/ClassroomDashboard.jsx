@@ -119,10 +119,10 @@ function ClassroomDashboard({ userData }) {
           {classrooms.map((classroom) => (
             <ClassroomCard
               key={classroom.id}
-              classroomId={classroom.id}
-              classroomName={classroom.classroomName}
-              courseTitle={classroom.courseTitle}
-              supervisor={classroom.supervisor}
+              classroomId={classroom.data().classroom_id}
+              classroomName={classroom.data().classroom_name}
+              courseTitle={classroom.data().classroom_course}
+              supervisor={classroom.data().classroom_instructor}
               href={`/home/classrooms/${classroom.id}` }
             />
           ))}

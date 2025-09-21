@@ -31,11 +31,12 @@ export async function getClassrooms(status, userData) {
 
 export async function getClassroom(id, userData) {
     if (userData != null) {
-        const docRef = doc(db, "classroom", id);
+        const docRef = doc(db, "classrooms", id);
         
         const docSnap = await getDoc(docRef);
+        
         if (docSnap.exists()) {
-            if (docSnap.data().classroomStatus != 'Published' && userData.role == 'student') {
+            if (docSnap.data().classroom_status != 'Published' && userData.role == 'student') {
                 return null;
             }
             
