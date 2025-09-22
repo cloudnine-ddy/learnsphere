@@ -14,8 +14,8 @@ export async function getClassrooms(status, userData) {
 
         //if the user is a student, then only allow access to published classroom
         //else, return classroom by the filter selected
-        const q = userData.role == "student" ? query(collection(db, "classrooms"), where("classroomStatus", "==", "Published")) :
-            status === true ? query(collection(db, "classrooms")) : query(collection(db, "classroom"), where("classroomStatus", "==", status));
+        const q = userData.role == "student" ? query(collection(db, "classrooms"), where("classroom_status", "==", "Published")) :
+            status === true ? query(collection(db, "classrooms")) : query(collection(db, "classrooms"), where("classroom_status", "==", status));
 
         const querySnapshot = await getDocs(q);
 
@@ -105,7 +105,7 @@ export async function getCoursesNonJoin(student) {
     const studentData = studentSnap.data();
     const joinedClassroomIDs = Array.isArray(studentData.classroomList) ? studentData.classroomList : [];
 
-    const allClassroomSnap = await getDocs(query(collection(db, "classrooms"), where("classroomStatus", "==", "Published")));
+    const allClassroomSnap = await getDocs(query(collection(db, "classrooms"), where("classroom_status", "==", "Published")));
 
     allClassroomSnap.forEach((docSnap) => {
         if (!joinedClassroomIDs.includes(docSnap.id)) {
