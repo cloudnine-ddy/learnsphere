@@ -14,6 +14,7 @@ import styles from "./ViewCourse.module.css";
 import InfoBlock from "../../components/display/InfoBlock";
 import MessageBox from "../../components/display/MessageBox";
 import LessonCard from "../../components/clickable/LessonCard";
+import { deleteCourses } from "../../components/deleteCourses";
 
 function ViewCourse({userData}) {
     let navigate = useNavigate();
@@ -69,11 +70,10 @@ function ViewCourse({userData}) {
     }, [course, userData]);
 
     const handleDelete = () => {
-        // deleteLessonFromDatabase(id)
-        // .then(() => deletePrereq(lesson.lessonID))
-        // .then(() => setShowDelete(false))
-        // .then(() => navigate("/home"))
-        // .catch((error) => console.error("Error deleting lesson:", error));
+        deleteCourses(id)
+        .then(() => setShowDelete(false))
+        .then(() => navigate("/home"))
+        .catch((error) => console.error("Error deleting lesson:", error));
     }
 
     const handleEdit = () => {
