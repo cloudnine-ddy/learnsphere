@@ -1,5 +1,5 @@
-﻿import { collection, doc, query, where, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
-import { db } from "./firebaseConfig";
+﻿import { collection, query, where, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { db } from "./firebaseConfig.js";
 
 export async function getLessons(filter, userData, options = {}) {
     const lessons = [];

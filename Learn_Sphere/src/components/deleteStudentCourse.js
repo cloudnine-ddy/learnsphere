@@ -3,11 +3,11 @@ import { db } from "./firebaseConfig.js";
 
 
 export async function deleteStudentCourse(studentID, courseID) {
-    /*
-        param: 
-            studentID = The "id" field of the user 
-            courseID = The "courseID" field of the document
-    */
+  /*
+      param: 
+          studentID = The "id" field of the user 
+          courseID = The "courseID" field of the document
+  */
   try {
     // Step 1: Query for the document(s)
     const scQuery = query(
@@ -24,7 +24,7 @@ export async function deleteStudentCourse(studentID, courseID) {
     }
 
     // Step 2: Delete each matching doc
-    const deletions = scSnapshot.docs.map((d) => 
+    const deletions = scSnapshot.docs.map((d) =>
       deleteDoc(doc(db, "student_course", d.id))
     );
 
@@ -37,4 +37,39 @@ export async function deleteStudentCourse(studentID, courseID) {
     console.error("Error deleting student_course:", error);
     throw error;
   }
+}
+
+export async function deleteStudentCourseByCourseID(courseID) {
+
+  try {
+    // Search for the course 
+
+    const scQuery = query(
+      collection(db, "student_course"),
+      where("student_course_courseId", "==", courseID)
+    );
+
+    const studentCourseSnapshot = await getDocs(scQuery);
+
+    if (studentCourseSnapshot.empty) {
+      console.warn("No matching course found to delete.");
+      return false;
+    }
+
+    const deletions = studentCourseSnapshot.docs.map((d) =>
+      deleteDoc(doc(db, "student_course", d.id))
+    );
+
+    await Promise.all(deletions);
+
+    console.log("✅ Successfully deleted student_course mapping.");
+    return true;
+
+
+
+  } catch (error) {
+    console.error("Error deleting student_course:", error);
+    throw error;
+  }
+
 }
