@@ -13,6 +13,11 @@ import { db } from "./firebaseConfig.js";
 */
 
 export async function getListOfCoursesFromStudent(studentID) {
+
+  /* param
+    studentID - the'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+  */
+
   try {
     // Step 1: get student_course docs for this student
     const scQuery = query(
@@ -48,9 +53,15 @@ export async function getListOfCoursesFromStudent(studentID) {
     console.error("Error fetching courses for student:", error);
     throw error;
   }
+
 }
 
 export async function getListOfStudentsFromCourse(courseID) {
+
+  /* param
+    courseID - the'courseID:' field in the 'courses' database. Example "BOSE"
+  */
+
   try {
     // Step 1: get student_course docs for this course
     const scQuery = query(

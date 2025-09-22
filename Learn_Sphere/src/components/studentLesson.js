@@ -3,28 +3,32 @@ import { db } from "./firebaseConfig.js";
 
 export async function addStudentLesson(lessonID, studentID) {
 
+  /* param
+      lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
+      studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+  */
 
-    const studentLessonData = {
-        student_lesson_lessonID: lessonID,
-        student_lesson_studentID: studentID,
-        student_lesson_completion: 0,
-    };
+  const studentLessonData = {
+    student_lesson_lessonID: lessonID,
+    student_lesson_studentID: studentID,
+    student_lesson_completion: 0,
+  };
 
-    // Save the course data to Firestore 
+  // Save the course data to Firestore 
 
-    try {
+  try {
 
-        const docRef = await addDoc(collection(db, "student_lesson"), studentLessonData);
-        console.log("student_lesson entry was successfully added with ID:", docRef.id);
+    const docRef = await addDoc(collection(db, "student_lesson"), studentLessonData);
+    console.log("student_lesson entry was successfully added with ID:", docRef.id);
 
-        return docRef.id;
+    return docRef.id;
 
-    } catch (error) {
+  } catch (error) {
 
-        console.error("Error creating the studentLesson:", error);
-        throw new Error("Error creating studentLesson");
+    console.error("Error creating the studentLesson:", error);
+    throw new Error("Error creating studentLesson");
 
-    }
+  }
 
 }
 
@@ -36,13 +40,14 @@ const studentLessonData = {
         student_lesson_completion: completion,
     };
 
-*/ 
+*/
 
 export async function getListOfLessonsFromStudent(studentID) {
-  /*
-  param: 
-    studentID - the user 'id:'
-  */ 
+
+  /* param
+    studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+  */
+
   try {
     // Step 1: get student_lesson docs for this student
     const scQuery = query(
@@ -81,6 +86,11 @@ export async function getListOfLessonsFromStudent(studentID) {
 }
 
 export async function getListOfStudentsFromCourse(lessonID) {
+
+  /* param
+    lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
+  */
+
   try {
     // Step 1: get student_lesson docs for this lesson
     const scQuery = query(
@@ -114,7 +124,7 @@ export async function getListOfStudentsFromCourse(lessonID) {
     );
 
     return students; // array of student documents
-    
+
   } catch (error) {
     console.error("Error fetching students from courses:", error);
     throw error;
@@ -129,14 +139,15 @@ const studentLessonData = {
         student_lesson_completion: completion,
     };
 
-*/ 
+*/
 
 export async function deleteStudentLesson(studentID, lessonID) {
-    /*
-        param: 
-            studentID = The "id" field of the user 
-            courseID = The "courseID" field of the document
+
+    /* param
+        studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+        lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
     */
+   
   try {
     // Step 1: Query for the document(s)
     const scQuery = query(
@@ -153,7 +164,7 @@ export async function deleteStudentLesson(studentID, lessonID) {
     }
 
     // Step 2: Delete each matching doc
-    const deletions = scSnapshot.docs.map((d) => 
+    const deletions = scSnapshot.docs.map((d) =>
       deleteDoc(doc(db, "student_lesson", d.id))
     );
 
@@ -169,6 +180,10 @@ export async function deleteStudentLesson(studentID, lessonID) {
 }
 
 export async function deleteStudentLessonByLessonID(lessonID) {
+
+  /* param
+    lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
+  */
 
   try {
     // Search for the lesson_classroom 
@@ -196,6 +211,10 @@ export async function deleteStudentLessonByLessonID(lessonID) {
 }
 
 export async function deleteStudentLessonByStudentID(studentID) {
+
+  /* param
+    studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+  */
 
   try {
     // Search for the lesson_classroom 

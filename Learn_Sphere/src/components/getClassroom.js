@@ -87,6 +87,10 @@ export async function getClassroomByStudent(studentID) {
 }
 
 export async function getCoursesNonJoin(student) {
+
+    /* param
+        student - the whole student object. NOT the studentID. Example {id: "student123", firstName: "John", lastName: "Doe", title: "Mr.", role: "student"}
+    */
     const classrooms = [];
 
     if (!student?.id) {

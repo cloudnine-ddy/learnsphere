@@ -6,6 +6,10 @@ import {deleteLessonClassroomByClassroomID} from "./lessonClassroom.js";
 
 export async function deleteClassroom(classroomID) {
 
+    /* param
+        classroomID - the classroom 'classroom_id:' field in the database
+    */
+
     // Deleting the classroom 
     try {
         // Search for the classroom 

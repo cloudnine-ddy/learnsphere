@@ -3,6 +3,10 @@ import { db } from "./firebaseConfig.js";
 
 export async function addLessonClassroom(lessonID, classroomID) {
 
+    /* param
+        lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
+        classroomID - the classroom 'classroom_id:' field in the 'classrooms' database. Example "6003"
+    */
 
     const lessonClassroomData = {
         lesson_classroom_lessonID: lessonID,
@@ -37,10 +41,12 @@ const lessonClassroomData = {
 */ 
 
 export async function getListOfLessonsFromClassroom(classroomID) {
-  /*
+  
+    /*
   param: 
-    classroomID - the classroom'classroom_id:'
+    classroomID - the classroom 'classroom_id:' field in the 'classrooms' database. Example "6003"
   */ 
+
   try { 
     // Step 1: get lesson_classroom docs for this classroom 
     const lcQuery = query(
@@ -79,6 +85,11 @@ export async function getListOfLessonsFromClassroom(classroomID) {
 }
 
 export async function getListOfClassroomsFromLesson(lessonID) {
+
+    /* param
+        lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
+    */
+
   try {
     // Step 1: get lesson_classroom docs for this lesson 
     const lcQuery = query(
@@ -117,11 +128,12 @@ export async function getListOfClassroomsFromLesson(lessonID) {
 }
 
 export async function deleteLessonClassroom(lessonID, classroomID) {
-    /*
-        param: 
-            lessonID = The "id" field of the lesson 
-            classroomID = The "classroomID" field of the document
-    */
+
+    /* param
+        lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
+        classroomID - the classroom 'classroom_id:' field in the 'classrooms' database. Example "6003"  
+    */ 
+
   try {
     // Step 1: Query for the document(s)
     const lcQuery = query(
@@ -155,6 +167,10 @@ export async function deleteLessonClassroom(lessonID, classroomID) {
 
 export async function deleteLessonClassroomByLessonID(lessonID) {
 
+    /* param
+        lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
+    */
+
   try {
     // Search for the lesson_classroom 
 
@@ -181,6 +197,10 @@ export async function deleteLessonClassroomByLessonID(lessonID) {
 }
 
 export async function deleteLessonClassroomByClassroomID(classroomID) {
+
+    /* param
+        classroomID - the classroom 'classroom_id:' field in the 'classrooms' database. Example "6003"
+    */
 
   try {
     // Search for the lesson_classroom 

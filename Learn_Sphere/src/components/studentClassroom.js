@@ -3,6 +3,10 @@ import { db } from "./firebaseConfig.js";
 
 export async function addStudentClassroom(classroomID, studentID) {
 
+    /* param
+        classroomID - the classroom 'classroom_id:' field in the 'classrooms' database. Example "6003"
+        studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+    */
 
     const studentClassroomData = {
         student_classroom_classroomID: classroomID,
@@ -79,6 +83,11 @@ export async function getListOfClassroomsFromStudent(studentID) {
 }
 
 export async function getListOfStudentsFromClassroom(classroomID) {
+
+    /* param
+        classroomID - the classroom 'classroom_id:' field in the 'classrooms' database. Example "6003"
+    */
+
   try {
     // Step 1: get student_classroom docs for this classroom
     const scQuery = query(
@@ -120,11 +129,12 @@ export async function getListOfStudentsFromClassroom(classroomID) {
 }
 
 export async function deleteStudentClassroom(studentID, classroomID) {
-    /*
-        param: 
-            studentID = The "id" field of the user 
-            classroomID = The "classroomID" field of the document
-    */
+
+    /* param
+        studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+        classroomID - the classroom 'classroom_id:' field in the 'classrooms' database. Example "6003"
+    */ 
+
   try {
     // Step 1: Query for the document(s)
     const scQuery = query(
@@ -158,6 +168,10 @@ export async function deleteStudentClassroom(studentID, classroomID) {
 
 export async function deleteStudentClassroomByClassroomID(classroomID) {
 
+    /* param
+        classroomID - the classroom 'classroom_id:' field in the 'classrooms' database. Example "6003"
+    */
+
     try {
         // Search for the classroom 
 
@@ -184,6 +198,10 @@ export async function deleteStudentClassroomByClassroomID(classroomID) {
 }
 
 export async function deleteStudentClassroomByStudentID(studentID) {
+
+    /* param
+        studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+    */
 
     try {
         // Search for the classroom 

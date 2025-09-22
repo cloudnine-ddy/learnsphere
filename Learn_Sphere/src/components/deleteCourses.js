@@ -5,6 +5,10 @@ import { deleteStudentCourseByCourseID } from "./deleteStudentCourse.js";
 
 export async function deleteCourses(courseID){
 
+    /* param
+        courseID - the course 'courseID:' field in the 'courses' database
+    */
+
     try {
         // Search for the course 
 

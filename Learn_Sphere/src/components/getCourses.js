@@ -50,6 +50,10 @@ export async function getCourse(id, userData) {
 }
 
 export async function getCoursesByStudent(studentID) {
+    
+    /* param
+        studentID - the'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+    */
     const courses = [];
 
     const studentRef = doc(db, "users", studentID);
