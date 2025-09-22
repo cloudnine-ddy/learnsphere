@@ -64,7 +64,7 @@ export async function getListOfLessonsFromStudent(studentID) {
       const batch = lessonIds.slice(i, i + 10);
       const lessonQuery = query(
         collection(db, "lessons"),
-        where("__name__", "in", batch) // query by Firestore doc IDs
+        where("lessonID", "in", batch) // query by Firestore doc IDs
       );
       chunks.push(getDocs(lessonQuery));
     }
@@ -164,6 +164,60 @@ export async function deleteStudentLesson(studentID, lessonID) {
 
   } catch (error) {
     console.error("Error deleting student_course:", error);
+    throw error;
+  }
+}
+
+export async function deleteStudentLessonByLessonID(lessonID) {
+
+  try {
+    // Search for the lesson_classroom 
+
+    const scQuery = query(
+      collection(db, "student_lesson"),
+      where("student_lesson_lessonID", "==", lessonID)
+    );
+
+    const studentLessonSnapshot = await getDocs(scQuery);
+
+    if (!studentLessonSnapshot.empty) {
+      const deletions = studentLessonSnapshot.docs.map((d) =>
+        deleteDoc(doc(db, "student_lesson", d.id))
+      );
+      await Promise.all(deletions);
+      console.log(`✅ Deleted ${studentLessonSnapshot.size} student_lesson mappings for lesson ${lessonID}`);
+    }
+
+    console.log(`Removed lesson ${lessonID} from students, classrooms, and student lessons`);
+  } catch (error) {
+    console.error("Error deleting student_lesson:", error);
+    throw error;
+  }
+}
+
+export async function deleteStudentLessonByStudentID(studentID) {
+
+  try {
+    // Search for the lesson_classroom 
+
+    const scQuery = query(
+      collection(db, "student_lesson"),
+      where("student_lesson_studentID", "==", studentID)
+    );
+
+    const studentLessonSnapshot = await getDocs(scQuery);
+
+    if (!studentLessonSnapshot.empty) {
+      const deletions = studentLessonSnapshot.docs.map((d) =>
+        deleteDoc(doc(db, "student_lesson", d.id))
+      );
+      await Promise.all(deletions);
+      console.log(`✅ Deleted ${studentLessonSnapshot.size} student_lesson mappings for student ${studentID}`);
+    }
+
+    console.log(`Removed student ${studentID} from students, classrooms, and student lessons`);
+  } catch (error) {
+    console.error("Error deleting student_lesson:", error);
     throw error;
   }
 }
