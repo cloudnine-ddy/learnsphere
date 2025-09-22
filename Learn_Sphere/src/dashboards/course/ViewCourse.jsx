@@ -70,7 +70,7 @@ function ViewCourse({userData}) {
     }, [course, userData]);
 
     const handleDelete = () => {
-        deleteCourses(id)
+        deleteCourses(course.courseID)
         .then(() => setShowDelete(false))
         .then(() => navigate("/home"))
         .catch((error) => console.error("Error deleting lesson:", error));
