@@ -51,12 +51,12 @@ function DashboardPage() {
                 if (cancelled) {
                     return;
                 }
-
-                if (currentUser) {
-                    setUser(currentUser);
-                } else {
-                    navigate("/reg");
-                }
+                
+                if (currentUser?.uid !== user?.uid) { 
+                    setUser(currentUser || null);
+                    if (!currentUser) navigate("/reg");
+                  }
+                
             } catch (error) {
                 console.error("Failed to get current user:", error);
                 if (!cancelled) {
@@ -70,7 +70,7 @@ function DashboardPage() {
         return () => {
             cancelled = true;
         };
-    }, [user]);
+    }, []);
 
 
     // User Data
@@ -104,6 +104,7 @@ function DashboardPage() {
 
     // Get ALL Instructors
     useEffect(() => {
+        console.log("Getting instructors");
         if (!userData) {
             setInstructors([]);
             return;
@@ -142,6 +143,7 @@ function DashboardPage() {
 
     // Get ALL Units
     useEffect(() => {
+        console.log("Getting units");
         if (!userData || userData.role === "student") {
             setCurrentUnits([]);
             return;
@@ -177,6 +179,8 @@ function DashboardPage() {
     
 
     const logOutUser = () => {
+        console.log("Logging out");
+        navigate("/reg");
         logOut();
         setUser(null);
     };
