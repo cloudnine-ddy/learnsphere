@@ -1,9 +1,13 @@
-import { collection, query, where, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { collection, query, where, getDocs, deleteDoc, doc, getDoc} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig.js";
 import { deleteStudentCourseByCourseID } from "./deleteStudentCourse.js";
 
 
 export async function deleteCourses(courseID){
+
+    /* param
+        courseID - the course 'courseID:' field in the 'courses' database
+    */
 
     try {
         // Search for the course 

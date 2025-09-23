@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { collection, query, where, getDocs, deleteDoc, doc , getDoc} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig.js";
 
 
@@ -6,7 +6,7 @@ export async function deleteStudentCourse(studentID, courseID) {
   /*
       param: 
           studentID = The "id" field of the user 
-          courseID = The "courseID" field of the document
+          courseID = The "courseID" field of the document. Example "BOSE"
   */
   try {
     // Step 1: Query for the document(s)
@@ -40,6 +40,10 @@ export async function deleteStudentCourse(studentID, courseID) {
 }
 
 export async function deleteStudentCourseByCourseID(courseID) {
+
+  /* param
+    courseID - the course 'courseID:' field in the 'courses' database. Example "BOSE"
+  */
 
   try {
     // Search for the course 

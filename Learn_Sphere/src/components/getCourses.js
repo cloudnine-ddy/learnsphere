@@ -1,4 +1,4 @@
-﻿import { collection, query, where, getDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+﻿import { collection, query, where, getDoc, getDocs, deleteDoc, doc} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig.js";
 import {getListOfCoursesFromStudent} from "./getStudentCourse";
 
@@ -50,6 +50,10 @@ export async function getCourse(id, userData) {
 }
 
 export async function getCoursesByStudent(studentID) {
+    
+    /* param
+        studentID - the'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+    */
     const courses = [];
 
     const studentRef = doc(db, "users", studentID);
