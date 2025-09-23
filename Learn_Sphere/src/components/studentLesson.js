@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { collection, query, where, getDocs, deleteDoc, doc, documentId, addDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig.js";
 
 export async function addStudentLesson(lessonID, studentID) {

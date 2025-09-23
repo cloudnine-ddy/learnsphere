@@ -73,7 +73,7 @@ export async function enrollCourseInDatabase(student, courseID) {
 
     // Step 3: Get lessons student is already enrolled in
     const studentLessons = await getListOfLessonsFromStudent(student.id);
-    const enrolledLessonIDs = studentLessons.map(lesson => lesson.lessonID);
+    const enrolledLessonIDs = studentLessons.map(lesson => lesson.data().lessonID);
 
     console.log("✅ Already enrolled lessons:", enrolledLessonIDs);
 
@@ -86,7 +86,7 @@ export async function enrollCourseInDatabase(student, courseID) {
           continue;
         }
       
-        const lessonID = lessonDoc.id;
+        const lessonID = lessonDoc.data().lessonID;
       
         if (!enrolledLessonIDs.includes(lessonID)) {
           await addStudentLesson(lessonID, student.id);
