@@ -25,6 +25,7 @@ function ViewClassroom({ userData }) {
   const [classroom, setClassroom] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [request, setRequest] = useState([])
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   const [showDelete, setShowDelete] = useState(false);
 
@@ -44,7 +45,34 @@ function ViewClassroom({ userData }) {
 
 
 
-
+  const handleCancelJoin = async () => {
+    try {
+      if (!userData?.id || !classroom?.classroom_id) return;
+  
+      // Step 1: Remove student from classroom_students array
+      const updatedStudents = classroom.classroom_students.filter(
+        (s) => !s.startsWith(userData.id + ":")
+      );
+      await updateClassroomStudents(classroom.classroom_id, updatedStudents);
+  
+      // Step 2: Remove mapping in student_classroom
+      await deleteStudentClassroom(userData.id, classroom.classroom_id);
+  
+      // Step 3: Update local state
+      setClassroom((prev) => ({
+        ...prev,
+        classroom_students: updatedStudents,
+      }));
+  
+      console.log(`✅ Student ${userData.id} left classroom ${classroom.classroom_id}`);
+  
+      // Close the confirmation box
+      setShowCancelConfirm(false);
+      navigate("/home/classrooms");
+    } catch (err) {
+      console.error("Error cancelling join:", err);
+    }
+  };
 
 
 
@@ -259,6 +287,16 @@ function ViewClassroom({ userData }) {
                       Cancel Join
                   </button>
               )}
+              {showCancelConfirm && (
+            <MessageBox
+                label="Leave Classroom"
+                message={`Are you sure you want to leave ${classroom?.classroom_name ?? "this classroom"}?`}
+                button_1="Stay"
+                button_2="Confirm"
+                onCancel={() => setShowCancelConfirm(false)}
+                onConfirm={handleCancelJoin}
+            />
+            )}
           </div>
 
       </div>
@@ -283,10 +321,9 @@ function ViewClassroom({ userData }) {
                 {classroom != null ? classroom.classroom_students?.length > 0 ? (
                     <div>
                         {classroom.classroom_students.map((classroom_students) => (
-                          
                         <div key={classroom_students} className={styles.tokenField}>
                             <span className={styles.token}>
-                                {classroom_students.split(":")[1]}
+                                {classroom_students}
                             </span>
 
                             <button className={styles.removeButton} onClick={() => handleRemove(classroom_students)}>
@@ -299,7 +336,7 @@ function ViewClassroom({ userData }) {
         )}
             <br />
             {userData?.role != "student" && (
-            <div className={styles.simpleText}>
+            <div>
                 <p className={styles.justTitle}>Students Waiting For Approval:</p>
                 {request != null ? request?.length > 0 ? (
                     <div>{request.map((reqSnap) => {
@@ -307,7 +344,7 @@ function ViewClassroom({ userData }) {
                             return (
                                 <div key={reqSnap.id} className={styles.tokenField}>
                                     <span className={styles.token}>
-                                        {data.request_student_name.split(":")[1]}
+                                        {data.request_student_name}
                                     </span>
 
                                     <button className={styles.approveButton} onClick={() => handleApprove(data)}>
