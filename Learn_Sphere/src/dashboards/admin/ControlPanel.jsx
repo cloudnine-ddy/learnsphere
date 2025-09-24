@@ -17,7 +17,7 @@ function ControlPanel() {
                 return getUserInfo(user);
             })
             .then((info) => {
-                if (info.role == "student")
+                if (info.role !== "admin")
                 {
                     navigate("/home");
                 }
