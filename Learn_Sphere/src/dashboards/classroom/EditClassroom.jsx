@@ -10,6 +10,7 @@ import { updateClassroomInDatabase } from "../../components/updateClassrooms";
 import { getCourses } from "../../components/getCourses";
 import { getLessonsbyCourseID } from "../../components/getLessons";
 
+
 import styles from "./EditClassroom.module.css";
 
 import InputField from "../../components/typable/InputField";
@@ -337,6 +338,16 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     navigate(`/home/classrooms/${id}`);
   };
 
+  function isValid() {
+    for (const [key, value] of Object.entries(classroom)) {
+      if (value == "") {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   function submitForm(e) {
     setEnabled(false);
     if (isValid()) {
@@ -349,15 +360,15 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
         classroom_status: classroom.classroom_status,
         classroom_startDate: classroom.classroom_startDate,
         classroom_durationWeeks: classroom.classroom_durationWeeks,
-        classroom_lessons: classroom.classroom_lessons,
-        classroom_students: classroom.classroom_students,
+        classroom_lessons: classroomLessons,
+        // classroom_students: classroom.classroom_students,
       };
 
       console.log(updates);
       updateClassroomInDatabase(id, updates)
         .then(() => {
           setErrorMessages(["Successfully updated a course!"]);
-          navigate(`/home/courses/${id}`);
+          navigate(`/home/classrooms/${id}`);
         })
         .catch((error) => setErrorMessages([error.message] || String(error)));
     } else {
@@ -366,15 +377,7 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     }
   }
 
-  function isValid() {
-    for (const [key, value] of Object.entries(classroom)) {
-      if (value == "") {
-        return false;
-      }
-    }
-
-    return true;
-  }
+  
 
   const handleClassroomChange = (e) => {
     const { name, value } = e.target;
@@ -413,6 +416,14 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
             onChange={handleClassroomChange}
           />
 
+          <TextArea
+              label="Classroom Description"
+              type="textarea"
+              id="classroom_description"
+              name="classroom_description"
+              value={classroom.classroom_description}
+              onChange={handleClassroomChange}
+          />
           {/* <SelectOneFromList
             label="Course"
             name="classroom_course"

@@ -63,3 +63,40 @@ export async function deleteClassroom(classroomID) {
         throw error;
     }
 }
+
+
+
+
+
+
+
+
+
+
+export async function deleteClassroomsByCourse(courseID) {
+  try {
+    const classroomQuery = query(
+      collection(db, "classrooms"),
+      where("classroom_course", "==", courseID)
+    );
+
+    const classroomSnapshot = await getDocs(classroomQuery);
+
+    if (classroomSnapshot.empty) {
+      console.log(`No classrooms found for course ${courseID}`);
+      return;
+    }
+
+    for (const docSnap of classroomSnapshot.docs) {
+      const classroomData = docSnap.data();
+      await deleteClassroom(classroomData.classroom_id);
+    }
+
+    console.log(
+      `✅ Deleted ${classroomSnapshot.size} classroom(s) for course ${courseID}`
+    );
+  } catch (error) {
+    console.error("Error deleting classrooms by course:", error);
+    throw error;
+  }
+}
