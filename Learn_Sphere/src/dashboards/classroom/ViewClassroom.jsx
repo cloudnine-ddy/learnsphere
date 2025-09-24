@@ -7,9 +7,11 @@ import { getClassroom } from "../../components/getClassroom";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { getLessonByIDAndName } from "../../components/getLessons";
 import { deleteClassroom } from "../../components/deleteClassroom";
-import { getRequestsByClassroom } from "../../components/requestClassroom";
+import { getRequestsByClassroom, deleteRequestByStudentAndClassroom } from "../../components/requestClassroom";
+import { updateClassroomStudents } from "../../components/updateClassrooms";
 
-
+import { addStudentClassroom } from "../../components/studentClassroom";
+import {deleteStudentClassroomByStudentID} from "../../components/studentClassroom";
 import styles from "./ViewClassroom.module.css";
 
 import InfoBlock from "../../components/display/InfoBlock";
@@ -129,17 +131,95 @@ function ViewClassroom({ userData }) {
     }
 
 
-    const handleRemove = () => {
-        console.log("Remove Student")
-    }
+    const handleRemove = async (student_string) => {
+        try {
+            // Step 1: split into ID and name
+            const [studentID, studentName] = student_string.split(":").map(s => s.trim());
+        
+            if (!studentID) {
+              console.error("Invalid student string:", student_string);
+              return;
+            }
+        
+            // Step 2: filter out this student from classroom_students
+            const updatedStudents = classroom.classroom_students.filter(
+              (s) => s !== student_string
+            );
+        
+            // Step 3: update classroom
+            await updateClassroomStudents(classroom.classroom_id, updatedStudents);
+        
+            // Step 4: delete from student_classroom collection
+            await deleteStudentClassroomByStudentID(studentID);
+        
+            console.log(`✅ Removed ${studentName} (${studentID}) from classroom ${classroom.classroom_id}`);
+        
+            // Step 5: update local state so UI refreshes
+            setClassroom({
+              ...classroom,
+              classroom_students: updatedStudents,
+            });
+        
+          } catch (err) {
+            console.error("Error removing student:", err);
+          }
+        };
 
-    const handleApprove = () => {
-        console.log("Approve Student")
-    }
+
+    const handleApprove = (student_request) => {
+        const { request_student_id, request_student_name } = student_request;
+      
+        // Format "id: name"
+        const newStudentEntry = `${request_student_id}: ${request_student_name}`;
+      
+        // Merge into existing classroom_students
+        const updatedStudents = [
+          ...(classroom.classroom_students || []),
+          newStudentEntry,
+        ];
+      
+        // Update Firestore first
+        updateClassroomStudents(classroom.classroom_id, updatedStudents)
+          .then(() => {
+            // Then delete the request
+            return deleteRequestByStudentAndClassroom(
+              request_student_id,
+              classroom.classroom_id
+            );
+          })
+          .then(() => {
+            // Update local state so UI shows instantly
+            setClassroom((prev) => ({
+              ...prev,
+              classroom_students: updatedStudents,
+            }));
+            setRequest((prev) =>
+              prev.filter(
+                (reqSnap) => reqSnap.data().request_student_id !== request_student_id
+              )
+            );
+      
+            console.log("Student Approved:", newStudentEntry);
+          })
+          .catch((err) => console.error("Error approving student:", err));
+      };
     
-    const handleReject = () => {
-        console.log("Reject Student")
-    }
+      const handleReject = (student_request) => {
+        const { request_student_id, request_classroom_id } = student_request;
+      
+        deleteRequestByStudentAndClassroom(request_student_id, request_classroom_id)
+          .then(() => {
+            // Update local state so UI refreshes
+            setRequest((prev) =>
+              prev.filter(
+                (reqSnap) => reqSnap.data().request_student_id !== request_student_id
+              )
+            );
+      
+            console.log(`❌ Rejected request from student ${request_student_id}`);
+          })
+          .catch((err) => console.error("Error rejecting student request:", err));
+      };
 
   const durationDisplay =
         classroom != null
@@ -192,7 +272,7 @@ function ViewClassroom({ userData }) {
             
             
             
-            
+        {userData?.role != "student" && (
             <div>
                 <p className={styles.justTitle}>Students Included:</p>
                 {classroom != null ? classroom.classroom_students?.length > 0 ? (
@@ -203,15 +283,16 @@ function ViewClassroom({ userData }) {
                                 {classroom_students}
                             </span>
 
-                            <button className={styles.removeButton} onClick={() => handleRemove()}>
+                            <button className={styles.removeButton} onClick={() => handleRemove(classroom_students)}>
                                 Remove
                             </button>
                         </div> ))}
                     </div>)
                      : "No Student" : "No Student"}
             </div>
-            
+        )}
             <br />
+            {userData?.role != "student" && (
             <div>
                 <p className={styles.justTitle}>Students Waiting For Approval:</p>
                 {request != null ? request?.length > 0 ? (
@@ -223,16 +304,17 @@ function ViewClassroom({ userData }) {
                                         {data.request_student_name}
                                     </span>
 
-                                    <button className={styles.approveButton} onClick={() => handleApprove()}>
+                                    <button className={styles.approveButton} onClick={() => handleApprove(data)}>
                                         Approve
                                     </button>
-                                    <button className={styles.rejectButton} onClick={() => handleReject()}>
+                                    <button className={styles.rejectButton} onClick={() => handleReject(data)}>
                                         Reject
                                     </button>
                                 </div> )})}
                     </div>)
                      : "No Student" : "No Student"}
             </div>
+            )}
             <br />
             
             

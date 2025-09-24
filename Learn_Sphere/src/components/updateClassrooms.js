@@ -1,4 +1,4 @@
-import { doc, updateDoc , getDoc} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { doc, updateDoc , getDoc, query, where, getDocs, collection} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig.js";
 
 import { getCurrentUser, getUserInfo } from "./manageUsers";
@@ -35,11 +35,27 @@ export async function updateClassroomDescription(classroomId, description) {
 
 // Update classroom students (replace whole array)
 export async function updateClassroomStudents(classroomId, studentsArray) {
-  const docRef = doc(db, "classrooms", classroomId);
+  // Query for the classroom with the matching classroom_id field
+  const q = query(
+    collection(db, "classrooms"),
+    where("classroom_id", "==", classroomId)
+  );
+
+  const snap = await getDocs(q);
+
+  if (snap.empty) {
+    console.warn("No classroom found with classroom_id:", classroomId);
+    return;
+  }
+
+  // Assuming classroom_id is unique, so we only update the first match
+  const docRef = snap.docs[0].ref;
+
   await updateDoc(docRef, {
-    classroom_students: studentsArray.map(s => s.trim()).filter(Boolean),
+    classroom_students: studentsArray.map((s) => s.trim()).filter(Boolean),
     classroom_updatedDate: new Date().toISOString(),
   });
+
   console.log("Updated classroom students:", studentsArray);
 }
 
