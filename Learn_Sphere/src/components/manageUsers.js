@@ -1,5 +1,5 @@
 ﻿import { getAuth, signInWithEmailAndPassword, deleteUser, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-auth.js";
-import {collection, doc, query, where, getDoc, setDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import {collection, doc, query, where, getDoc, setDoc, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { auth, db } from "./firebaseConfig";
 import { use } from "react";
 
@@ -262,5 +262,24 @@ export async function getTokens(role=true)
     else
     {
         throw "No user found!";
+    }
+}
+
+export async function removeToken(tokenValue) {
+    let user = await getCurrentUser();
+    let userInfo = await getUserInfo(user);
+
+    if (user != null && userInfo.role != "student") {
+        const tokenRef = doc(db, "tokens", tokenValue); // use value as doc ID
+        const existingToken = await getDoc(tokenRef);
+
+        if (existingToken.exists()) {
+            await deleteDoc(tokenRef);
+            return;
+        } else {
+            throw "NOT_FOUND";
+        }
+    } else {
+        throw "NOT_ALLOWED";
     }
 }
