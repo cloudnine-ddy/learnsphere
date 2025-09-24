@@ -298,7 +298,7 @@ function ViewClassroom({ userData }) {
         )}
             <br />
             {userData?.role != "student" && (
-            <div>
+            <div className={styles.simpleText}>
                 <p className={styles.justTitle}>Students Waiting For Approval:</p>
                 {request != null ? request?.length > 0 ? (
                     <div>{request.map((reqSnap) => {

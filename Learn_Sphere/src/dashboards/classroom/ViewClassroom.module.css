@@ -262,3 +262,11 @@
 .rejectButton:hover {
   background: #bc1d1d;
 }
+
+.simpleText {
+  font-size: 18px;
+  color: rgb(0, 0, 0);
+  /* font-weight: bold; */
+  text-align: center;
+  padding: 10 0px;
+}

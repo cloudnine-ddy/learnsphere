@@ -188,8 +188,8 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
                     prerequisiteOptions={prerequisiteOptions.map(
                         option => `${option.data().lessonID}: ${option.data().title}`)}
                 />
-                <a>{`Total credit points: ${course.courseTotalCreditpoint}`}</a>
-
+                <p className={styles.justTitle}>{`Total credit points: ${course.courseTotalCreditpoint}`}</p>
+                <br />
                 {/* <InputField
                     label="Credit Points"
                     type="number"

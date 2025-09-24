@@ -139,6 +139,7 @@ function ViewCourse({userData}) {
                     {/* I take this from the LessonDashboard, becauses I need the LessonCard to be here */}
                     {/* I mean now for visualization, I put them manually, but it should be changed to the commented one */}
                     {/* <InfoBlock title="course included" /> */}
+                    <p className={styles.justTitle}>Lesson included:</p>
                     <div className={styles.cardContainer}>
                         {lessons.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().title} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/lessons/${lesson.id}`}/>)}
                     </div>
