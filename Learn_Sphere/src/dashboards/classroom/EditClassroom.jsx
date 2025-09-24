@@ -35,9 +35,7 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     classroom_instructor: classroomData?.classroom_instructor || "",
     classroom_status: classroomData?.classroom_status || "",
     classroom_startDate: classroomData?.classroom_startDate || "",
-    classroom_durationWeeks: classroomData?.classroom_durationWeeks || 6,
-    classroom_lessons: classroomData?.classroom_lessons || [],
-    classroom_students: classroomData?.classroom_students || [],
+    classroom_durationWeeks: classroomData?.classroom_durationWeeks || 6
   });
 
 
@@ -72,197 +70,14 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     return parts.join(" ").replace(/\s+/g, " ").trim();
   }, [userData]);
 
-  // const INSTRUCTOR_MY_COURSES = "INSTRUCTOR_MY_COURSES";
-
-  // const instructorNames = useMemo(() => {
-  //   return instructorList?.map((i) => `${i.firstName} ${i.lastName}`) || [];
-  // }, [instructorList]);
-
   const [lessons, setLessons] = useState([]);
 
   const [classroomLessons, setClassroomLessons] = useState(
     classroomData?.classroom_lessons || []
   );
-
-  // async function submitForm(e)
-  // {
-  //     if (isValid()){
-  //       await updateClassroomInDatabase(id, classroom);
-  //         // const updates = {
-  //         //     id: classroom.id,
-  //         //     classroom_description: classroom.classroom_description,
-  //         //     classroom_name: classroom.classroom_name,
-  //         //     classroom_course: classroom.classroom_course,
-  //         //     classroom_instructor: classroom.classroom_instructor,
-  //         //     classroom_status: classroom.classroom_status,
-  //         //     classroom_lessons: classroom_lessons,
-  //         //     classroom_students: classroom_students,
-  //         //     classroom_startDate: classroom.classroom_startDate,
-  //         //     classroomCreateDate: classroom.classroomCreateDate,
-  //         //     classroomUpdateDate: classroom.classroomUpdateDate,
-  //         //     classroom_durationWeeks: classroom.classroom_durationWeeks
-  //         // };
-
-  //         console.log(updates);
-  //         updateClassroomInDatabase(id, updates)
-  //         .then(() => {
-  //             setErrorMessages(["Successfully updated a classroom!"]);
-  //             navigate(`/home/classrooms/${id}`);
-  //         })
-  //         .catch((error) => setErrorMessages([error]));
-  //         } else {
-  //             setErrorMessages(["Missing and invalid values! Check the form again."]);
-  //         }
-  // };
-
-
-
-  // const resolvedData = useMemo(() => {
-  //   if (initialData) {
-  //     return initialData;
-  //   }
-
-  //   if (!id) {
-  //     return null;
-  //   }
-
-  //   return classrooms.find((room) => room.id === id || room.classroom_id === id) || null;
-  // }, [classrooms, id, initialData]);
-
-  // const [selectedLessons, setSelectedLessons] = useState(() => resolvedData?.classroom_lessons || []);
-  // const [selectedStudents, setSelectedStudents] = useState(() => resolvedData?.classroom_students || []);
-  // const [studentInput, setStudentInput] = useState("");
-
-  // const lessonOptionStrings = useMemo(() => {
-  //   if (!lessonOptions || lessonOptions.length === 0) {
-  //     return [];
-  //   }
-
-  //   return lessonOptions.map((lesson) => {
-  //     if (typeof lesson === "string") {
-  //       return lesson;
-  //     }
-
-  //     const data = typeof lesson?.data === "function" ? lesson.data() : lesson || {};
-  //     const lessonID = data.lessonID || lesson.lessonID || lesson.id;
-  //     const lessonTitle = data.title || lesson.title || "Untitled Lesson";
-
-  //     return lessonID && lessonTitle ? `${lessonID}: ${lessonTitle}` : lessonTitle || lessonID || "Lesson";
-  //   });
-  // }, [lessonOptions]);
-
-  // const courseList = useMemo(
-  //   () => ["", ...courseOptions.filter(Boolean)],
-  //   [courseOptions]
-  // );
-
-  // const instructorList = useMemo(
-  //   () => ["", ...instructorOptions.filter(Boolean)],
-  //   [instructorOptions]
-  // );
-
-  // const sortedStudentOptions = useMemo(
-  //   () => Array.from(new Set(studentOptions.filter(Boolean))).sort(),
-  //   [studentOptions]
-  // );
-
-  // if (!resolvedData) {
-  //   return (
-  //     <div className={styles.wrapper}>
-  //       <div className={styles.infoHeader}>
-  //         <div className={styles.infoTitle}>Edit Classroom</div>
-  //       </div>
-  //       <p className={styles.placeholder}>Select a classroom to edit.</p>
-  //     </div>
-  //   );
-  // }
-
-  // const handleClassroomChange = (event) => {
-  //   const { name, value } = event.target;
-  //   setClassroom((prev) => ({
-  //     ...prev,
-  //     [name]: value
-  //   }));
-
-  //   if (errorMessages.length > 0) {
-  //     setErrorMessages([]);
-  //   }
-  // };
-
-  // const handleLessonsChange = (updatedLessons) => {
-  //   setSelectedLessons(updatedLessons);
-  // };
-
-  // const handleAddStudent = () => {
-  //   const trimmed = studentInput.trim();
-  //   if (!trimmed) {
-  //     return;
-  //   }
-
-  //   if (!selectedStudents.includes(trimmed)) {
-  //     setSelectedStudents((prev) => [...prev, trimmed]);
-  //   }
-
-  //   setStudentInput("");
-  // };
-
-  // const handleSelectStudent = (event) => {
-  //   const value = event.target.value;
-  //   if (!value) {
-  //     return;
-  //   }
-
-  //   if (!selectedStudents.includes(value)) {
-  //     setSelectedStudents((prev) => [...prev, value]);
-  //   }
-
-  //   event.target.value = "";
-  // };
-
-  // const handleRemoveStudent = (student) => {
-  //   setSelectedStudents((prev) => prev.filter((item) => item !== student));
-  // };
-
-  // const isValid = () => {
-  //   return ["classroom_id", "classroom_name", "classroom_course", "classroom_instructor"].every((key) => classroom[key]);
-  // };
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-
-  //   if (!isValid()) {
-  //     setErrorMessages(["Missing and invalid values! Check the form again."]);
-  //     return;
-  //   }
-
-  //   const payload = {
-  //     ...classroom,
-  //     classroom_durationWeeks:
-  //       classroom.classroom_durationWeeks === "" || classroom.classroom_durationWeeks === null
-  //         ? ""
-  //         : Number(classroom.classroom_durationWeeks),
-  //     classroom_lessons: selectedLessons,
-  //     classroom_students: selectedStudents
-  //   };
-
-  //   onSubmit?.(payload);
-  //   navigate(`/home/classrooms/${resolvedData.id || resolvedData.classroom_id}`);
-  // };
-
-  // const handleCancel = () => {
-  //   navigate(`/home/classrooms/${resolvedData.id || resolvedData.classroom_id}`);
-  // };
-
-
-
-
-
-  
-  
-  
-  
-
-  
+  const [classroomStudents, setClassroomStudents] = useState(
+    classroomData?.classroom_students || []
+  );
 
   // Check Student/Instructor -> Student? Go Home
   useEffect(() => {
@@ -277,55 +92,6 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
         }
       });
   }, []);
-
-
-
-  // Get Courses
-  const [courseList, setCourseList] = useState([]);
-
-  // useEffect(() => {
-  //   if (!userData) {
-  //     return;
-  //   }
-    
-  //   if (filter === INSTRUCTOR_MY_COURSES) {
-  //     getCourses(true, userData).then((allCourses) => {
-  //       const filtered = allCourses.filter((course) => {
-  //         const supervisor = course.data().courseSupervisor || "";
-  //         return instructorDisplayName
-  //           ? supervisor.trim().toLowerCase() ===
-  //               instructorDisplayName.trim().toLowerCase()
-  //           : false;
-  //       });
-  //       setCourseList(filtered);
-  //     });
-  //   } else {
-  //     getCourses(filter, userData).then((allCourses) => {
-  //       setCourseList(allCourses.map(c => c.data().courseName)); ///？？？
-  //     });
-  //   }
-  // }, [filter, userData, instructorDisplayName]);
-
-  // useEffect(() => {
-  //   if (!userData) return;
-  
-  //   let cancelled = false;
-  
-  //   // ✅ Get courses directly
-  //   getCourses(true, userData)
-  //     .then((courseSnapshots) => {
-  //       if (!cancelled) {
-  //         setCourseList(courseSnapshots); // keep the snapshots as-is
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Failed to load courses:", error);
-  //     });
-  
-  //   return () => {
-  //     cancelled = true;
-  //   };
-  // }, [userData]);
 
   // Some Functions
   const handleSubmit = (formData) => {
@@ -349,15 +115,15 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
         classroom_status: classroom.classroom_status,
         classroom_startDate: classroom.classroom_startDate,
         classroom_durationWeeks: classroom.classroom_durationWeeks,
-        classroom_lessons: classroom.classroom_lessons,
-        classroom_students: classroom.classroom_students,
+        classroom_lessons: classroomLessons,
+        classroom_students: classroomStudents,
       };
 
       console.log(updates);
       updateClassroomInDatabase(id, updates)
         .then(() => {
           setErrorMessages(["Successfully updated a course!"]);
-          navigate(`/home/courses/${id}`);
+          navigate(`/home/classrooms/${id}`);
         })
         .catch((error) => setErrorMessages([error.message] || String(error)));
     } else {
@@ -386,7 +152,28 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
   };
 
 
+  const classroomStudentOptions = studentList
+      .map((option) => {
+          if (typeof option === "string") {
+              return option;
+          }
 
+          if (typeof option === "object" && option !== null) {
+              if (typeof option.data === "function") {
+                  const data = option.data();
+                  const id = data.studentID || option.id || "";
+                  const name = [data.firstName, data.lastName].filter(Boolean).join(" ").trim();
+                  return [id, name].filter(Boolean).join(": ").trim();
+              }
+
+              const id = option.studentID || option.id || "";
+              const name = [option.firstName, option.lastName].filter(Boolean).join(" ").trim();
+              return [id, name].filter(Boolean).join(": ").trim();
+          }
+
+          return "";
+      })
+      .filter(Boolean);
   
 
   return (
@@ -457,6 +244,14 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
             prerequisiteOptions={lessons.map(
               (lesson) => `${lesson.data().lessonID}: ${lesson.data().title}`
             )}
+          />
+
+          <AddFromList
+            label="Add Student"
+            placeholder="Assign students to lesson"
+            prerequisites={classroomStudents}
+            setPrerequisites={setClassroomStudents}
+            prerequisiteOptions={classroomStudentOptions}
           />
 
           <SelectStatus
