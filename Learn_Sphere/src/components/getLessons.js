@@ -168,25 +168,41 @@ export async function getLessonByIDAndName(lessonString, userData)
     return null;
 }
 
-export async function getLessonsForCourse(courseID, userData) {
+export async function getLessonsbyCourseID(courseID, userData) {
     if (!courseID || !userData) {
-        return [];
+      return [];
     }
-
-    const courseRef = doc(db, "courses", courseID);
-    const courseSnap = await getDoc(courseRef);
-
-    if (!courseSnap.exists()) {
-        console.warn("Course not found while requesting lessons:", courseID);
-        return [];
+  
+    // find course by its courseID field
+    const q = query(
+      collection(db, "courses"),
+      where("courseID", "==", courseID)
+    );
+  
+    const querySnap = await getDocs(q);
+  
+    if (querySnap.empty) {
+      console.warn("Course not found while requesting lessons:", courseID);
+      return [];
     }
-
-    const courseData = courseSnap.data();
-    const lessonStrings = Array.isArray(courseData.courseLessons) ? courseData.courseLessons.filter(Boolean) : [];
-
+  
+    const courseData = querySnap.docs[0].data();
+    const lessonStrings = Array.isArray(courseData.courseLessons)
+      ? courseData.courseLessons.filter(Boolean)
+      : [];
+  
     if (lessonStrings.length === 0) {
-        return [];
+      return [];
     }
-
-    return getLessons(true, userData, { lessonStrings });
-}
+  
+    // fetch all lessons user can access (doc snapshots)
+    const allLessons = await getLessons(true, userData);
+  
+    // filter down to matching ones, but keep full doc snapshots
+    return allLessons.filter((lessonDoc) => {
+      const lessonID = lessonDoc.data().lessonID;
+      const lessonTitle = lessonDoc.data().title;
+      const combined = `${lessonID}: ${lessonTitle}`;
+      return lessonStrings.includes(combined);
+    });
+  }

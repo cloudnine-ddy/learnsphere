@@ -8,6 +8,7 @@ import { getListOfCoursesFromStudent } from "../../components/getStudentCourse";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { updateClassroomInDatabase } from "../../components/updateClassrooms";
 import { getCourses } from "../../components/getCourses";
+import { getLessonsbyCourseID } from "../../components/getLessons";
 
 import styles from "./EditClassroom.module.css";
 
@@ -42,17 +43,20 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
 
 
 
+  useEffect(() => {
+    console.log("useEffect triggered with:", classroomData?.classroom_course, userData);
+  
+    getLessonsbyCourseID(classroomData?.classroom_course, userData)
+      .then((courseLessons) => {
+        setLessons(courseLessons || []);
+        console.log("Fetched lessons:", courseLessons);
+      })
+      .catch((err) => {
+        console.error("Failed to load lessons for course:", err);
+      });
 
 
-
-  // What ?????
-  // What ?????
-  // What ?????
-  // What ?????
-  // What ?????
-  // What ?????
-  // What ?????
-  // What ?????
+  }, [classroom, userData]);
 
   const [filter, setFilter] = useState(true);
   const instructorDisplayName = useMemo(() => {
@@ -68,13 +72,13 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     return parts.join(" ").replace(/\s+/g, " ").trim();
   }, [userData]);
 
-  const INSTRUCTOR_MY_COURSES = "INSTRUCTOR_MY_COURSES";
+  // const INSTRUCTOR_MY_COURSES = "INSTRUCTOR_MY_COURSES";
 
   // const instructorNames = useMemo(() => {
   //   return instructorList?.map((i) => `${i.firstName} ${i.lastName}`) || [];
   // }, [instructorList]);
 
-  
+  const [lessons, setLessons] = useState([]);
 
   const [classroomLessons, setClassroomLessons] = useState(
     classroomData?.classroom_lessons || []
@@ -279,37 +283,49 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
   // Get Courses
   const [courseList, setCourseList] = useState([]);
 
-  useEffect(() => {
-    if (!userData) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (!userData) {
+  //     return;
+  //   }
+    
+  //   if (filter === INSTRUCTOR_MY_COURSES) {
+  //     getCourses(true, userData).then((allCourses) => {
+  //       const filtered = allCourses.filter((course) => {
+  //         const supervisor = course.data().courseSupervisor || "";
+  //         return instructorDisplayName
+  //           ? supervisor.trim().toLowerCase() ===
+  //               instructorDisplayName.trim().toLowerCase()
+  //           : false;
+  //       });
+  //       setCourseList(filtered);
+  //     });
+  //   } else {
+  //     getCourses(filter, userData).then((allCourses) => {
+  //       setCourseList(allCourses.map(c => c.data().courseName)); ///？？？
+  //     });
+  //   }
+  // }, [filter, userData, instructorDisplayName]);
 
-    if (userData.role === "student") {
-      getListOfCoursesFromStudent(userData.id).then((studentCourses) => {
-        setCourseList(studentCourses);
-      });
-      return;
-    }
-
-    if (filter === INSTRUCTOR_MY_COURSES) {
-      getCourses(true, userData).then((allCourses) => {
-        const filtered = allCourses.filter((course) => {
-          const supervisor = course.data().courseSupervisor || "";
-          return instructorDisplayName
-            ? supervisor.trim().toLowerCase() ===
-                instructorDisplayName.trim().toLowerCase()
-            : false;
-        });
-        setCourseList(filtered);
-      });
-    } else {
-      getCourses(filter, userData).then((allCourses) => {
-        setCourseList(allCourses.map(c => c.data().courseName)); ///？？？
-      });
-    }
-  }, [filter, userData, instructorDisplayName]);
-
-
+  // useEffect(() => {
+  //   if (!userData) return;
+  
+  //   let cancelled = false;
+  
+  //   // ✅ Get courses directly
+  //   getCourses(true, userData)
+  //     .then((courseSnapshots) => {
+  //       if (!cancelled) {
+  //         setCourseList(courseSnapshots); // keep the snapshots as-is
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Failed to load courses:", error);
+  //     });
+  
+  //   return () => {
+  //     cancelled = true;
+  //   };
+  // }, [userData]);
 
   // Some Functions
   const handleSubmit = (formData) => {
@@ -397,13 +413,13 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
             onChange={handleClassroomChange}
           />
 
-          <SelectOneFromList
+          {/* <SelectOneFromList
             label="Course"
             name="classroom_course"
             object={classroom}
-            list={courseList}
+            list={courseList.map(course => course.data().courseID)}
             onChange={handleClassroomChange}
-          />
+          /> */}
 
           <SelectOneFromList
             label="Supervisor"
@@ -438,8 +454,9 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
             placeholder="Select lesson to include"
             prerequisites={classroomLessons}
             setPrerequisites={setClassroomLessons}
-            prerequisiteOptions={currentUnits.map(
-                        option => `${option.data().lessonID}: ${option.data().title}`)}
+            prerequisiteOptions={lessons.map(
+              (lesson) => `${lesson.data().lessonID}: ${lesson.data().title}`
+            )}
           />
 
           <SelectStatus
