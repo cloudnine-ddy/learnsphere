@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import { getCourse } from "../../components/getCourses";
+import { getListOfCoursesFromStudent } from "../../components/getStudentCourse";
 import { getLessonByIDAndName } from "../../components/getLessons";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 // import { deleteLessonFromDatabase, deletePrereq } from "../../components/deleteLessons";
@@ -27,6 +28,18 @@ function ViewCourse({userData}) {
     const [showDelete, setShowDelete] = useState(false);
     const [showCancelConfirm, setShowCancelConfirm] = useState(false);
     
+
+    const [isEnrolled, setIsEnrolled] = useState(false);
+
+    useEffect(() => {
+        if (userData?.role === "student" && course) {
+            getListOfCoursesFromStudent(userData.id).then(courses => {
+            const enrolled = courses.some(c => c.data().courseID === course.courseID);
+            setIsEnrolled(enrolled);
+            });
+        }
+    }, [userData, course]);
+
     useEffect(() => {
         //Runs on the first render only
         if (userData == null)
@@ -40,6 +53,8 @@ function ViewCourse({userData}) {
                 });
         }
     }, []);
+
+    
 
     useEffect(() => {
         if (userData != null)
@@ -113,7 +128,7 @@ function ViewCourse({userData}) {
                     </div>
                     {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}} onClick = {handleEdit}>Edit</button>}
                     {userData != null && userData.role != 'student' && <button className={styles.smallButton} onClick={() => setShowDelete(true)}>Delete</button>}
-                    {userData != null && userData.role == 'student' && (
+                    {userData != null && userData.role == 'student' && isEnrolled &&  (
                         <button
                             className={styles.cancelEnrollButton}
                             type="button"
