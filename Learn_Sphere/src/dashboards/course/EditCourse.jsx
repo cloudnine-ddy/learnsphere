@@ -185,7 +185,8 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
                     placeholder={"Please select lessons needed to be included"}
                     prerequisites={courseLessons}
                     setPrerequisites={setCourseLessons}
-                    prerequisiteOptions={prerequisiteOptions.map(option => `${option.data().lessonID}: ${option.data().title}`)}
+                    prerequisiteOptions={prerequisiteOptions.map(
+                        option => `${option.data().lessonID}: ${option.data().title}`)}
                 />
                 <a>{`Total credit points: ${course.courseTotalCreditpoint}`}</a>
 

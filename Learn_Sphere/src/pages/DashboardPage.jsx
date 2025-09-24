@@ -25,6 +25,7 @@ import {addClassroomsToDatabase} from "../components/addClassrooms";
 import EditClassroom from "../dashboards/classroom/EditClassroom";
 import ViewClassroom from "../dashboards/classroom/ViewClassroom";
 import AddClassroom from "../dashboards/classroom/AddClassroom";
+import JoinClassroom from "../dashboards/classroom/JoinClassroom";
 
 import ControlPanel from "../dashboards/admin/ControlPanel";
 import JoinCourse from "../dashboards/course/JoinCourse";
@@ -330,10 +331,11 @@ const mockCurrentUnits = ["a", "b", "c"]
                                 <Route path="/classrooms" element={ <ClassroomDashboard userData={userData} /> } />
                                 <Route path="/classrooms/:id" element={<ViewClassroom userData={userData} />} />
                                 {userData.role !== "student" &&
-                                    <Route path="/classrooms/:id/edit" element={<EditClassroom studentList = {students} instructorList={instructors} currentUnits={currentUnits}/>} />}
+                                    <Route path="/classrooms/:id/edit" element={<EditClassroom userData={userData} studentList = {students} instructorList={instructors} currentUnits={currentUnits}/>} />}
                                 {userData.role !== "student" &&
                                     <Route path="/newclassroom" element={<AddClassroom  courseOptions={courses} lessonOptions={currentUnits} instructorList={instructors} studentOptions={students} />} />}
-                                
+                                {userData.role === "student" &&
+                                    <Route path="/joinclassroom" element={<JoinClassroom userData={userData}/>} />}
 
 
                                 {userData.role !== "student" && 

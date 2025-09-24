@@ -1,6 +1,8 @@
 import { doc, updateDoc , getDoc} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig.js";
 
+import { getCurrentUser, getUserInfo } from "./manageUsers";
+
 // Update classroom status
 export async function updateClassroomStatus(classroomId, status) {
   const docRef = doc(db, "classrooms", classroomId);
@@ -49,4 +51,36 @@ export async function updateClassroomLessons(classroomId, lessonsArray) {
     classroom_updatedDate: new Date().toISOString(),
   });
   console.log("Updated classroom lessons:", lessonsArray);
+}
+
+
+
+
+
+
+
+
+// Jorden Add this
+export async function updateClassroomInDatabase(classroomId, updates) {
+  let user = await getCurrentUser();
+  let userInfo = await getUserInfo(user);
+
+  if (user != null && userInfo.role !== "student") {
+    try {
+      const docRef = doc(db, "classrooms", classroomId);
+
+      // Ensure updatedAt is refreshed automatically
+      updates.classroom_updatedDate = new Date().toISOString();
+
+      await updateDoc(docRef, updates);
+
+      console.log("Classroom updated successfully:", classroomId);
+      return;
+    } catch (error) {
+      console.error("Error updating classroom:", error);
+      throw "Error updating classroom";
+    }
+  } else {
+    throw "Unauthorized access!";
+  }
 }

@@ -8,6 +8,9 @@ function AddFromList({ label, placeholder, prerequisites, setPrerequisites, prer
 
   const handleAdd = (e) => {
     const selected = e.target.value;
+    console.log(prerequisites)
+    console.log(setPrerequisites)
+    console.log(prerequisiteOptions)
     if (selected && !prerequisites.includes(selected)) {
       setPrerequisites(prev => [...prev, selected]);
     }

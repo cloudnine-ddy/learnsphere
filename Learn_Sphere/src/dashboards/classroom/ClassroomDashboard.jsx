@@ -105,6 +105,11 @@ function ClassroomDashboard({ userData }) {
       <div className={styles.infoHeader}>
         <div className={styles.infoTitleRow}>
           <div className={styles.infoTitle}>My Classrooms</div>
+          {userData?.role === "student" && (
+            <Link to="/home/joinclassroom" className={styles.actionButton}>
+                Join Classroom
+            </Link>
+          )}
           {userData?.role !== "student" && (
             <Link to="/home/newclassroom" className={styles.actionButton}>
               Create Classroom
