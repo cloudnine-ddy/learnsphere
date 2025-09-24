@@ -9,6 +9,7 @@ import { getLessonByIDAndName } from "../../components/getLessons";
 import { deleteClassroom } from "../../components/deleteClassroom";
 import { getRequestsByClassroom, deleteRequestByStudentAndClassroom } from "../../components/requestClassroom";
 import { updateClassroomStudents } from "../../components/updateClassrooms";
+import { getClassroomByStudent } from "../../components/getClassroom";
 
 import { addStudentClassroom, deleteStudentClassroom } from "../../components/studentClassroom";
 import {deleteStudentClassroomByStudentID} from "../../components/studentClassroom";
@@ -44,6 +45,16 @@ function ViewClassroom({ userData }) {
   }, []);
 
 
+  const [isJoined, setIsJoined] = useState(false);
+  
+  useEffect(() => {
+      if (userData?.role === "student" && classroom) {
+          getClassroomByStudent(userData.id).then(courses => {
+          const joined = courses.some(c => c.data().classroom_id === classroom.classroom_id);
+          setIsJoined(joined);
+          });
+      }
+  }, [userData, classroom]);
 
   const handleCancelJoin = async () => {
     try {
@@ -278,7 +289,7 @@ function ViewClassroom({ userData }) {
               </div>
               {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}} onClick = {handleEdit}>Edit</button>}
               {userData != null && userData.role != 'student' && <button className={styles.smallButton} onClick={() => setShowDelete(true)}>Delete</button>}
-              {userData != null && userData.role == 'student' && (
+              {userData != null && userData.role == 'student' && isJoined && (
                   <button
                       className={styles.cancelEnrollButton}
                       type="button"
