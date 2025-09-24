@@ -7,6 +7,7 @@ import { getClassroom } from "../../components/getClassroom";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { getLessonByIDAndName } from "../../components/getLessons";
 import { deleteClassroom } from "../../components/deleteClassroom";
+import { getRequestsByClassroom } from "../../components/requestClassroom";
 
 
 import styles from "./ViewClassroom.module.css";
@@ -21,6 +22,7 @@ function ViewClassroom({ userData }) {
   const { id } = useParams();
   const [classroom, setClassroom] = useState(null);
   const [lessons, setLessons] = useState([]);
+  const [request, setRequest] = useState([])
 
   const [showDelete, setShowDelete] = useState(false);
 
@@ -40,6 +42,10 @@ function ViewClassroom({ userData }) {
 
 
 
+
+
+
+
   useEffect(() => {
       if (userData != null)
       {
@@ -54,6 +60,19 @@ function ViewClassroom({ userData }) {
       }
   }, [userData])
 
+
+    useEffect(() => {
+      if (userData != null && classroom != null)
+      {
+          getRequestsByClassroom(classroom.classroom_id).then(
+          (request) => {
+                setRequest(request);
+          }); 
+      }
+  }, [userData, classroom])
+  if (userData != null && classroom != null)
+      {console.log(classroom.classroom_id)};
+
     useEffect(() => {
         if (userData != null && classroom != null) {
             Promise.all(
@@ -64,7 +83,7 @@ function ViewClassroom({ userData }) {
                 setLessons(results.filter(Boolean)); // remove nulls
             });
         }
-    }, [userData]);
+    }, [userData, classroom]);
 
     const handleDelete = () => {
         deleteClassroom(classroom.classroom_id)
@@ -107,6 +126,19 @@ function ViewClassroom({ userData }) {
 
   const handleBack = () => {
         navigate(-1);
+    }
+
+
+    const handleRemove = () => {
+        console.log("Remove Student")
+    }
+
+    const handleApprove = () => {
+        console.log("Approve Student")
+    }
+    
+    const handleReject = () => {
+        console.log("Reject Student")
     }
 
   const durationDisplay =
@@ -156,11 +188,59 @@ function ViewClassroom({ userData }) {
             <InfoBlock title="Starting Date"    content={classroom != null ? `${new Date(classroom.classroom_startDate).toDateString()} ${new Date(classroom.classroom_startDate).toTimeString()}` : "null"}/>
             <InfoBlock title="Duration (weeks)" content={durationDisplay}/>
             <InfoBlock title="Description"      content={classroom != null ? classroom.classroom_description : "null"}/>
-            <InfoBlock title="Students"         content={classroom != null ? classroom.classroom_students?.length > 0 ? classroom.classroom_students : "No Student" : "No Student"}/>
-            {userData != null && userData.role != 'student' && 
-                <InfoBlock title="Students"     content={classroom != null ? classroom.classroom_students?.length > 0 ? classroom.classroom_students : "No Student" : "No Student"}/>}
-            <InfoBlock title="Lesson included" />
+            
+            
+            
+            
+            
+            <div>
+                <p className={styles.justTitle}>Students Included:</p>
+                {classroom != null ? classroom.classroom_students?.length > 0 ? (
+                    <div>
+                        {classroom.classroom_students.map((classroom_students) => (
+                        <div key={classroom_students} className={styles.tokenField}>
+                            <span className={styles.token}>
+                                {classroom_students}
+                            </span>
 
+                            <button className={styles.removeButton} onClick={() => handleRemove()}>
+                                Remove
+                            </button>
+                        </div> ))}
+                    </div>)
+                     : "No Student" : "No Student"}
+            </div>
+            
+            <br />
+            <div>
+                <p className={styles.justTitle}>Students Waiting For Approval:</p>
+                {request != null ? request?.length > 0 ? (
+                    <div>{request.map((reqSnap) => {
+                            const data = reqSnap.data();
+                            return (
+                                <div key={reqSnap.id} className={styles.tokenField}>
+                                    <span className={styles.token}>
+                                        {data.request_student_name}
+                                    </span>
+
+                                    <button className={styles.approveButton} onClick={() => handleApprove()}>
+                                        Approve
+                                    </button>
+                                    <button className={styles.rejectButton} onClick={() => handleReject()}>
+                                        Reject
+                                    </button>
+                                </div> )})}
+                    </div>)
+                     : "No Student" : "No Student"}
+            </div>
+            <br />
+            
+            
+            
+            {/* {userData != null && userData.role != 'student' && 
+                <InfoBlock title="Students"     content={classroom != null ? classroom.classroom_students?.length > 0 ? classroom.classroom_students : "No Student" : "No Student"}/>} */}
+
+            <p className={styles.justTitle}>Lesson included:</p>
             <div className={styles.cardContainer}>
                 {lessons?.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().title} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/lessons/${lesson.id}`}/>)}
             </div>
