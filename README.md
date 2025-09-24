@@ -22,10 +22,10 @@ Developers: [in alphabetical order] <br>
 
 
 - **Project Inception**: [Inception Document](https://docs.google.com/document/d/1DlTXxda6A-UzEcwqsiFDRGQRCP7Lfb23GWrcImaBrvc/edit?usp=sharing)
-- **Recordings**: [Sprint Planning and Stand-up Meetings](https://drive.google.com/drive/folders/1AHiwEfQMtVJDTSdGQoSrWFbcB-1NTI8h?usp=drive_link)
-- **Retrospective**: [Retrospective Document Sprint 1](https://docs.google.com/document/d/19rAPV-wZSOGwwE99Q0CylvMg2P1b-64q/edit?usp=sharing&ouid=100047865276099939875&rtpof=true&sd=true)
+- **Recordings**: [Sprint Planning and Stand-up Meetings](https://docs.google.com/document/d/1c2L8kPucugq2UMNGfXoXhL-K4MFMJzgK19VroMNWLm0/edit?usp=sharing)
+- **Retrospective**: [Retrospective Document Sprint 2](https://docs.google.com/document/d/1FMskVUFWyEHLXWTXSPal96XZwTKPQtkY/edit?usp=sharing&ouid=100047865276099939875&rtpof=true&sd=true)
 - **Risk Register**: [Risk Register](https://docs.google.com/spreadsheets/d/1co_lQZgy7e2vIYkXu4s8Nhda-f-QMZG0vHhAoKv1t0Y/edit?usp=sharing)
-- **Burndown Chart**: [Burndown Chart](https://docs.google.com/spreadsheets/d/1Nnl-8U9HL-qvFf7NCMwIhgS9wmn3RPYU3EmKVtgzONE/edit?usp=sharing)
+- **Burndown Chart**: [Burndown Chart](https://docs.google.com/document/d/1cddUIf7wE_Zb7vFktWCjJs3GZfY5JkS0gNwv9Z-uDCI/edit?usp=sharing)
 
 
 ### Meeting Minutes
@@ -39,7 +39,7 @@ All meeting minutes can be found in the "Meeting Minutes" folder on Google Drive
 
 ### Burndown Chart
 
-- **Burndown Chart**: [Burndown Chart](https://drive.google.com/file/d/1Jem9nNLuCOnOTv3MPkXZI_mTzSJcDmr9/view?usp=sharing)
+- **Burndown Chart**: [Burndown Chart](https://docs.google.com/document/d/1cddUIf7wE_Zb7vFktWCjJs3GZfY5JkS0gNwv9Z-uDCI/edit?usp=sharing)
 
 ### Contribution/Work Log
 
@@ -55,21 +55,33 @@ To ensure nothing is overlooked and to help improve the next sprint, this **Team
 
 - **Team Journal**: [Team Journal](https://docs.google.com/document/d/1E4uwgjvjkWO45nlbh2NdftzkDFSCB2rqDzRnnkmMqyc/edit?usp=sharing)
 
+---
 
-### Test Cases
+### Sprint 1 Test Cases
 
 Test cases are essential to ensure that the application is functioning as expected. The test cases are separated into two categories based on user roles:
 
-### Student Test Cases
+#### Student Test Cases
 The test cases for students focus on actions and functionalities that are specific to student users.
 
 - **[Student Test Cases](https://docs.google.com/spreadsheets/d/1HraaItg00uPc4XHtCd0TgdU6iNSq7l8ttoGm9dp1WEA/edit?usp=sharing)**
 
-### Teacher Test Cases
+#### Teacher Test Cases
 The test cases for teachers focus on actions and functionalities that are specific to teacher users.
 
 - **[Teacher Test Cases](https://docs.google.com/spreadsheets/d/1aDL_JjAZztMcDzhwyYtY20bY0iceHzkhrSwY7cQSnk0/edit?usp=sharing)**
 
+
+
+### Sprint 2 Test Cases 
+
+In Sprint 2, the test cases are more focused on user stories instead of separate roles becuase during Sprint 2, the functionalities are somewhat dependant on each other.
+
+- **Main Folder: [Test Case Folder](https://drive.google.com/drive/folders/1fp2GUqqWL7_wYzGt6RyXA9jk93uzSTtj?usp=sharing)**
+
+    - **Test Case PDF: [PDF Test Case Folder](https://drive.google.com/drive/folders/1PKppWPMZqFuz9eIwOCTeriSa4E_q6fKF?usp=sharing)**
+
+    - **Test Cases Spreadsheet**: [PDF Test Case Folder](https://drive.google.com/drive/folders/1PKppWPMZqFuz9eIwOCTeriSa4E_q6fKF?usp=sharing)
 
 ---
 
