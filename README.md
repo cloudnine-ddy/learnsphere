@@ -25,7 +25,7 @@ Developers: [in alphabetical order] <br>
 - **Recordings**: [Sprint Planning and Stand-up Meetings](https://docs.google.com/document/d/1c2L8kPucugq2UMNGfXoXhL-K4MFMJzgK19VroMNWLm0/edit?usp=sharing)
 - **Retrospective**: [Retrospective Document Sprint 2](https://docs.google.com/document/d/1FMskVUFWyEHLXWTXSPal96XZwTKPQtkY/edit?usp=sharing&ouid=100047865276099939875&rtpof=true&sd=true)
 - **Risk Register**: [Risk Register](https://docs.google.com/spreadsheets/d/1co_lQZgy7e2vIYkXu4s8Nhda-f-QMZG0vHhAoKv1t0Y/edit?usp=sharing)
-- **Burndown Chart**: [Burndown Chart](https://docs.google.com/document/d/1cddUIf7wE_Zb7vFktWCjJs3GZfY5JkS0gNwv9Z-uDCI/edit?usp=sharing)
+- **Backlog Refinement**: [Backlog Refinement](https://docs.google.com/document/d/14LBP7Nnn5y3GTWeGZa5KuC3eu8w8kP4PqMqUOhK8Y_U/edit?usp=sharing)
 
 
 ### Meeting Minutes
@@ -81,7 +81,7 @@ In Sprint 2, the test cases are more focused on user stories instead of separate
 
     - **Test Case PDF: [PDF Test Case Folder](https://drive.google.com/drive/folders/1PKppWPMZqFuz9eIwOCTeriSa4E_q6fKF?usp=sharing)**
 
-    - **Test Cases Spreadsheet: [PDF Test Case Folder](https://drive.google.com/drive/folders/1PKppWPMZqFuz9eIwOCTeriSa4E_q6fKF?usp=sharing)**
+    - **Test Cases Spreadsheet: [Spreadsheet Test Case Folder](https://drive.google.com/drive/folders/1UVNYvGKwDYun1LjRwdaD3zsLdQIvPEBL?usp=drive_link)**
 
 ---
 
