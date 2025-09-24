@@ -1,46 +1,53 @@
 ﻿import React, { useState, useEffect } from "react";
-
 import { useNavigate } from "react-router-dom";
-
 import { createRequest } from "../../components/requestClassroom";
 
 import styles from "./JoinClassroom.module.css";
-
 import JoinClassroomCard from "../../components/clickable/JoinClassroomCard";
 import { getClassroomsNonJoin } from "../../components/getClassroom";
 import MessageBox from "../../components/display/MessageBox";
-
-
+import SingleButtonMessageBox from "../../components/display/SingleButtonMessageBox";
 
 function JoinClassroom({ userData }) {
     const navigate = useNavigate();
     const [classrooms, setClassrooms] = useState([]);
     const [pendingClassroom, setPendingClassroom] = useState(null);
-
-    //console.log(userData.id);
+    const [singleMessage, setSingleMessage] = useState({ visible: false, message: "" });
 
     useEffect(() => {
         getClassroomsNonJoin(userData).then((classroomSnapshots) => {
-            console.log(classroomSnapshots);
             setClassrooms(classroomSnapshots);
-            //console.log(courseSnapshots);
         });
-    }, [])
+    }, [userData]);
 
     const requestClassroom = async (classroomID) => {
         try {
-
             await createRequest(userData, classroomID);
-            navigate("/home/classrooms");
+    
+            // Show success message instead of navigating immediately
+            setSingleMessage({
+                visible: true,
+                message: "Your request has been submitted successfully.",
+            });
         } catch (err) {
             console.error("Failed to join:", err);
+    
+            if (err.message === "REQUEST_ALREADY_EXISTS") {
+                setSingleMessage({
+                    visible: true,
+                    message: "You have already requested this classroom.",
+                });
+            } else {
+                setSingleMessage({
+                    visible: true,
+                    message: "Failed to join classroom. Please try again.",
+                });
+            }
         }
     };
 
     const handleConfirmJoin = async () => {
-        if (!pendingClassroom) {
-            return;
-        }
+        if (!pendingClassroom) return;
 
         const classroomID = pendingClassroom.classroom_id;
         setPendingClassroom(null);
@@ -62,13 +69,19 @@ function JoinClassroom({ userData }) {
         navigate(-1);
     };
 
+    const handleCloseSingleMessage = () => {
+        if (singleMessage.message.includes("successfully")) {
+            navigate("/home/classrooms"); 
+        }
+        setSingleMessage({ visible: false, message: "" });
+    };
+
     return (
         <div className={styles.joinCoursePage}>
             <div className={styles.infoHeader}>
-                <div className={styles.infoTitle}>
-                    Join Classroom
-                </div>
+                <div className={styles.infoTitle}>Join Classroom</div>
             </div>
+
             <div className={styles.infoScroll}>
                 <div className={styles.cardContainer}>
                     {classrooms.map((classroom) => (
@@ -84,6 +97,7 @@ function JoinClassroom({ userData }) {
                     ))}
                 </div>
             </div>
+
             <div className={styles.pageFooter}>
                 <button type="button" className={styles.backButton} onClick={handleBack}>
                     <img src="images/icons/goback.png" alt="Back" className={styles.backIcon} />
@@ -99,6 +113,15 @@ function JoinClassroom({ userData }) {
                     button_2="Confirm"
                     onCancel={handleCancelJoin}
                     onConfirm={handleConfirmJoin}
+                />
+            )}
+
+            {singleMessage.visible && (
+                <SingleButtonMessageBox
+                    label="Notice"
+                    message={singleMessage.message}
+                    button_1="OK"
+                    onConfirm={handleCloseSingleMessage}
                 />
             )}
         </div>

@@ -4,6 +4,18 @@ import { db } from "./firebaseConfig.js";
 
 export async function createRequest(studentSnapshot, classroomId) {
     try {
+        const existingQuery = query(
+            collection(db, "requests"),
+            where("request_student_id", "==", studentSnapshot.id),
+            where("request_classroom_id", "==", classroomId)
+        );
+
+        const existingSnap = await getDocs(existingQuery);
+
+        if (!existingSnap.empty) {
+            // Found an existing request  throw a specific error
+            throw new Error("REQUEST_ALREADY_EXISTS");
+        }
         const requestObject = {
             request_student_id: studentSnapshot.id,            // Firestore doc ID
             request_student_name: studentSnapshot.firstName + " " + studentSnapshot.lastName, // field in the doc
@@ -16,7 +28,7 @@ export async function createRequest(studentSnapshot, classroomId) {
         return;
     } catch (error) {
         console.error("Error creating request:", error);
-        throw new Error("Error creating request");
+        throw error;
     }
 }
 
@@ -39,7 +51,7 @@ export async function getRequestsByClassroom(classroomId) {
 
 
 export async function deleteRequestByStudentAndClassroom(studentId, classroomId) {
-    try {
+    try{
         // Query requests where both student_id and classroom_id match
         const requestsQuery = query(
             collection(db, "requests"),
