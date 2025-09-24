@@ -80,7 +80,13 @@ function AddClassroom({
                 }));
 
                 getListOfStudentsFromCourse(c.id).then((students) => {
-                    setValidStudentOptions(students);
+                    let studentDatas = students.map((student) => {
+                        return student.data();
+                    });
+
+                    console.log(studentDatas);
+
+                    setValidStudentOptions(studentDatas);
                 });
 
                 console.log(lessonOptions.filter((lesson) => {
@@ -159,12 +165,12 @@ function AddClassroom({
             if (typeof option === "object" && option !== null) {
                 if (typeof option.data === "function") {
                     const data = option.data();
-                    const id = data.studentID || option.id || "";
+                    const id = data.id || option.id || "";
                     const name = [data.firstName, data.lastName].filter(Boolean).join(" ").trim();
                     return [id, name].filter(Boolean).join(": ").trim();
                 }
 
-                const id = option.studentID || option.id || "";
+                const id = option.id || "";
                 const name = [option.firstName, option.lastName].filter(Boolean).join(" ").trim();
                 return [id, name].filter(Boolean).join(": ").trim();
             }
