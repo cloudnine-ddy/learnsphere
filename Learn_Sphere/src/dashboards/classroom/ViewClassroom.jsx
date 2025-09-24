@@ -283,9 +283,10 @@ function ViewClassroom({ userData }) {
                 {classroom != null ? classroom.classroom_students?.length > 0 ? (
                     <div>
                         {classroom.classroom_students.map((classroom_students) => (
+                          
                         <div key={classroom_students} className={styles.tokenField}>
                             <span className={styles.token}>
-                                {classroom_students}
+                                {classroom_students.split(":")[1]}
                             </span>
 
                             <button className={styles.removeButton} onClick={() => handleRemove(classroom_students)}>
@@ -306,7 +307,7 @@ function ViewClassroom({ userData }) {
                             return (
                                 <div key={reqSnap.id} className={styles.tokenField}>
                                     <span className={styles.token}>
-                                        {data.request_student_name}
+                                        {data.request_student_name.split(":")[1]}
                                     </span>
 
                                     <button className={styles.approveButton} onClick={() => handleApprove(data)}>

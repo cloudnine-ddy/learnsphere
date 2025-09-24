@@ -31,7 +31,7 @@ function AddFromList({ label, placeholder, prerequisites, setPrerequisites, prer
         <select onChange={handleAdd} defaultValue="">
           <option value="" disabled>{placeholder}</option>
           {prerequisiteOptions.map((opt, idx) => (
-            <option key={idx} value={opt}>{opt}</option>
+            <option key={idx} value={opt}>{(opt.split(":")[0]).length < 10 ? opt : opt.split(":")[1]}</option>
           ))}
         </select>
 
@@ -40,7 +40,7 @@ function AddFromList({ label, placeholder, prerequisites, setPrerequisites, prer
       <ul className={styles.selectedList}>
         {prerequisites.map((prereq, index) => (
           <li key={index} className={styles.selectedItem}>
-            {prereq}
+            {(prereq.split(":")[0]).length < 10 ? prereq : prereq.split(":")[1]}
             <button className={styles.deleteButton} onClick={() => handleDelete(prereq)}>
               Delete
             </button>
