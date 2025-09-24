@@ -21,14 +21,14 @@ function AddClassroom({
     studentOptions = []
 }) {
     const [classroom, setClassroom] = useState({
-        classroomId: "",
-        classroomName: "",
-        course: "",
-        description: "",
-        startDate: "",
-        durationWeeks: "",
-        supervisor: "",
-        status: "",
+        classroom_id: "",
+        classroom_name: "",
+        classroom_course: "",
+        classroom_description: "",
+        classroom_startDate: "",
+        classroom_durationWeeks: "",
+        classroom_instructor: "",
+        classroom_status: "",
         totalStudents: 0
     });
 
@@ -56,7 +56,7 @@ function AddClassroom({
             });
     }, [navigate]);
 
-    useEffect(() => {changeLessonOptions(classroom.course)}, [classroom.course])
+    useEffect(() => {changeLessonOptions(classroom.classroom_course)}, [classroom.classroom_course])
 
     useEffect(() => {
         setClassroom((prev) => ({
@@ -166,7 +166,7 @@ function AddClassroom({
         })
         .filter(Boolean);
 
-    const supervisorOptions = [
+    const classroom_instructorOptions = [
         "",
         ...instructorList
             .map((instructor) => {
@@ -202,19 +202,19 @@ function AddClassroom({
     async function submitForm() {
         setEnabled(false);
         if (await isValid()) {
-            const durationWeeksNumber = Number.parseInt(classroom.durationWeeks, 10);
+            const classroom_durationWeeksNumber = Number.parseInt(classroom.classroom_durationWeeks, 10);
 
             addClassroomsToDatabase(
-                classroom.classroomId,
-                extractIdentifier(classroom.course),
-                classroom.supervisor,
-                classroom.classroomName,
-                classroom.description,
+                classroom.classroom_id,
+                extractIdentifier(classroom.classroom_course),
+                classroom.classroom_instructor,
+                classroom.classroom_name,
+                classroom.classroom_description,
                 classroomLessons,
                 classroomStudents,
-                classroom.startDate,
-                durationWeeksNumber,
-                classroom.status
+                classroom.classroom_startDate,
+                classroom_durationWeeksNumber,
+                classroom.classroom_status
             )
                 .then(() => setErrorMessages(["Successfully created a classroom!"]))
                 .catch((error) => setErrorMessages([error?.message || error]));
@@ -235,21 +235,10 @@ function AddClassroom({
             messages.push("Missing and invalid values! Check the form again.");
         }
 
-        const durationNumber = Number(classroom.durationWeeks);
+        const durationNumber = Number(classroom.classroom_durationWeeks);
         if (!Number.isInteger(durationNumber) || durationNumber <= 0) {
             validation = false;
             messages.push("Duration must be a positive whole number.");
-        }
-
-        const missingDependencies = await validateClassroomLessons(classroomLessons);
-        if (Object.keys(missingDependencies).length > 0) {
-            validation = false;
-            messages.push(
-                "Missing prerequisites for some lessons: " +
-                    Object.entries(missingDependencies)
-                        .map(([lesson, deps]) => `${lesson} : [${deps.join(", ")}]`)
-                        .join("; ")
-            );
         }
 
         if (!validation && messages.length > 0) {
@@ -273,8 +262,8 @@ function AddClassroom({
                     <InputField
                         label="Classroom ID"
                         type="text"
-                        id="classroomId"
-                        value={classroom.classroomId}
+                        id="classroom_id"
+                        value={classroom.classroom_id}
                         onChange={handleClassroomChange}
                         required
                     />
@@ -282,14 +271,14 @@ function AddClassroom({
                     <InputField
                         label="Classroom Name"
                         type="text"
-                        id="classroomName"
-                        value={classroom.classroomName}
+                        id="classroom_name"
+                        value={classroom.classroom_name}
                         onChange={handleClassroomChange}
                         required
                     />
 
                     <SelectOneFromList
-                        name="course"
+                        name="classroom_course"
                         label="Course"
                         object={classroom}
                         list={classroomCourseOptions}
@@ -298,11 +287,11 @@ function AddClassroom({
                     />
 
                     <TextArea
-                        label="Description"
+                        label="Classroom Description"
                         type="textarea"
-                        id="description"
-                        name="description"
-                        value={classroom.description}
+                        id="classroom_description"
+                        name="classroom_description"
+                        value={classroom.classroom_description}
                         onChange={handleClassroomChange}
                     />
 
@@ -325,8 +314,8 @@ function AddClassroom({
                     <InputField
                         label="Start Date"
                         type="date"
-                        id="startDate"
-                        value={classroom.startDate}
+                        id="classroom_startDate"
+                        value={classroom.classroom_startDate}
                         onChange={handleClassroomChange}
                         required
                     />
@@ -334,24 +323,24 @@ function AddClassroom({
                     <InputField
                         label="Duration (weeks)"
                         type="number"
-                        id="durationWeeks"
-                        value={classroom.durationWeeks}
+                        id="classroom_durationWeeks"
+                        value={classroom.classroom_durationWeeks}
                         onChange={handleClassroomChange}
                         min={1}
                     />
 
                     <SelectOneFromList
-                        name="supervisor"
                         label="Supervisor"
+                        name="classroom_instructor"
                         object={classroom}
-                        list={supervisorOptions}
+                        list={classroom_instructorOptions}
                         onChange={handleClassroomChange}
                         required
                     />
 
                     <SelectStatus
-                        name="status"
                         label="Status"
+                        name="classroom_status"
                         object={classroom}
                         onChange={handleClassroomChange}
                     />

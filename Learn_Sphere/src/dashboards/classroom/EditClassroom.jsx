@@ -321,7 +321,7 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     navigate(`/home/classrooms/${id}`);
   };
 
-    function submitForm(e) {
+  function submitForm(e) {
     setEnabled(false);
     if (isValid()) {
       const updates = {

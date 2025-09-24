@@ -6,11 +6,13 @@ import { useNavigate } from "react-router-dom";
 import { getClassroom } from "../../components/getClassroom";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { getLessonByIDAndName } from "../../components/getLessons";
+import { deleteClassroom } from "../../components/deleteClassroom";
 
 
 import styles from "./ViewClassroom.module.css";
 
 import InfoBlock from "../../components/display/InfoBlock";
+import MessageBox from "../../components/display/MessageBox";
 import LessonCard from "../../components/clickable/LessonCard";
 
 function ViewClassroom({ userData }) {
@@ -19,6 +21,8 @@ function ViewClassroom({ userData }) {
   const { id } = useParams();
   const [classroom, setClassroom] = useState(null);
   const [lessons, setLessons] = useState([]);
+
+  const [showDelete, setShowDelete] = useState(false);
 
   useEffect(() => {
       //Runs on the first render only
@@ -62,8 +66,12 @@ function ViewClassroom({ userData }) {
         }
     }, [userData]);
 
-  // const handleDelete = () => {
-  // }
+    const handleDelete = () => {
+        deleteClassroom(classroom.classroom_id)
+        .then(() => setShowDelete(false))
+        .then(() => navigate("/home/classrooms"))
+        .catch((error) => console.error("Error deleting classroom:", error));
+    }
 
 /*   // temporary wannnnnnnnnnnn
   useEffect(() => {
@@ -149,6 +157,8 @@ function ViewClassroom({ userData }) {
             <InfoBlock title="Duration (weeks)" content={durationDisplay}/>
             <InfoBlock title="Description"      content={classroom != null ? classroom.classroom_description : "null"}/>
             <InfoBlock title="Students"         content={classroom != null ? classroom.classroom_students?.length > 0 ? classroom.classroom_students : "No Student" : "No Student"}/>
+            {userData != null && userData.role != 'student' && 
+                <InfoBlock title="Students"     content={classroom != null ? classroom.classroom_students?.length > 0 ? classroom.classroom_students : "No Student" : "No Student"}/>}
             <InfoBlock title="Lesson included" />
 
             <div className={styles.cardContainer}>
@@ -168,12 +178,12 @@ function ViewClassroom({ userData }) {
           </button>
       </div>
 
-      {/* {showDelete && <MessageBox onCancel={() => setShowDelete(false)} onConfirm={handleDelete}/>}
-      {showCancelConfirm && (
+      {showDelete && <MessageBox onCancel={() => setShowDelete(false)} onConfirm={handleDelete}/>}
+      {/* {showCancelConfirm && (
           <MessageBox
-              label="Cancel Enrollment"
-              message={`Are you sure you want to leave ${course?.courseTitle ?? "this course"}?`}
-              button_1="Keep Course"
+              label="Delete Classroom"
+              message={`Are you sure you want to delete ${classroom?.classroom_name ?? "this classroom"}?`}
+              button_1="Keep Classroom"
               button_2="Confirm"
               onCancel={() => setShowCancelConfirm(false)}
               onConfirm={handleCancelEnrollment}

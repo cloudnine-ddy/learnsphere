@@ -16,7 +16,7 @@ export async function deleteClassroom(classroomID) {
 
         const classroomQuery = query (
             collection(db, 'classrooms'), 
-            where("classroomID", "==", classroomID)
+            where("classroom_id", "==", classroomID)
         );
 
         const classroomSnapshot = await getDocs(classroomQuery);
