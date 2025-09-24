@@ -86,10 +86,11 @@ export async function getClassroomByStudent(studentID) {
     return courseSnapshots.filter(Boolean);
 }
 
-export async function getCoursesNonJoin(student) {
 
-    /* param
-        student - the whole student object. NOT the studentID. Example {id: "student123", firstName: "John", lastName: "Doe", title: "Mr.", role: "student"}
+export async function getClassroomsNonJoin(student) {
+    /* 
+      student - the whole student object, e.g.,
+      {id: "student123", firstName: "John", lastName: "Doe", title: "Mr.", role: "student"}
     */
     const classrooms = [];
 
@@ -98,24 +99,62 @@ export async function getCoursesNonJoin(student) {
         return classrooms;
     }
 
-    const studentRef = doc(db, "users", student.id);
-    const studentSnap = await getDoc(studentRef);
+    try {
+        // Step 1: Get all courses the student is enrolled in
+        const studentCourseQuery = query(
+            collection(db, "student_course"),
+            where("student_course_studentId", "==", student.id)
+        );
+        const studentCourseSnap = await getDocs(studentCourseQuery);
 
-    if (!studentSnap.exists()) {
-        console.error("Student not found:", student.id);
+        const enrolledCourseIDs = studentCourseSnap.docs.map(docSnap => docSnap.data().student_course_courseId);
+
+        console.log("Enrolled courses:", enrolledCourseIDs);
+
+        if (enrolledCourseIDs.length === 0) {
+            // Student is not enrolled in any course
+            return classrooms;
+        }
+
+        // Step 2: Get all classrooms that are Published AND belong to student's courses
+        const allClassroomSnap = await getDocs(
+            query(
+                collection(db, "classrooms"),
+                where("classroom_status", "==", "Published")
+            )
+        );
+
+        allClassroomSnap.forEach((classroomSnap) => {
+            const classroomData = classroomSnap.data();
+        })
+
+        // Step 3: Get all classrooms the student has already joined
+        const studentClassroomQuery = query(
+            collection(db, "student_classroom"),
+            where("student_classroom_student_ID", "==", student.id)
+        );
+        const studentClassroomSnap = await getDocs(studentClassroomQuery);
+        const joinedClassroomIDs = studentClassroomSnap.docs.map(docSnap => docSnap.data().classroom_id);
+
+
+        // Step 4: Filter classrooms
+        allClassroomSnap.forEach((classroomSnap) => {
+            const classroomData = classroomSnap.data();
+            // Only include if:
+            // 1. Classroom belongs to one of the student's courses
+            // 2. Student has not already joined
+            if (
+                enrolledCourseIDs.includes(classroomData.classroom_course) &&
+                !joinedClassroomIDs.includes(classroomSnap.data().classroom_id)
+            ) {
+                console.log("Adding classroom:", classroomSnap.data().classroom_id);
+                classrooms.push(classroomSnap);
+            }
+        });
+
+        return classrooms;
+    } catch (error) {
+        console.error("Error fetching non-joined classrooms:", error);
         return classrooms;
     }
-
-    const studentData = studentSnap.data();
-    const joinedClassroomIDs = Array.isArray(studentData.classroomList) ? studentData.classroomList : [];
-
-    const allClassroomSnap = await getDocs(query(collection(db, "classrooms"), where("classroom_status", "==", "Published")));
-
-    allClassroomSnap.forEach((docSnap) => {
-        if (!joinedClassroomIDs.includes(docSnap.id)) {
-            classrooms.push(docSnap);
-        }
-    });
-
-    return classrooms; 
 }
