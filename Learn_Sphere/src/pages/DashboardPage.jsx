@@ -282,7 +282,7 @@ function DashboardPage() {
                             </h3>
                         </Link>} */}
 
-                        {userData != null && userData.role != "student" &&
+                        {userData != null && userData.role === "admin" &&
                             <Link to="/home/control">
                                 <h3 className={styles.menuItem}>
                                     <img src="../images/icons/control_panel.png" className={styles.menuIcon} />
@@ -343,7 +343,7 @@ function DashboardPage() {
 
 
 
-                                {userData.role !== "student" &&
+                                {userData.role === "admin" &&
                                     <Route path="/control" element={<ControlPanel />} />}
                             </Routes>
                         }
