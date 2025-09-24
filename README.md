@@ -81,7 +81,7 @@ In Sprint 2, the test cases are more focused on user stories instead of separate
 
     - **Test Case PDF: [PDF Test Case Folder](https://drive.google.com/drive/folders/1PKppWPMZqFuz9eIwOCTeriSa4E_q6fKF?usp=sharing)**
 
-    - **Test Cases Spreadsheet**: [PDF Test Case Folder](https://drive.google.com/drive/folders/1PKppWPMZqFuz9eIwOCTeriSa4E_q6fKF?usp=sharing)
+    - **Test Cases Spreadsheet: [PDF Test Case Folder](https://drive.google.com/drive/folders/1PKppWPMZqFuz9eIwOCTeriSa4E_q6fKF?usp=sharing)**
 
 ---
 
