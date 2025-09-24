@@ -7,6 +7,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { getListOfCoursesFromStudent } from "../../components/getStudentCourse";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { updateClassroomInDatabase } from "../../components/updateClassrooms";
+import { addStudentClassroom } from "../../components/studentClassroom";
 import { getCourses } from "../../components/getCourses";
 import { getLessonsbyCourseID } from "../../components/getLessons";
 
@@ -114,6 +115,19 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     return true;
   }
 
+  function extractIdentifier(value) {
+        if (!value) {
+            return "";
+        }
+
+        if (!value.includes(":")) {
+            return value.trim();
+        }
+
+        const [identifier] = value.split(":");
+        return identifier.trim();
+    }
+    
   function submitForm(e) {
     setEnabled(false);
     if (isValid()) {
@@ -134,8 +148,24 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
       updateClassroomInDatabase(id, updates)
         .then(() => {
           setErrorMessages(["Successfully updated a course!"]);
-          navigate(`/home/classrooms/${id}`);
+          
         })
+        .then(async () => {
+          const classroomID = classroom.classroom_id;
+
+          const oldStudents = classroomData?.classroom_students || [];
+          const newStudents = classroomStudents;
+          
+          const addedStudents = newStudents.filter(
+            (s) => !oldStudents.includes(s)
+          );
+
+          for (const student of addedStudents) {
+            const studentID = extractIdentifier(student);
+            await addStudentClassroom(classroomID, studentID);
+          }
+        })
+          .then(() => navigate(`/home/classrooms/${id}`))
         .catch((error) => setErrorMessages([error.message] || String(error)));
     } else {
       setErrorMessages(["Missing and invalid values! Check the form again."]);

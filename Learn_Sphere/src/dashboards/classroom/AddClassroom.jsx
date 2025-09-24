@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { addClassroomsToDatabase } from "../../components/addClassrooms";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
+import { addStudentClassroom } from "../../components/studentClassroom";
 import { validateCourseLessons as validateClassroomLessons } from "../../components/addCourses";
 
 import styles from "./AddClassroom.module.css";
@@ -217,10 +218,18 @@ function AddClassroom({
                 classroom.classroom_status
             )
                 .then(() => setErrorMessages(["Successfully created a classroom!"]))
-                .catch((error) => setErrorMessages([error?.message || error]));
-            navigate("/home/classrooms");
-        }
-    }
+                
+            .then(async () => {
+                
+                const classroomID = classroom.classroom_id;
+
+                for (const student of classroomStudents) {
+                    const studentID = extractIdentifier(student); 
+                    await addStudentClassroom(classroomID, studentID);
+                }
+                    }).catch((error) => setErrorMessages([error?.message || error]))
+            .then (navigate("/home/classrooms"))
+                }
 
     async function isValid() {
         let validation = true;
@@ -368,6 +377,7 @@ function AddClassroom({
             </div>
         </div>
     );
+}
 }
 
 export default AddClassroom;
