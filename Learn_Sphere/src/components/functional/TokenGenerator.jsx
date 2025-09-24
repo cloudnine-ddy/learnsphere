@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-import { getCurrentUser, getUserInfo, getTokens, createToken, useToken } from "../manageUsers";
+import { getCurrentUser, getUserInfo, getTokens, createToken, useToken, removeToken } from "../manageUsers";
 
 import styles from "./TokenGenerator.module.css"
 
@@ -46,8 +46,9 @@ function TokenGenerator({label="Generate", role="student", prefix="STUDENT"}) {
     };
 
 
-    const handleDelete = () => {
-        console.log("success!");
+    const handleDelete = (token) => {
+        console.log(token);
+        removeToken(token.value)
     };
 
     return (
@@ -65,7 +66,7 @@ function TokenGenerator({label="Generate", role="student", prefix="STUDENT"}) {
                             {token.status}
                         </span>
 
-                        <button className={styles.deleteButton} onClick={() => handleDelete()}>
+                        <button className={styles.deleteButton} onClick={() => handleDelete(token)}>
                             Delete
                         </button>
 

@@ -1,60 +1,67 @@
 ﻿import React, { useState, useEffect } from "react";
-
 import { useNavigate } from "react-router-dom";
-
-import { enrollCourseInDatabase } from "../../components/enrollCourses";
-import { getCoursesNonEnroll } from "../../components/getCourses";
+import { createRequest } from "../../components/requestClassroom";
 
 import styles from "./JoinClassroom.module.css";
-
-import JoinCourseCard from "../../components/clickable/JoinCourseCard";
+import JoinClassroomCard from "../../components/clickable/JoinClassroomCard";
+import { getClassroomsNonJoin } from "../../components/getClassroom";
 import MessageBox from "../../components/display/MessageBox";
-
-
+import SingleButtonMessageBox from "../../components/display/SingleButtonMessageBox";
 
 function JoinClassroom({ userData }) {
     const navigate = useNavigate();
-    const [courses, setCourses] = useState([]);
-    const [pendingCourse, setPendingCourse] = useState(null);
-
-    //console.log(userData.id);
+    const [classrooms, setClassrooms] = useState([]);
+    const [pendingClassroom, setPendingClassroom] = useState(null);
+    const [singleMessage, setSingleMessage] = useState({ visible: false, message: "" });
 
     useEffect(() => {
-        getCoursesNonEnroll(userData).then((courseSnapshots) => {
-            setCourses(courseSnapshots);
-            //console.log(courseSnapshots);
+        getClassroomsNonJoin(userData).then((classroomSnapshots) => {
+            setClassrooms(classroomSnapshots);
         });
-    }, [])
+    }, [userData]);
 
-    const enrollInCourse = async (courseID) => {
+    const requestClassroom = async (classroomID) => {
         try {
-            console.log("Enrolling in course:", courseID);
-            console.log("User ID:", userData.id);
-            await enrollCourseInDatabase(userData, courseID);
-            navigate("/home/courses");
+            await createRequest(userData, classroomID);
+    
+            // Show success message instead of navigating immediately
+            setSingleMessage({
+                visible: true,
+                message: "Your request has been submitted successfully.",
+            });
         } catch (err) {
-            console.error("Failed to enroll:", err);
+            console.error("Failed to join:", err);
+    
+            if (err.message === "REQUEST_ALREADY_EXISTS") {
+                setSingleMessage({
+                    visible: true,
+                    message: "You have already requested this classroom.",
+                });
+            } else {
+                setSingleMessage({
+                    visible: true,
+                    message: "Failed to join classroom. Please try again.",
+                });
+            }
         }
     };
 
     const handleConfirmJoin = async () => {
-        if (!pendingCourse) {
-            return;
-        }
+        if (!pendingClassroom) return;
 
-        const courseID = pendingCourse.id;
-        setPendingCourse(null);
-        await enrollInCourse(courseID);
+        const classroomID = pendingClassroom.classroom_id;
+        setPendingClassroom(null);
+        await requestClassroom(classroomID);
     };
 
     const handleCancelJoin = () => {
-        setPendingCourse(null);
+        setPendingClassroom(null);
     };
 
-    const handleRequestJoin = (course) => {
-        setPendingCourse({
-            id: course.courseID,
-            title: course.courseTitle,
+    const handleRequestJoin = (classroom) => {
+        setPendingClassroom({
+            classroom_id: classroom.data().classroom_id,
+            classroom_name: classroom.data().classroom_name,
         });
     };
 
@@ -62,28 +69,35 @@ function JoinClassroom({ userData }) {
         navigate(-1);
     };
 
+    const handleCloseSingleMessage = () => {
+        if (singleMessage.message.includes("successfully")) {
+            navigate("/home/classrooms"); 
+        }
+        setSingleMessage({ visible: false, message: "" });
+    };
+
     return (
         <div className={styles.joinCoursePage}>
             <div className={styles.infoHeader}>
-                <div className={styles.infoTitle}>
-                    Join Classroom
-                </div>
+                <div className={styles.infoTitle}>Join Classroom</div>
             </div>
+
             <div className={styles.infoScroll}>
                 <div className={styles.cardContainer}>
-                    {courses.map((course) => (
-                        <JoinCourseCard
-                            key={course.id}
-                            courseID={course.courseID}
-                            courseTitle={course.courseTitle}
-                            creditPoint={course.courseTotalCreditpoint}
-                            courseSupervisor={course.courseSupervisor}
-                            href={`/home/courses/${course.id}`}
-                            onJoin={() => handleRequestJoin(course)}
+                    {classrooms.map((classroom) => (
+                        <JoinClassroomCard
+                            key={classroom.id}
+                            classroomId={classroom.data().classroom_id}
+                            classroomName={classroom.data().classroom_name}
+                            courseTitle={classroom.data().classroom_course}
+                            classroomSupervisor={classroom.data().classroom_instructor}
+                            href={`/home/classrooms/${classroom.id}`}
+                            onJoin={() => handleRequestJoin(classroom)}
                         />
                     ))}
                 </div>
             </div>
+
             <div className={styles.pageFooter}>
                 <button type="button" className={styles.backButton} onClick={handleBack}>
                     <img src="images/icons/goback.png" alt="Back" className={styles.backIcon} />
@@ -91,14 +105,23 @@ function JoinClassroom({ userData }) {
                 </button>
             </div>
 
-            {pendingCourse && (
+            {pendingClassroom && (
                 <MessageBox
-                    label="Join Course"
-                    message={`Are you sure you want to join ${pendingCourse.title}?`}
+                    label="Join Lesson"
+                    message={`Are you sure you want to join ${pendingClassroom.classroom_name}?`}
                     button_1="Cancel"
                     button_2="Confirm"
                     onCancel={handleCancelJoin}
                     onConfirm={handleConfirmJoin}
+                />
+            )}
+
+            {singleMessage.visible && (
+                <SingleButtonMessageBox
+                    label="Notice"
+                    message={singleMessage.message}
+                    button_1="OK"
+                    onConfirm={handleCloseSingleMessage}
                 />
             )}
         </div>
