@@ -14,6 +14,7 @@ import Button from "../../components/clickable/Button";
 import AddFromList from "../../components/selectable_addable/AddFromList";
 import SelectOneFromList from "../../components/selectable_addable/SelectOneFromList";
 import SelectStatus from "../../components/selectable_addable/SelectStatus";
+import { getListOfStudentsFromCourse } from "../../components/getStudentCourse";
 
 function AddClassroom({
     courseOptions = [],
@@ -36,6 +37,7 @@ function AddClassroom({
     const navigate = useNavigate();
     const [isEnabled, setEnabled] = useState(true);
     const [validLessonOptions, setValidLessonOptions] = useState([]);
+    const [validStudentOptions, setValidStudentOptions] = useState([]);
     const [userData, setUserData] = useState(null);
 
     const [classroomLessons, setClassroomLessons] = useState([]);
@@ -76,6 +78,16 @@ function AddClassroom({
                 setValidLessonOptions(lessonOptions.filter((lesson) => {
                     return c.data().courseLessons.includes(`${lesson.data().lessonID}: ${lesson.data().title}`);
                 }));
+
+                getListOfStudentsFromCourse(c.id).then((students) => {
+                    let studentDatas = students.map((student) => {
+                        return student.data();
+                    });
+
+                    console.log(studentDatas);
+
+                    setValidStudentOptions(studentDatas);
+                });
 
                 console.log(lessonOptions.filter((lesson) => {
                     return c.data().courseLessons.includes(`${lesson.data().lessonID}: ${lesson.data().title}`);
@@ -144,7 +156,7 @@ function AddClassroom({
         })
         .filter(Boolean);}, [validLessonOptions]);
 
-    const classroomStudentOptions = studentOptions
+    const classroomStudentOptions = useMemo(() => {return validStudentOptions
         .map((option) => {
             if (typeof option === "string") {
                 return option;
@@ -153,19 +165,19 @@ function AddClassroom({
             if (typeof option === "object" && option !== null) {
                 if (typeof option.data === "function") {
                     const data = option.data();
-                    const id = data.studentID || option.id || "";
+                    const id = data.id || option.id || "";
                     const name = [data.firstName, data.lastName].filter(Boolean).join(" ").trim();
                     return [id, name].filter(Boolean).join(": ").trim();
                 }
 
-                const id = option.studentID || option.id || "";
+                const id = option.id || "";
                 const name = [option.firstName, option.lastName].filter(Boolean).join(" ").trim();
                 return [id, name].filter(Boolean).join(": ").trim();
             }
 
             return "";
         })
-        .filter(Boolean);
+        .filter(Boolean);}, [validStudentOptions]);
 
     const classroom_instructorOptions = [
         "",

@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 
-import { getListOfCoursesFromStudent } from "../../components/getStudentCourse";
+import { getListOfCoursesFromStudent, getListOfStudentsFromCourse } from "../../components/getStudentCourse";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { updateClassroomInDatabase } from "../../components/updateClassrooms";
 import { addStudentClassroom } from "../../components/studentClassroom";
@@ -55,6 +55,10 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
         console.error("Failed to load lessons for course:", err);
       });
 
+    getListOfStudentsFromCourse(classroomData?.classroom_course).then((students) => {
+        setValidStudentOptions(students);
+    });
+
 
   }, [classroom, userData]);
 
@@ -73,6 +77,7 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
   }, [userData]);
 
   const [lessons, setLessons] = useState([]);
+  const [validStudentOptions, setValidStudentOptions] = useState([]);
 
   const [classroomLessons, setClassroomLessons] = useState(
     classroomData?.classroom_lessons || []
@@ -185,7 +190,7 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
   };
 
 
-  const classroomStudentOptions = studentList
+  const classroomStudentOptions = useMemo(() => {return validStudentOptions
       .map((option) => {
           if (typeof option === "string") {
               return option;
@@ -194,19 +199,19 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
           if (typeof option === "object" && option !== null) {
               if (typeof option.data === "function") {
                   const data = option.data();
-                  const id = data.studentID || option.id || "";
+                  const id = data.id || option.id || "";
                   const name = [data.firstName, data.lastName].filter(Boolean).join(" ").trim();
                   return [id, name].filter(Boolean).join(": ").trim();
               }
 
-              const id = option.studentID || option.id || "";
+              const id = option.id || option.id || "";
               const name = [option.firstName, option.lastName].filter(Boolean).join(" ").trim();
               return [id, name].filter(Boolean).join(": ").trim();
           }
 
           return "";
       })
-      .filter(Boolean);
+      .filter(Boolean);}, [validStudentOptions]);
   
 
   return (
