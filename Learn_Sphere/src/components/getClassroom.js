@@ -93,7 +93,7 @@ export async function getClassroomByStudent(studentID) {
       return classroomSnaps.filter(Boolean);
     } catch (error) {
       console.error("❌ Error in getClassroomByStudent:", error);
-      return classrooms;
+      return classrooms;   
     }
   }
 
@@ -142,10 +142,12 @@ export async function getClassroomsNonJoin(student) {
         // Step 3: Get all classrooms the student has already joined
         const studentClassroomQuery = query(
             collection(db, "student_classroom"),
-            where("student_classroom_student_ID", "==", student.id)
+            where("student_classroom_studentID", "==", student.id)
         );
         const studentClassroomSnap = await getDocs(studentClassroomQuery);
-        const joinedClassroomIDs = studentClassroomSnap.docs.map(docSnap => docSnap.data().classroom_id);
+
+
+        const joinedClassroomIDs = studentClassroomSnap.docs.map(docSnap => docSnap.data().student_classroom_classroomID);
 
         joinedClassroomIDs.forEach(classroomID => {
             console.log("Classroom ID:", classroomID);

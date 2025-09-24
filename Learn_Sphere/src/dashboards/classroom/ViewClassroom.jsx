@@ -10,7 +10,7 @@ import { deleteClassroom } from "../../components/deleteClassroom";
 import { getRequestsByClassroom, deleteRequestByStudentAndClassroom } from "../../components/requestClassroom";
 import { updateClassroomStudents } from "../../components/updateClassrooms";
 
-import { addStudentClassroom } from "../../components/studentClassroom";
+import { addStudentClassroom, deleteStudentClassroom } from "../../components/studentClassroom";
 import {deleteStudentClassroomByStudentID} from "../../components/studentClassroom";
 import styles from "./ViewClassroom.module.css";
 
@@ -150,7 +150,7 @@ function ViewClassroom({ userData }) {
             await updateClassroomStudents(classroom.classroom_id, updatedStudents);
         
             // Step 4: delete from student_classroom collection
-            await deleteStudentClassroomByStudentID(studentID);
+            await deleteStudentClassroom(studentID, classroom.classroom_id);
         
             console.log(`✅ Removed ${studentName} (${studentID}) from classroom ${classroom.classroom_id}`);
         
