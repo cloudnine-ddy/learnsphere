@@ -21,7 +21,7 @@ import EditCourse from "../dashboards/course/EditCourse";
 import ViewCourse from "../dashboards/course/ViewCourse";
 
 import ClassroomDashboard from "../dashboards/classroom/ClassroomDashboard";
-import {addClassroomsToDatabase} from "../components/addClassrooms";
+import { addClassroomsToDatabase } from "../components/addClassrooms";
 import EditClassroom from "../dashboards/classroom/EditClassroom";
 import ViewClassroom from "../dashboards/classroom/ViewClassroom";
 import AddClassroom from "../dashboards/classroom/AddClassroom";
@@ -53,11 +53,11 @@ function DashboardPage() {
                     return;
                 }
 
-                if (currentUser) {
-                    setUser(currentUser);
-                } else {
-                    navigate("/reg");
+                if (currentUser?.uid !== user?.uid) {
+                    setUser(currentUser || null);
+                    if (!currentUser) navigate("/reg");
                 }
+
             } catch (error) {
                 console.error("Failed to get current user:", error);
                 if (!cancelled) {
@@ -71,7 +71,7 @@ function DashboardPage() {
         return () => {
             cancelled = true;
         };
-    }, [user]);
+    }, []);
 
 
     // User Data
@@ -105,6 +105,7 @@ function DashboardPage() {
 
     // Get ALL Instructors
     useEffect(() => {
+        console.log("Getting instructors");
         if (!userData) {
             setInstructors([]);
             return;
@@ -122,8 +123,7 @@ function DashboardPage() {
                 console.error("Failed to load instructors:", error);
             });
 
-        if (userData.role !== "student")
-        {
+        if (userData.role !== "student") {
             getAllInstructorsInfo()
                 .then((list) => {
                     if (!cancelled) {
@@ -143,6 +143,7 @@ function DashboardPage() {
 
     // Get ALL Units
     useEffect(() => {
+        console.log("Getting units");
         if (!userData || userData.role === "student") {
             setCurrentUnits([]);
             return;
@@ -159,7 +160,7 @@ function DashboardPage() {
             .catch((error) => {
                 console.error("Failed to load lessons:", error);
             });
-        
+
         getCourses(true, userData)
             .then((courses) => {
                 if (!cancelled) {
@@ -175,13 +176,16 @@ function DashboardPage() {
         };
     }, [userData]);
 
-    
 
-    const logOutUser = () => {
-        logOut();
-        setUser(null);
+
+    const logOutUser = async () => {
+        console.log("Logging out");
+        await logOut();           // clear session first
+        setUser(null);            // reset user
+        navigate("/reg");         // THEN redirect
+        console.log("Tried to go out");
     };
-
+    
     // const handleViewClassroom = (room) => {
     //     const targetId = room?.id || room?.classroomId;
     //     if (targetId) {
@@ -218,25 +222,25 @@ function DashboardPage() {
     //     );
     // };
 
-const mockStudentUser = {
-  id: "mock-student-001",
-  role: "student",
-  firstName: "Tom",
-  lastName: "Lee",
-//   title: "Mr.",
-  classroomList: ["mock-classroom-001", "mock-classroom-002"]
-};
+    const mockStudentUser = {
+        id: "mock-student-001",
+        role: "student",
+        firstName: "Tom",
+        lastName: "Lee",
+        //   title: "Mr.",
+        classroomList: ["mock-classroom-001", "mock-classroom-002"]
+    };
 
-const mockInstructorUser = {
-  id: "mock-student-001",
-  role: "instructor",
-  firstName: "Tom",
-  lastName: "Lee",
-  title: "Mr.",
-  classroomList: ["mock-classroom-001", "mock-classroom-002"]
-};
+    const mockInstructorUser = {
+        id: "mock-student-001",
+        role: "instructor",
+        firstName: "Tom",
+        lastName: "Lee",
+        title: "Mr.",
+        classroomList: ["mock-classroom-001", "mock-classroom-002"]
+    };
 
-const mockCurrentUnits = ["a", "b", "c"]
+    const mockCurrentUnits = ["a", "b", "c"]
 
 
     return (
@@ -248,7 +252,7 @@ const mockCurrentUnits = ["a", "b", "c"]
                 <div className={styles.sidebar}>
 
                     <div className={styles.sidebarMenu}>
-                        
+
                         <Link to="/home/lessons">
                             <h3 className={styles.menuItem}>
                                 <img src="../images/icons/course.png" className={styles.menuIcon} />
@@ -278,13 +282,13 @@ const mockCurrentUnits = ["a", "b", "c"]
                             </h3>
                         </Link>} */}
 
-                        {userData != null && userData.role != "student" && 
-                        <Link to="/home/control">
-                            <h3 className={styles.menuItem}>
-                                <img src="../images/icons/control_panel.png" className={styles.menuIcon} />
-                                Control Panel
-                            </h3>
-                        </Link>}
+                        {userData != null && userData.role != "student" &&
+                            <Link to="/home/control">
+                                <h3 className={styles.menuItem}>
+                                    <img src="../images/icons/control_panel.png" className={styles.menuIcon} />
+                                    Control Panel
+                                </h3>
+                            </Link>}
 
                     </div>
 
@@ -302,33 +306,33 @@ const mockCurrentUnits = ["a", "b", "c"]
                     <div className={styles.infoSection}>
                         {userData != null &&
                             <Routes>
-                                
-                                <Route path="/" element={<Navigate to="lessons"/>} />
+
+                                <Route path="/" element={<Navigate to="lessons" />} />
 
 
-                                
+
                                 <Route path="/lessons/*" element={<LessonDashboard userData={userData} />} />
                                 <Route path="/lessons/:id" element={<ViewLesson userData={userData} />} />
                                 {userData.role !== "student" &&
                                     <Route path="/newlesson" element={<AddLesson instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
-                                
+
                                 {userData.role !== "student" &&
-                                    <Route path="/lessons/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits}/>} />}
+                                    <Route path="/lessons/:id/edit" element={<EditLesson instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
 
 
 
                                 <Route path="/courses/*" element={<CourseDashboard userData={userData} />} />
                                 <Route path="/courses/:id" element={<ViewCourse userData={userData} />} />
-                                {userData.role !== "student" && 
-                                    <Route path="/courses/:id/edit" element={<EditCourse instructorList={instructors} prerequisiteOptions={currentUnits}/>} />}
+                                {userData.role !== "student" &&
+                                    <Route path="/courses/:id/edit" element={<EditCourse instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
                                 {userData.role !== "student" &&
                                     <Route path="/newcourse" element={<AddCourse instructorList={instructors} prerequisiteOptions={currentUnits} />} />}
                                 {userData.role === "student" &&
-                                    <Route path="/joincourse" element={<JoinCourse userData={userData}/>} />}
-                                
+                                    <Route path="/joincourse" element={<JoinCourse userData={userData} />} />}
 
 
-                                <Route path="/classrooms" element={ <ClassroomDashboard userData={userData} /> } />
+
+                                <Route path="/classrooms" element={<ClassroomDashboard userData={userData} />} />
                                 <Route path="/classrooms/:id" element={<ViewClassroom userData={userData} />} />
                                 {userData.role !== "student" &&
                                     <Route path="/classrooms/:id/edit" element={<EditClassroom userData={userData} studentList = {students} instructorList={instructors} currentUnits={currentUnits}/>} />}
@@ -338,7 +342,8 @@ const mockCurrentUnits = ["a", "b", "c"]
                                     <Route path="/joinclassroom" element={<JoinClassroom userData={userData}/>} />}
 
 
-                                {userData.role !== "student" && 
+
+                                {userData.role !== "student" &&
                                     <Route path="/control" element={<ControlPanel />} />}
                             </Routes>
                         }
