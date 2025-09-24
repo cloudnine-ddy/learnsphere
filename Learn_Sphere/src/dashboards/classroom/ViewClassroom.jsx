@@ -166,43 +166,48 @@ function ViewClassroom({ userData }) {
         };
 
 
-    const handleApprove = (student_request) => {
-        const { request_student_id, request_student_name } = student_request;
-      
-        // Format "id: name"
-        const newStudentEntry = `${request_student_id}: ${request_student_name}`;
-      
-        // Merge into existing classroom_students
-        const updatedStudents = [
-          ...(classroom.classroom_students || []),
-          newStudentEntry,
-        ];
-      
-        // Update Firestore first
-        updateClassroomStudents(classroom.classroom_id, updatedStudents)
-          .then(() => {
-            // Then delete the request
-            return deleteRequestByStudentAndClassroom(
-              request_student_id,
-              classroom.classroom_id
-            );
-          })
-          .then(() => {
-            // Update local state so UI shows instantly
-            setClassroom((prev) => ({
-              ...prev,
-              classroom_students: updatedStudents,
-            }));
-            setRequest((prev) =>
-              prev.filter(
-                (reqSnap) => reqSnap.data().request_student_id !== request_student_id
-              )
-            );
-      
-            console.log("Student Approved:", newStudentEntry);
-          })
-          .catch((err) => console.error("Error approving student:", err));
-      };
+        const handleApprove = (student_request) => {
+            const { request_student_id, request_student_name } = student_request;
+          
+            // Format "id: name"
+            const newStudentEntry = `${request_student_id}: ${request_student_name}`;
+          
+            // Merge into existing classroom_students
+            const updatedStudents = [
+              ...(classroom.classroom_students || []),
+              newStudentEntry,
+            ];
+          
+            // Update Firestore first (classroom doc)
+            updateClassroomStudents(classroom.classroom_id, updatedStudents)
+              .then(() => {
+                // Create mapping in student_classroom
+                return addStudentClassroom(classroom.classroom_id, request_student_id);
+              })
+              .then(() => {
+                // Then delete the request
+                return deleteRequestByStudentAndClassroom(
+                  request_student_id,
+                  classroom.classroom_id
+                );
+              })
+              .then(() => {
+                // Update local state so UI shows instantly
+                setClassroom((prev) => ({
+                  ...prev,
+                  classroom_students: updatedStudents,
+                }));
+                setRequest((prev) =>
+                  prev.filter(
+                    (reqSnap) =>
+                      reqSnap.data().request_student_id !== request_student_id
+                  )
+                );
+          
+                console.log("✅ Student Approved:", newStudentEntry);
+              })
+              .catch((err) => console.error("❌ Error approving student:", err));
+          };
     
       const handleReject = (student_request) => {
         const { request_student_id, request_classroom_id } = student_request;

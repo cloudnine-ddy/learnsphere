@@ -48,43 +48,54 @@ export async function getClassroom(id, userData) {
     }
 }
 
+
 export async function getClassroomByStudent(studentID) {
     const classrooms = [];
-
-    const studentRef = doc(db, "users", studentID);
-    const studentSnap = await getDoc(studentRef);
-
-    if (!studentSnap.exists()) {
-        console.error("Student not found:", studentID);
+  
+    try {
+      // 1️⃣ Get mappings from student_classroom
+      const scQuery = query(
+        collection(db, "student_classroom"),
+        where("student_classroom_studentID", "==", studentID)
+      );
+  
+      const scSnap = await getDocs(scQuery);    
+  
+      if (scSnap.empty) {
+        console.warn("⚠️ No classroom mappings found for student:", studentID);
         return classrooms;
-    }
-
-    const studentData = studentSnap.data();
-    const joinedClassroomIDs = studentData.classroomList || [];
-
-    if (joinedClassroomIDs.length === 0) {
-        return classrooms;
-    }
-
-    const classroomSnapshots = await Promise.all(
-        joinedClassroomIDs.map(async (classroomDocId) => {
-            try {
-                const classroomRef = doc(db, "classrooms", classroomDocId);
-                const classroomSnap = await getDoc(classroomRef);
-                if (classroomSnap.exists()) {
-                    return classroomSnap;
-                }
-                console.warn(`Classrooms not found for ID: ${classroomDocId}`);
-                return null;
-            } catch (error) {
-                console.error(`Failed to fetch classroom ${classroomDocId}:`, error);
-                return null;
-            }
+      }
+  
+      // 2️⃣ For each mapping, query classrooms by classroom_id field
+      const classroomSnaps = await Promise.all(
+        scSnap.docs.map(async (docSnap) => {
+          const data = docSnap.data();
+          const classroomID = data.student_classroom_classroomID;
+  
+          // query classrooms where classroom_id == classroomID
+          const cQuery = query(
+            collection(db, "classrooms"),
+            where("classroom_id", "==", classroomID)
+          );
+  
+          const cSnap = await getDocs(cQuery);
+  
+          if (!cSnap.empty) {
+            return cSnap.docs[0]; // return the first matching classroom doc
+          } else {
+            console.warn(`⚠️ Classroom not found for classroom_id: ${classroomID}`);
+            return null;
+          }
         })
-    );
-
-    return courseSnapshots.filter(Boolean);
-}
+      );
+  
+      // 3️⃣ Keep only valid docs
+      return classroomSnaps.filter(Boolean);
+    } catch (error) {
+      console.error("❌ Error in getClassroomByStudent:", error);
+      return classrooms;
+    }
+  }
 
 
 export async function getClassroomsNonJoin(student) {
@@ -135,6 +146,10 @@ export async function getClassroomsNonJoin(student) {
         );
         const studentClassroomSnap = await getDocs(studentClassroomQuery);
         const joinedClassroomIDs = studentClassroomSnap.docs.map(docSnap => docSnap.data().classroom_id);
+
+        joinedClassroomIDs.forEach(classroomID => {
+            console.log("Classroom ID:", classroomID);
+        });
 
 
         // Step 4: Filter classrooms
