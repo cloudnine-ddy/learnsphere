@@ -45,6 +45,11 @@ function TokenGenerator({label="Generate", role="student", prefix="STUDENT"}) {
         //setTokens([...tokens, { value: randomToken, status: "Available" }]);
     };
 
+
+    const handleDelete = () => {
+        console.log("success!");
+    };
+
     return (
         <div className={styles.wholeField}>
             <button type="submit" onClick={generateToken} className={styles.button}>{label}</button>
@@ -59,6 +64,11 @@ function TokenGenerator({label="Generate", role="student", prefix="STUDENT"}) {
                         <span className={token.status === "Available" ? styles.tokenStatusAvailable : styles.tokenStatusUsed}>
                             {token.status}
                         </span>
+
+                        <button className={styles.deleteButton} onClick={() => handleDelete()}>
+                            Delete
+                        </button>
+
 
                     </div>
                 ))}

@@ -74,9 +74,30 @@
 .tokenStatusAvailable {
     font: 20px;
     color: rgb(38, 144, 237);
+    margin-left: auto;
+    margin-right: 10px;
 }
 
 .tokenStatusUsed {
     font: 20px;
     color: red;
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.deleteButton {
+  background: #ceab93;
+  border: none;
+  color: black;
+  opacity: 0.6;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  align-items: flex-end;
+}
+
+.deleteButton:hover {
+  background: #ad8b73;
 }
