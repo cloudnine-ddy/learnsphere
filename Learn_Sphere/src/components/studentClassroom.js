@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { collection, query, where, getDocs, deleteDoc, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig.js";
 
 export async function addStudentClassroom(classroomID, studentID) {
@@ -226,4 +226,45 @@ export async function deleteStudentClassroomByStudentID(studentID) {
         console.error("Error deleting classroom references:", error);
         throw error;
     }
+}
+
+export async function updateStudentClassroomClassroomID(studentID, classroomID, newStudentClassroomID) {
+
+  /* param
+      studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+      classroomID - the classroom 'classroom_id:' field in the 'classrooms' database. Example "6003"
+      newStudentClassroomID - the new value for student_classroom_ID to be updated
+  */
+
+  try {
+      // Step 1: Query for the student_classroom document(s)
+      const scQuery = query(
+          collection(db, "student_classroom"),
+          where("student_classroom_studentID", "==", studentID),
+          where("student_classroom_classroomID", "==", classroomID)
+      );
+      const scSnapshot = await getDocs(scQuery);
+
+      if (scSnapshot.empty) {
+          console.warn("No matching student_classroom found to update.");
+          return false;
+      }
+
+      // Step 2: Update only the specific field (student_classroom_ID)
+      const updatePromises = scSnapshot.docs.map((docSnapshot) => {
+          const docRef = doc(db, "student_classroom", docSnapshot.id);
+          return updateDoc(docRef, {
+              student_classroomID: newStudentClassroomID,  // Only update this field
+          });
+      });
+
+      await Promise.all(updatePromises);
+
+      console.log("✅ Successfully updated student_classroom_ID.");
+      return true;
+
+  } catch (error) {
+      console.error("Error updating student_classroom:", error);
+      throw error;
+  }
 }
