@@ -229,7 +229,7 @@ function AddClassroom({
                 }
                     }).catch((error) => setErrorMessages([error?.message || error]))
             .then (navigate("/home/classrooms"))
-                }
+                }}
 
     async function isValid() {
         let validation = true;
@@ -377,7 +377,6 @@ function AddClassroom({
             </div>
         </div>
     );
-}
 }
 
 export default AddClassroom;
