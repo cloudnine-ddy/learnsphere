@@ -26,7 +26,7 @@ Developers: [in alphabetical order] <br>
 - **Retrospective**: [Retrospective Document Sprint 2](https://docs.google.com/document/d/1FMskVUFWyEHLXWTXSPal96XZwTKPQtkY/edit?usp=sharing&ouid=100047865276099939875&rtpof=true&sd=true)
 - **Risk Register**: [Risk Register](https://docs.google.com/spreadsheets/d/1co_lQZgy7e2vIYkXu4s8Nhda-f-QMZG0vHhAoKv1t0Y/edit?usp=sharing)
 - **Backlog Refinement**: [Backlog Refinement](https://docs.google.com/document/d/14LBP7Nnn5y3GTWeGZa5KuC3eu8w8kP4PqMqUOhK8Y_U/edit?usp=sharing)
-
+- **User Stories**: [Backlog Refinement](https://docs.google.com/spreadsheets/d/1yGPtNBCwDKY0w5ygV5y8DOZg6kFB10QI1kscDwUCL2Q/edit?usp=sharing)
 
 ### Meeting Minutes
 
