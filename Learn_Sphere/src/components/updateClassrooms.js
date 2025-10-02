@@ -1,4 +1,4 @@
-import { doc, updateDoc , getDoc, query, where, getDocs, collection} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { doc, updateDoc, getDoc, query, where, getDocs, collection } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig.js";
 
 import { getCurrentUser, getUserInfo } from "./manageUsers";
@@ -99,4 +99,38 @@ export async function updateClassroomInDatabase(classroomId, updates) {
   } else {
     throw "Unauthorized access!";
   }
+}
+
+export async function updateInstructorInClassroom(oldInstructor, newInstructor) {
+
+  try {
+
+    // Find all the lessons with the instructor in the lessons
+    const classroomQuery = query(
+      collection(db, "classrooms"),
+      where("classroom_instructor", "==", oldInstructor)
+    );
+
+    const classroomSnapshot = await getDocs(classroomQuery);
+
+    if (classroomSnapshot.empty) {
+      console.log(`No ${oldInstructor}found in any Classroom`);
+      return;
+    }
+
+    const updates = classroomSnapshot.docs.map((d) =>
+      updateDoc(doc(db, "classrooms", d.id), {
+        classroom_instructor: newInstructor,
+      })
+    );
+
+    await Promise.all(updates);
+
+    console.log(`✅ Updated ${classroomSnapshot.size} lessons`);
+
+  } catch (error) {
+    console.error("Error updating instructor:", error);
+    throw error;
+  }
+
 }
