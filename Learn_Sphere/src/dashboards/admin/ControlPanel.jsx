@@ -5,6 +5,7 @@ import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import styles from "./ControlPanel.module.css";
 
 import TokenGenerator from "../../components/functional/TokenGenerator";
+import SearchBar from "../../components/functional/SearchBar";
 
 
 
@@ -37,6 +38,9 @@ function ControlPanel() {
 
 
             <div className={styles.container}>
+                
+                <SearchBar />
+                
                 <div className={styles.tokenArea}>
                     <div className={styles.tokenTitle}>
                         Private Token
