@@ -57,6 +57,21 @@ function ControlPanel() {
                 
             </div>
 
+            <div className={styles.container}>
+                <div className={styles.tokenArea}>
+                    <div className={styles.tokenTitle}>
+                        Student Management
+                    </div>
+                    <div className={styles.generatorArea}>
+
+                        
+
+                    </div>
+
+                </div>
+                
+            </div>
+
         </div>
     );
 }

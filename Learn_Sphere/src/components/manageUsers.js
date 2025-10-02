@@ -161,6 +161,7 @@ export async function getAllStudentsInfo()
     }
 }
 
+/*
 export async function deleteCurrentUser()
 {
     let user = await getCurrentUser();
@@ -191,6 +192,7 @@ export async function deleteCurrentUser()
         throw "No user is signed in.";
     }
 }
+*/
 
 export async function createToken(token, role)
 {
