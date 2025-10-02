@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
+import { getAllStudentsInfo, getAllInstructorsInfo } from "../../components/manageUsers";
+import { deleteStudent } from "../../components/deleteStudent";
+import { deleteInstructorFromDatabase } from "../../components/deleteInstructor";
 
 import styles from "./ControlPanel.module.css";
 
@@ -10,6 +13,9 @@ import SearchBar from "../../components/functional/SearchBar";
 
 
 function ControlPanel() {
+
+    const [students, setStudents] = useState([]);
+    const [instructors, setInstructors] = useState([]);
     
     useEffect(() => {
     //Runs only at first render to kick out students
@@ -23,6 +29,14 @@ function ControlPanel() {
                     navigate("/home");
                 }
             });
+        
+        getAllStudentsInfo().then((students) => {
+            setStudents(students);
+        });
+
+        getAllInstructorsInfo().then((instructors) => {
+            setInstructors(instructors);
+        });
     }, [])
 
     return (
@@ -38,8 +52,6 @@ function ControlPanel() {
 
 
             <div className={styles.container}>
-                
-                <SearchBar />
                 
                 <div className={styles.tokenArea}>
                     <div className={styles.tokenTitle}>
@@ -67,9 +79,20 @@ function ControlPanel() {
                         Student Management
                     </div>
                     <div className={styles.generatorArea}>
+                        <SearchBar users={students} deleteHandler={deleteStudent}/>
+                    </div>
 
-                        
+                </div>
+                
+            </div>
 
+            <div className={styles.container}>
+                <div className={styles.tokenArea}>
+                    <div className={styles.tokenTitle}>
+                        Instructor Management
+                    </div>
+                    <div className={styles.generatorArea}>
+                        <SearchBar users={instructors} deleteHandler={deleteInstructorFromDatabase}/>
                     </div>
 
                 </div>

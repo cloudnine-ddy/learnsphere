@@ -1,92 +1,66 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect, useMemo } from "react";
+import InputField from "../typable/InputField";
 import styles from "./SearchBar.module.css";
 
 
 
-function SearchBar({}) {
+function SearchBar({users, deleteHandler}) {
+
+    const [searchValue, setSearchValue] = useState("");
+    const [searchBar, setSearchBar] = useState("");
+
+    const selectedUsers = useMemo(() => {
+        console.log(users);
+        return users.filter((user) => {
+            let fullName = `${user.firstName} ${user.lastName}`;
+            console.log(fullName, searchValue, fullName.includes(searchValue));
+            return fullName.includes(searchValue);
+        });
+    }, [searchValue, users])
+    console.log(selectedUsers);
+
+    function handleDelete(token)
+    {
+        deleteHandler(token);
+    }
 
   return (   
     <div className={styles.wrapper}> 
     
         <div className={styles.searchBar}>
-            <input type="text" className={styles.searchInput} placeholder="Type your text" />
-            <button className={styles.searchButton}>
+            <input
+                label="Student Name"
+                type="text"
+                id="student_name"
+                value={searchBar}
+                onChange={(e) => {setSearchBar(e.target.value)}}
+                className={styles.searchInput}
+
+                onKeyDown={(e) => {
+                    if (e.key == "Enter")
+                    {
+                        setSearchBar(e.target.value);
+                    }
+                }}
+            />
+
+            <button className={styles.searchButton} onClick={() => setSearchValue(searchBar)}>
                 <img src="images/icons/add.png" alt="" className={styles.searchIcon} />
             </button>
         </div>
 
+        {selectedUsers.map((user) => (
+            <div className={styles.resultField}>
+                <span className={styles.resultItem}>
+                    {`${user.firstName} ${user.lastName}`}
+                </span>
 
+                <button className={styles.deleteButton} onClick={() => handleDelete(token)}>
+                    Delete
+                </button>
 
-
-
-
-
-        <div className={styles.resultField}>
-            <span className={styles.resultItem}>
-                {/* {token.value} */}
-                hahahaha
-            </span>
-
-            {/* <span className={token.status === "Available" ? styles.tokenStatusAvailable : styles.tokenStatusUsed}>
-                {token.status}
-            </span> */}
-
-            <button className={styles.deleteButton} onClick={() => handleDelete(token)}>
-                Delete
-            </button>
-
-        </div>
-
-        <div className={styles.resultField}>
-            <span className={styles.resultItem}>
-                {/* {token.value} */}
-                bibubibu
-            </span>
-
-            {/* <span className={token.status === "Available" ? styles.tokenStatusAvailable : styles.tokenStatusUsed}>
-                {token.status}
-            </span> */}
-
-            <button className={styles.deleteButton} onClick={() => handleDelete(token)}>
-                Delete
-            </button>
-
-        </div>
-
-
-        <div className={styles.resultField}>
-            <span className={styles.resultItem}>
-                {/* {token.value} */}
-                alalalalala
-            </span>
-
-            {/* <span className={token.status === "Available" ? styles.tokenStatusAvailable : styles.tokenStatusUsed}>
-                {token.status}
-            </span> */}
-
-            <button className={styles.deleteButton} onClick={() => handleDelete(token)}>
-                Delete
-            </button>
-
-        </div>
-
-
-        <div className={styles.resultField}>
-            <span className={styles.resultItem}>
-                {/* {token.value} */}
-                wiiiiiiiii
-            </span>
-
-            {/* <span className={token.status === "Available" ? styles.tokenStatusAvailable : styles.tokenStatusUsed}>
-                {token.status}
-            </span> */}
-
-            <button className={styles.deleteButton} onClick={() => handleDelete(token)}>
-                Delete
-            </button>
-
-        </div>
+            </div>
+        ))}
     </div> 
   );
 }
