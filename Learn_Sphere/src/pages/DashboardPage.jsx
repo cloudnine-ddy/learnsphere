@@ -348,7 +348,7 @@ function DashboardPage() {
 
 
                                 {userData.role === "admin" &&
-                                    <Route path="/control" element={<ControlPanel />} />}
+                                    <Route path="/control" element={<ControlPanel students={students} instructors={instructors}/>} />}
                             </Routes>
                         }
                     </div>

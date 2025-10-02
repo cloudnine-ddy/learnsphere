@@ -44,6 +44,13 @@
     flex-direction: row;
 }
 
+.searchArea {
+    display: flex;
+    flex-direction: row;
+    width: 95%;
+    align-self: center;
+}
+
 .studentGenerator {
     display: flex;
     width: 50%;

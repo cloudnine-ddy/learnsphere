@@ -12,10 +12,7 @@ import SearchBar from "../../components/functional/SearchBar";
 
 
 
-function ControlPanel() {
-
-    const [students, setStudents] = useState([]);
-    const [instructors, setInstructors] = useState([]);
+function ControlPanel({students, instructors}) {
     
     useEffect(() => {
     //Runs only at first render to kick out students
@@ -29,14 +26,6 @@ function ControlPanel() {
                     navigate("/home");
                 }
             });
-        
-        getAllStudentsInfo().then((students) => {
-            setStudents(students);
-        });
-
-        getAllInstructorsInfo().then((instructors) => {
-            setInstructors(instructors);
-        });
     }, [])
 
     return (
@@ -78,8 +67,8 @@ function ControlPanel() {
                     <div className={styles.tokenTitle}>
                         Student Management
                     </div>
-                    <div className={styles.generatorArea}>
-                        <SearchBar users={students} deleteHandler={deleteStudent}/>
+                    <div className={styles.searchArea}>
+                        <SearchBar usersFunction={getAllStudentsInfo} deleteHandler={deleteStudent}/>
                     </div>
 
                 </div>
@@ -91,8 +80,8 @@ function ControlPanel() {
                     <div className={styles.tokenTitle}>
                         Instructor Management
                     </div>
-                    <div className={styles.generatorArea}>
-                        <SearchBar users={instructors} deleteHandler={deleteInstructorFromDatabase}/>
+                    <div className={styles.searchArea}>
+                        <SearchBar usersFunction={getAllInstructorsInfo} deleteHandler={deleteInstructorFromDatabase}/>
                     </div>
 
                 </div>

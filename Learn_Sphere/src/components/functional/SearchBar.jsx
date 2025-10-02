@@ -4,24 +4,34 @@ import styles from "./SearchBar.module.css";
 
 
 
-function SearchBar({users, deleteHandler}) {
+function SearchBar({usersFunction, deleteHandler}) {
 
     const [searchValue, setSearchValue] = useState("");
     const [searchBar, setSearchBar] = useState("");
 
-    const selectedUsers = useMemo(() => {
-        console.log(users);
-        return users.filter((user) => {
-            let fullName = `${user.firstName} ${user.lastName}`;
-            console.log(fullName, searchValue, fullName.includes(searchValue));
-            return fullName.includes(searchValue);
-        });
-    }, [searchValue, users])
+    const [selectedUsers, setSelectedUsers] = useState([]);
+
+    const userRefresh = () => {
+        usersFunction().then((res) => {
+            setSelectedUsers(res.filter((user) => {
+                let fullName = `${user.firstName} ${user.lastName}`;
+                console.log(fullName, searchValue, fullName.includes(searchValue));
+                return fullName.includes(searchValue);
+            }));
+        })
+    }
+
+    useEffect(() => {
+        userRefresh();
+    }, [searchValue])
+
     console.log(selectedUsers);
 
     function handleDelete(token)
     {
-        deleteHandler(token);
+        deleteHandler(token).then(() => {
+            userRefresh();
+        });
     }
 
   return (   
@@ -55,7 +65,7 @@ function SearchBar({users, deleteHandler}) {
                     {`${user.firstName} ${user.lastName}`}
                 </span>
 
-                <button className={styles.deleteButton} onClick={() => handleDelete(token)}>
+                <button className={styles.deleteButton} onClick={() => handleDelete(user.id)}>
                     Delete
                 </button>
 

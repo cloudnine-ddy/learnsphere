@@ -1,5 +1,8 @@
 .wrapper {
-    width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  width: calc(100% - 30px);
+  height: 600px;
 }
 
 
