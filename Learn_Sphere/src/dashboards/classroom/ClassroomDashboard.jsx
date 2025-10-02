@@ -47,7 +47,7 @@ function ClassroomDashboard({ userData }) {
       if (filter === INSTRUCTOR_MY_CLASSROOMS) {
           getClassrooms(true, userData).then((allClassrooms) => {
               const filtered = allClassrooms.filter((classroom) => {
-                  const supervisor = classroom.data().classroomSupervisor || "";
+                  const supervisor = classroom.data().classroom_instructor || "";
                   return instructorDisplayName
                       ? supervisor.trim().toLowerCase() === instructorDisplayName.trim().toLowerCase()
                       : false;

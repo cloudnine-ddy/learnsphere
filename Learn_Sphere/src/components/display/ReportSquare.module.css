@@ -1,0 +1,48 @@
+.square {
+    width: 200px;
+    height: 200px;
+    border-radius: 25%;
+    background-color: red;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 6px solid black;
+    background-color: lightgreen;
+}
+
+
+.title {
+    background-color: transparent;
+    height: 30%;
+    text-align: left;
+    padding-left: 30px;
+    padding-right: 12px;
+    padding-bottom: 5px;
+    align-content: center;
+    align-content:end;
+    font-weight: bold;
+    color: black;
+    font-size: 21px;
+    opacity: 0.8;
+}
+
+.number {
+    background-color: transparent;
+    flex: 1;
+    text-align: left;
+    padding-left: 30px;
+    align-content: center;
+    font-size: 36px;
+    color: black;
+}
+
+.description {
+    background-color: transparent;
+    height: 30%;
+    text-align: left;
+    padding-left: 30px;
+    padding-top: 10px;
+    color: black;
+    opacity: 0.6;
+    font-size: 18px;
+}

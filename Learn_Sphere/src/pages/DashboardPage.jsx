@@ -27,6 +27,7 @@ import ViewClassroom from "../dashboards/classroom/ViewClassroom";
 import AddClassroom from "../dashboards/classroom/AddClassroom";
 import JoinClassroom from "../dashboards/classroom/JoinClassroom";
 
+import ReportDashboard from "../dashboards/ReportDashboard";
 import ControlPanel from "../dashboards/admin/ControlPanel";
 import JoinCourse from "../dashboards/course/JoinCourse";
 import { getCourses } from "../components/getCourses";
@@ -274,13 +275,13 @@ function DashboardPage() {
                             </h3>
                         </Link>
 
-                        {/* {userData != null && userData.role != "student" && 
+                        {userData != null && userData.role != "student" && 
                         <Link to="/home/report">
                             <h3 className={styles.menuItem}>
                                 <img src="../images/icons/view_report.png" className={styles.menuIcon} />
                                 Report
                             </h3>
-                        </Link>} */}
+                        </Link>}
 
                         {userData != null && userData.role === "admin" &&
                             <Link to="/home/control">
@@ -341,6 +342,9 @@ function DashboardPage() {
                                 {userData.role === "student" &&
                                     <Route path="/joinclassroom" element={<JoinClassroom userData={userData}/>} />}
 
+
+                                {userData.role !== "student" &&
+                                    <Route path="/report" element={<ReportDashboard />} />}
 
 
                                 {userData.role === "admin" &&
