@@ -1,4 +1,4 @@
-import { updateDoc, doc , getDoc} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig";
 import { getCurrentUser, getUserInfo } from "./manageUsers";
 
@@ -23,5 +23,40 @@ export async function updateLessonInDatabase(lessonDocId, updates) {
         }
     } else {
         throw "Unauthorized access!";
+    }
+}
+
+
+export async function updateInstructorInLessons(oldInstructor, newInstructor) {
+
+    // TODO: Check what is the input given for owner when adding the lesson
+    try {
+
+        // Find all the lessons with the instructor in the lessons
+        const lessonQuesry = query(
+            collection(db, "lessons"),
+            where("owner", "==", oldInstructor)
+        );
+
+        const lessonSnapshot = await getDocs(lessonQuesry);
+
+        if (lessonSnapshot.empty) {
+            console.log("No lessons found");
+            return;
+        }
+
+        const updates = lessonSnapshot.docs.map((d) =>
+            updateDoc(doc(db, "lessons", d.id), {
+                owner: newInstructor,
+            })
+        );
+
+        await Promise.all(updates);
+
+        console.log(`✅ Updated ${lessonSnapshot.size} lessons`);
+
+    } catch (error) {
+        console.error("Error updating instructor:", error);
+        throw error;
     }
 }
