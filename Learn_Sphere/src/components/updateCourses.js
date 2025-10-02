@@ -11,7 +11,7 @@ export async function updateCourseInDatabase(courseDocId, updates) {
             const docRef = doc(db, "courses", courseDocId);
 
             // Ensure updatedAt is refreshed automatically
-            updates.updatedAt = new Date().toISOString();
+            updates.courseUpdateDate = new Date().toISOString();
 
             await updateDoc(docRef, updates);
 
