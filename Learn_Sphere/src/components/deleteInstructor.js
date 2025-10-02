@@ -78,9 +78,4 @@ export async function deleteInstructorFromDatabase(instructorDocId) {
         throw error;
     }
 
-
-
-
-
-
 }

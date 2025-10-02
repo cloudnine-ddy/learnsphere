@@ -77,3 +77,39 @@ export async function deleteStudentCourseByCourseID(courseID) {
   }
 
 }
+
+export async function deleteStudentCourseByStudentID(studentID) {
+
+  /* param
+    studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+  */
+
+  try {
+    // Search for the lesson_classroom 
+
+    const scQuery = query(
+      collection(db, "student_course"),
+      where("student_course_studentId", "==", studentID)
+    );
+
+    const studentCourseSnapshot = await getDocs(scQuery);
+
+    if (studentCourseSnapshot.empty) {
+      console.warn("No matching student_course found to delete.");
+      return false;
+    }
+
+    const deletions = studentCourseSnapshot.docs.map((d) =>
+      deleteDoc(doc(db, "student_course", d.id))
+    );
+
+    await Promise.all(deletions);
+
+    console.log("✅ Successfully deleted student_course mapping.");
+    return true;
+
+  } catch (error) {
+    console.error("Error deleting student_course:", error);
+    throw error;
+  }
+}
