@@ -34,13 +34,13 @@ export async function getCourses(status, userData) {
 export async function getCourse(id, userData) {
     if (userData != null) {
         const docRef = doc(db, "courses", id);
-        
+
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             if (docSnap.data().courseStatus != 'Published' && userData.role == 'student') {
                 return null;
             }
-            
+
             return docSnap.data();
         }
         else {
@@ -50,7 +50,7 @@ export async function getCourse(id, userData) {
 }
 
 export async function getCoursesByStudent(studentID) {
-    
+
     /* param
         studentID - the'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
     */
@@ -125,5 +125,28 @@ export async function getCoursesNonEnroll(student) {
             err
         );
         throw err;
+    }
+}
+
+export async function getPublishedCourses() {
+    const courses = [];
+
+    try {
+        // Query courses where courseStatus is "Published"
+        const publishedQuery = query(
+            collection(db, "courses"),
+            where("courseStatus", "==", "Published")
+        );
+
+        const querySnapshot = await getDocs(publishedQuery);
+
+        querySnapshot.forEach((docSnap) => {
+            courses.push(docSnap); // keep as document snapshots
+        });
+
+        return courses;
+    } catch (error) {
+        console.error("❌ Error fetching published courses:", error);
+        return [];
     }
 }

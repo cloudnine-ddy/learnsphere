@@ -5,6 +5,7 @@ import { addClassroomsToDatabase } from "../../components/addClassrooms";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { addStudentClassroom } from "../../components/studentClassroom";
 import { validateCourseLessons as validateClassroomLessons } from "../../components/addCourses";
+import { getPublishedCourses } from "../../components/getCourses";
 
 import styles from "./AddClassroom.module.css";
 
@@ -39,6 +40,7 @@ function AddClassroom({
     const [validLessonOptions, setValidLessonOptions] = useState([]);
     const [validStudentOptions, setValidStudentOptions] = useState([]);
     const [userData, setUserData] = useState(null);
+    const [publishedCourses, setPublishedCourses] = useState([]);
 
     const [classroomLessons, setClassroomLessons] = useState([]);
     const [classroomStudents, setClassroomStudents] = useState([]);
@@ -59,6 +61,16 @@ function AddClassroom({
             });
     }, [navigate]);
 
+    useEffect(() => {
+        if (!userData) return;
+
+        getPublishedCourses()
+            .then((courses) => {
+                setPublishedCourses(courses);
+            })
+            .catch(console.error);
+    }, [userData]);
+
     useEffect(() => {changeLessonOptions(classroom.classroom_course)}, [classroom.classroom_course])
 
     useEffect(() => {
@@ -68,33 +80,21 @@ function AddClassroom({
         }));
     }, [classroomStudents]);
 
-    const changeLessonOptions = (course) => {
-        if (extractIdentifier(course) != null)
-        {
-            let c = courseOptions.find(c=> c.data().courseID == extractIdentifier(course));
-            
-            if (c)
-            {
-                setValidLessonOptions(lessonOptions.filter((lesson) => {
-                    return c.data().courseLessons.includes(`${lesson.data().lessonID}: ${lesson.data().title}`);
-                }));
+    const changeLessonOptions = (courseString) => {
+        const courseId = extractIdentifier(courseString);
+        const courseDoc = publishedCourses.find(c => c.data().courseID === courseId);
+        if (!courseDoc) return;
 
-                getListOfStudentsFromCourse(c.id).then((students) => {
-                    let studentDatas = students.map((student) => {
-                        return student.data();
-                    });
+        const courseData = courseDoc.data();
 
-                    console.log(studentDatas);
+        setValidLessonOptions(lessonOptions.filter(lesson =>
+            courseData.courseLessons.includes(`${lesson.data().lessonID}: ${lesson.data().title}`)
+        ));
 
-                    setValidStudentOptions(studentDatas);
-                });
-
-                console.log(lessonOptions.filter((lesson) => {
-                    return c.data().courseLessons.includes(`${lesson.data().lessonID}: ${lesson.data().title}`);
-                }));
-            }
-        }
-    }
+        getListOfStudentsFromCourse(courseDoc.id)
+            .then((students) => setValidStudentOptions(students.map(s => s.data())))
+            .catch(console.error);
+    };
 
     const handleClassroomChange = (event) => {
         const { name, value } = event.target;
@@ -111,28 +111,10 @@ function AddClassroom({
 
     const classroomCourseOptions = [
         "",
-        ...courseOptions
-            .map((option) => {
-                if (typeof option === "string") {
-                    return option;
-                }
-
-                if (typeof option === "object" && option !== null) {
-                    if (typeof option.data === "function") {
-                        const data = option.data();
-                        const identifier = data?.courseID || option.id || "";
-                        const title = data?.courseTitle || data?.title || "";
-                        return [identifier, title].filter(Boolean).join(": ").trim();
-                    }
-
-                    const identifier = option.courseID || option.id || "";
-                    const title = option.courseTitle || option.title || "";
-                    return [identifier, title].filter(Boolean).join(": ").trim();
-                }
-
-                return "";
-            })
-            .filter(Boolean)
+        ...publishedCourses.map(course => {
+            const data = course.data();
+            return `${data.courseID}: ${data.courseTitle}`;
+        })
     ];
 
     const classroomLessonOptions = useMemo(() => {return validLessonOptions
@@ -230,13 +212,13 @@ function AddClassroom({
                 classroom.classroom_status
             )
                 .then(() => setErrorMessages(["Successfully created a classroom!"]))
-                
+
             .then(async () => {
-                
+
                 const classroomID = classroom.classroom_id;
 
                 for (const student of classroomStudents) {
-                    const studentID = extractIdentifier(student); 
+                    const studentID = extractIdentifier(student);
                     await addStudentClassroom(classroomID, studentID);
                 }
                     }).catch((error) => setErrorMessages([error?.message || error]))
