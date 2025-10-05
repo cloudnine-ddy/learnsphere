@@ -70,12 +70,6 @@ export async function updateClassroomLessons(classroomId, lessonsArray) {
 }
 
 
-
-
-
-
-
-
 // Jorden Add this
 export async function updateClassroomInDatabase(classroomId, updates) {
   let user = await getCurrentUser();
@@ -122,6 +116,7 @@ export async function updateInstructorInClassroom(oldInstructor, newInstructor) 
       updateDoc(doc(db, "classrooms", d.id), {
         classroom_instructor: newInstructor,
       })
+
     );
 
     await Promise.all(updates);
@@ -133,4 +128,108 @@ export async function updateInstructorInClassroom(oldInstructor, newInstructor) 
     throw error;
   }
 
+}
+
+export async function updateStartDateInClassroom(classroomId, startDate) {
+
+  /*
+  Param:
+    classroomId: String - The classroom ID
+    startDate: String - The start date in YYYY-MM-DD format
+
+  */
+
+  try {
+
+    // Find all the lessons with the instructor in the lessons
+    const classroomQuery = query(
+      collection(db, "classrooms"),
+      where("classroom_id", "==", classroomId)
+    );
+
+    const classroomSnapshot = await getDocs(classroomQuery);
+
+    if (classroomSnapshot.empty) {
+      console.log(`No classroom found with classroom_id: ${classroomId}`);
+      return;
+    }
+
+    const updates = classroomSnapshot.docs.map(async (d) => {
+      const classroomData = d.data();
+      const durationWeeks = classroomData.classroom_duration;
+
+      // Compute endDate
+      const start = new Date(startDate);
+      const end = new Date(start);
+      end.setDate(start.getDate() + durationWeeks * 7);
+
+      // Save in YYYY-MM-DD format
+      const endDateStr = end.toISOString().split("T")[0];
+
+      return updateDoc(doc(db, "classrooms", d.id), {
+        classroom_startDate: startDate,
+        classroom_endDate: endDateStr,
+      });
+
+    });
+
+    await Promise.all(updates);
+
+    console.log(`✅ Updated ${classroomSnapshot.size} classrooms`);
+
+  } catch (error) {
+    console.error("Error updating startDate:", error);
+    throw error;
+  }
+
+}
+
+export async function updateDurationInClassroom(classroomId, durationWeeks) {
+  /*
+  Param:
+    classroomId: String - The classroom ID
+    durationWeeks: int - The duration in weeks
+
+  */
+  try {
+
+    // Find all the lessons with the instructor in the lessons
+    const classroomQuery = query(
+      collection(db, "classrooms"),
+      where("classroom_id", "==", classroomId)
+    );
+
+    const classroomSnapshot = await getDocs(classroomQuery);
+
+    if (classroomSnapshot.empty) {
+      console.log(`No classroom found with classroom_id: ${classroomId}`);
+      return;
+    }
+
+    const updates = classroomSnapshot.docs.map(async (d) => {
+      const classroomData = d.data();
+      const startDate = classroomData.classroom_startDate;
+
+      // Compute endDate
+      const end = new Date(startDate);
+      end.setDate(start.getDate() + durationWeeks * 7);
+
+      // Save in YYYY-MM-DD format
+      const endDateStr = end.toISOString().split("T")[0];
+
+      return updateDoc(doc(db, "classrooms", d.id), {
+        classroom_duration: durationWeeks,
+        classroom_endDate: endDateStr,
+      });
+
+    });
+
+    await Promise.all(updates);
+
+    console.log(`✅ Updated ${classroomSnapshot.size} classrooms`);
+
+  } catch (error) {
+    console.error("Error updating duration:", error);
+    throw error;
+  }
 }

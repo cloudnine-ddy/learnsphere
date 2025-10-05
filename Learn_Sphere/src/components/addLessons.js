@@ -20,8 +20,8 @@ export async function addLessonToDatabase(lessonID, title, description, objectiv
             owner: owner,
             status: status,
             creditPoint: Number.parseInt(creditPoint),
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            createdAt: new Date().toISOString().split("T")[0],
+            updatedAt: new Date().toISOString().split("T")[0],
         };
 
         // Save lesson data to Firestore
