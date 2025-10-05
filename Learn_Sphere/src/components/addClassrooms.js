@@ -17,6 +17,13 @@ export async function addClassroomsToDatabase(
     const user = await getCurrentUser();
     const userinfo = await getUserInfo(user);
 
+    // Convert the startDate to a Date object
+    const start = new Date(classroomStartDate);
+
+    // Calculate the endDate by adding the duration to the startDate
+    const end = new Date(start)
+    end.setDate(start.getDate() + classroomDurationWeeks*7);
+
     if (user != null && userinfo.role !== "student") {
         const classroomData = {
             classroom_id: classroomID,
@@ -26,11 +33,12 @@ export async function addClassroomsToDatabase(
             classroom_description: classroomDescription,
             classroom_lessons: classroomLessons.map((s) => s.trim()).filter(Boolean),
             classroom_students: classroomStudents.map((s) => s.trim()).filter(Boolean),
-            classroom_startDate: classroomStartDate,
+            classroom_startDate: start.toISOString(),
             classroom_durationWeeks: Number.parseInt(classroomDurationWeeks, 10),
             classroom_createdDate: new Date().toISOString(),
             classroom_updatedDate: new Date().toISOString(),
-            classroom_status: classroomStatus
+            classroom_status: classroomStatus,
+            classroom_endDate: end.toISOString(),
         };
 
         try {

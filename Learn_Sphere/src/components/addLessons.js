@@ -2,29 +2,13 @@ import {setDoc, doc} from "https://www.gstatic.com/firebasejs/9.4.0/firebase-fir
 import { db } from "./firebaseConfig";
 import { getCurrentUser, getUserInfo } from "./manageUsers";
 
-export async function addLessonToDatabase(lessonID, title, description, objectives, readingList, prerequisites, assignments, creditPoint, owner, status, startDate, duration)
+export async function addLessonToDatabase(lessonID, title, description, objectives, readingList, prerequisites, assignments, creditPoint, owner, status)
 {
-    /*
-        Param:
-            startDate: String - Should be in the format of "YYYY-MM-DD"
-            duration: int - In weeks
-
-
-    */
     let user = await getCurrentUser();
     let userInfo = await getUserInfo(user);
 
-
     if (user != null && userInfo.role != "student")
     {
-
-        // Convert the startDate to a Date object
-        const start = new Date(startDate);
-
-        // Calculate the endDate by adding the duration to the startDate
-        const end = new Date(start)
-        end.setDate(start.getDate() + duration*7);
-
         const lessonData = {
             lessonID: lessonID,
             title: title,
@@ -38,9 +22,6 @@ export async function addLessonToDatabase(lessonID, title, description, objectiv
             creditPoint: Number.parseInt(creditPoint),
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            startDate: start.toISOString(),
-            endDate: end.toISOString(),
-            durationInWeeks: duration,
         };
 
         // Save lesson data to Firestore
