@@ -172,32 +172,32 @@ export async function getLessonsbyCourseID(courseID, userData) {
     if (!courseID || !userData) {
       return [];
     }
-  
+
     // find course by its courseID field
     const q = query(
       collection(db, "courses"),
       where("courseID", "==", courseID)
     );
-  
+
     const querySnap = await getDocs(q);
-  
+
     if (querySnap.empty) {
       console.warn("Course not found while requesting lessons:", courseID);
       return [];
     }
-  
+
     const courseData = querySnap.docs[0].data();
     const lessonStrings = Array.isArray(courseData.courseLessons)
       ? courseData.courseLessons.filter(Boolean)
       : [];
-  
+
     if (lessonStrings.length === 0) {
       return [];
     }
-  
+
     // fetch all lessons user can access (doc snapshots)
     const allLessons = await getLessons(true, userData);
-  
+
     // filter down to matching ones, but keep full doc snapshots
     return allLessons.filter((lessonDoc) => {
       const lessonID = lessonDoc.data().lessonID;
@@ -206,3 +206,23 @@ export async function getLessonsbyCourseID(courseID, userData) {
       return lessonStrings.includes(combined);
     });
   }
+
+  export async function getPublishedLessons(userData)
+{
+    const lessons = [];
+
+    if (!userData)
+    {
+        return lessons;
+    }
+
+    const publishedQuery = query(collection(db, "lessons"), where("status", "==", "Published"));
+    const querySnapshot = await getDocs(publishedQuery);
+
+    querySnapshot.forEach((docSnap) =>
+    {
+        lessons.push(docSnap);
+    });
+
+    return lessons;
+}
