@@ -4,6 +4,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { updateCourseInDatabase } from "../../components/updateCourses";
+import { getPublishedLessons } from "../../components/getLessons";
 
 import styles from "./EditCourse.module.css";
 
@@ -18,7 +19,6 @@ import SelectStatus from "../../components/selectable_addable/SelectStatus";
 function EditCourse( { instructorList, prerequisiteOptions }) {
 
     const { id } = useParams();
-    prerequisiteOptions = prerequisiteOptions.filter(unit => unit.id != id);
     const location = useLocation();
     const courseData = location.state.course;
 
@@ -36,6 +36,8 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
     const [courseLessons, setCourseLessons] = useState(courseData?.courseLessons || []);
 
     let navigate = useNavigate();
+
+    const [publishedLessons, setPublishedLessons] = useState([]);
 
     const [errorMessages, setErrorMessages] = useState([]);
 
@@ -57,22 +59,35 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
             });
     }, [])
 
+    useEffect(() => {
+        getCurrentUser()
+            .then((user) => getUserInfo(user))
+            .then(async (info) => {
+                if (info?.role === "student") {
+                    navigate("/home");
+                } else {
+                    // Fetch published lessons once the user is confirmed
+                    const lessons = await getPublishedLessons(info);
+                    setPublishedLessons(lessons);
+                }
+            });
+    }, [navigate]);
 
     useEffect(() => {
+        // Only calculate if published lessons are loaded
+        if (publishedLessons.length === 0) return;
+
         const totalCreditPoints = courseLessons.reduce((sum, lessonString) => {
             const lessonid = lessonString.split(":")[0].trim();
-            const lesson = prerequisiteOptions.find(lesson => lesson.data().lessonID == lessonid);
-            return sum + lesson.data().creditPoint;
+            const lesson = publishedLessons.find(lesson => lesson.data().lessonID == lessonid);
+            return lesson ? sum + (lesson.data().creditPoint || 0) : sum;
         }, 0);
 
-        console.log(totalCreditPoints);
-
-        setCourse({
-            ...course,
+        setCourse(prev => ({
+            ...prev,
             courseTotalCreditpoint: totalCreditPoints
-        });
-
-    }, [courseLessons])
+        }));
+    }, [courseLessons, publishedLessons]);
 
     function submitForm(e)
     {
@@ -128,7 +143,7 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
                 </div>
             </div>
 
-            
+
 
 
             <div className={styles.infoScroll}>
@@ -180,12 +195,12 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
                 setItemList={setAssignmentList}
                 /> */}
 
-                <AddFromList 
+                <AddFromList
                     label={"Lessons Included"}
                     placeholder={"Please select lessons needed to be included"}
                     prerequisites={courseLessons}
                     setPrerequisites={setCourseLessons}
-                    prerequisiteOptions={prerequisiteOptions.map(
+                    prerequisiteOptions={publishedLessons.map(
                         option => `${option.data().lessonID}: ${option.data().title}`)}
                 />
                 <p className={styles.justTitle}>{`Total credit points: ${course.courseTotalCreditpoint}`}</p>
@@ -213,16 +228,16 @@ function EditCourse( { instructorList, prerequisiteOptions }) {
 
                 </div>
             </div>
-            
+
             <div className={styles.infoFooter}>
-                <button 
-                    onClick={handleCancel} 
+                <button
+                    onClick={handleCancel}
                     className={styles.smallButton}
                     style={{background: "#beb2a4", marginLeft: "auto"}}
                     >Cancel
                 </button>
-                <button 
-                    onClick={submitForm} 
+                <button
+                    onClick={submitForm}
                     className={styles.smallButton}>
                         Save Change
                 </button>
