@@ -235,3 +235,12 @@
     font-size: 18px;
     color: rgba(0, 0, 0, 0.45);
 }
+
+.justTitle {
+    /* width: 20%; */
+    font-size: 18px;
+    color: black;
+    font-weight: bold;
+    text-align: left;
+    padding: 10 0px;
+}

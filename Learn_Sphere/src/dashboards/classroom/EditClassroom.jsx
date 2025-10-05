@@ -282,6 +282,8 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
             min={1}
           />
 
+          <p className={styles.justTitle}>{`Classroom End Date: "the end date variable"`}</p>
+          
           <AddFromList
             label="Add Lesson"
             placeholder="Select lesson to include"

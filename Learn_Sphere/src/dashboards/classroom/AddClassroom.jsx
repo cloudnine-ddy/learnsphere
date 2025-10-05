@@ -15,6 +15,7 @@ import Button from "../../components/clickable/Button";
 import AddFromList from "../../components/selectable_addable/AddFromList";
 import SelectOneFromList from "../../components/selectable_addable/SelectOneFromList";
 import SelectStatus from "../../components/selectable_addable/SelectStatus";
+import InfoBlock from "../../components/display/InfoBlock";
 import { getListOfStudentsFromCourse } from "../../components/getStudentCourse";
 
 function AddClassroom({
@@ -331,6 +332,8 @@ function AddClassroom({
                         onChange={handleClassroomChange}
                         min={1}
                     />
+
+                    <p className={styles.justTitle}>{`Classroom End Date: "the end date variable"`}</p>
 
                     <SelectOneFromList
                         label="Supervisor"
