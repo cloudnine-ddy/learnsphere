@@ -30,11 +30,43 @@ function AddClassroom({
         classroom_course: "",
         classroom_description: "",
         classroom_startDate: "",
+        classroom_endDate: "",
         classroom_durationWeeks: "",
         classroom_instructor: "",
         classroom_status: "",
         totalStudents: 0
     });
+
+    useEffect(() => {
+        const { classroom_startDate, classroom_durationWeeks } = classroom;
+
+        if (classroom_startDate && classroom_durationWeeks) {
+            const start = new Date(classroom_startDate);
+            const duration = parseInt(classroom_durationWeeks, 10);
+
+            if (!isNaN(start.getTime()) && duration > 0) {
+                const end = new Date(start);
+                end.setDate(end.getDate() + duration * 7); // add duration in days
+
+                const formattedEnd = `${String(end.getDate()).padStart(2, "0")}/${String(end.getMonth() + 1).padStart(2, "0")}/${end.getFullYear()}`;
+
+                setClassroom(prev => ({
+                    ...prev,
+                    classroom_endDate: formattedEnd
+                }));
+            } else {
+                setClassroom(prev => ({
+                    ...prev,
+                    classroom_endDate: ""
+                }));
+            }
+        } else {
+            setClassroom(prev => ({
+                ...prev,
+                classroom_endDate: ""
+            }));
+        }
+    }, [classroom.classroom_startDate, classroom.classroom_durationWeeks]);
 
     const navigate = useNavigate();
     const [isEnabled, setEnabled] = useState(true);
@@ -210,7 +242,8 @@ function AddClassroom({
                 classroomStudents,
                 classroom.classroom_startDate,
                 classroom_durationWeeksNumber,
-                classroom.classroom_status
+                classroom.classroom_status,
+                classroom.classroom_endDate
             )
                 .then(() => setErrorMessages(["Successfully created a classroom!"]))
 
@@ -333,7 +366,7 @@ function AddClassroom({
                         min={1}
                     />
 
-                    <p className={styles.justTitle}>{`Classroom End Date: "the end date variable"`}</p>
+                    <p className={styles.justTitle}>Classroom End Date: {classroom.classroom_endDate || "N/A"}</p>
 
                     <SelectOneFromList
                         label="Supervisor"
