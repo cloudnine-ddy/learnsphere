@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { addCoursesToDatabase } from "../../components/addCourses";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { validateCourseLessons } from "../../components/addCourses";
+import { getPublishedLessons } from "../../components/getLessons";
 
 import styles from "./AddCourse.module.css";
 
@@ -31,6 +32,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
 
     const [courseLessons, setCourseLessons] = useState([]);
     const [errorMessages, setErrorMessages] = useState([]);
+    const [publishedLessons, setPublishedLessons] = useState([]);
 
     useEffect(() => {
         getCurrentUser()
@@ -43,9 +45,23 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
     }, [navigate]);
 
     useEffect(() => {
+        getCurrentUser()
+            .then((user) => getUserInfo(user))
+            .then(async (info) => {
+                if (info?.role === "student") {
+                    navigate("/home");
+                } else {
+                    // Fetch published lessons once the user is confirmed
+                    const lessons = await getPublishedLessons(info);
+                    setPublishedLessons(lessons);
+                }
+            });
+    }, [navigate]);
+
+    useEffect(() => {
         const totalCreditPoints = courseLessons.reduce((sum, lessonString) => {
             const lessonId = lessonString.split(":")[0].trim();
-            const lesson = prerequisiteOptions.find((item) => item.data().lessonID === lessonId);
+            const lesson = publishedLessons.find((item) => item.data().lessonID === lessonId);
             return lesson ? sum + lesson.data().creditPoint : sum;
         }, 0);
 
@@ -53,11 +69,11 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
             ...prev,
             totalCreditPoints
         }));
-    }, [courseLessons, prerequisiteOptions]);
+    }, [courseLessons, publishedLessons]);
 
     async function submitForm() {
         setEnabled(false);
-      
+
         if (await isValid()) {
           addCoursesToDatabase(
             course.courseId,
@@ -70,11 +86,11 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
           )
             .then(() => {
               setErrorMessages(["✅ Successfully created a course!"]);
-              navigate("/home/courses"); 
+              navigate("/home/courses");
             })
             .catch((error) => {
-              setErrorMessages([error.message || String(error)]); 
-              setEnabled(true); 
+              setErrorMessages([error.message || String(error)]);
+              setEnabled(true);
             });
         } else {
           setEnabled(true);
@@ -159,7 +175,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
                         placeholder={"Please select lessons needed to be included"}
                         prerequisites={courseLessons}
                         setPrerequisites={setCourseLessons}
-                        prerequisiteOptions={prerequisiteOptions.map(
+                        prerequisiteOptions={publishedLessons.map(
                             (option) => `${option.data().lessonID}: ${option.data().title}`
                         )}
                     />
@@ -180,7 +196,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
                     <SelectStatus name="status" label="Status" object={course} onChange={handleCourseChange} />
                 </div>
             </div>
-            
+
             <div className={styles.infoFooter}>
                 <div className={styles.footerActions}>
                     <button type="button" className={styles.backButton} onClick={handleBack}>
