@@ -4,6 +4,7 @@ import { getCurrentUser, getUserInfo } from "./manageUsers";
 import { updateInstructorInLessons } from "./updateLessons";
 import {updateInstructorInClassroom} from "./updateClassrooms";
 import {updateSupervisorInCourse} from "./updateCourses";
+import { deleteFirebaseAuthUser } from "./deleteFirebaseAuthUser";
 
 
 export async function deleteInstructorFromDatabase(instructorDocId) {
@@ -26,7 +27,8 @@ export async function deleteInstructorFromDatabase(instructorDocId) {
 
         // Step 2: Delete the instructor document
         const deletions = instructorSnapshot.docs.map((d) =>
-            deleteDoc(doc(db, "users", d.id))
+            deleteDoc(doc(db, "users", d.id)),
+            deleteFirebaseAuthUser(d.data().id)
         );
 
         await Promise.all(deletions);
