@@ -27,8 +27,10 @@ export async function deleteInstructorFromDatabase(instructorDocId) {
 
         // Step 2: Delete the instructor document
         const deletions = instructorSnapshot.docs.map((d) =>
-            deleteDoc(doc(db, "users", d.id)),
-            deleteFirebaseAuthUser(d.data().id)
+        {
+            deleteDoc(doc(db, "users", d.id));
+            deleteFirebaseAuthUser(d.data().id);
+        }
         );
 
         await Promise.all(deletions);
