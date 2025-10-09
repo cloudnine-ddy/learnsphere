@@ -3,9 +3,9 @@ import {collection, doc, query, where, getDoc, setDoc, getDocs, updateDoc, delet
 import { auth, db } from "./firebaseConfig";
 import { use } from "react";
 
-export function logOut()
+export async function logOut()
 {
-    cookieStore.delete('user');
+    await cookieStore.delete('user');
 }
 
 export async function signInUser(email, password)

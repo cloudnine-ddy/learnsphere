@@ -191,8 +191,8 @@ function DashboardPage() {
 
     const logOutUser = async () => {
         console.log("Logging out");
-        logOut();           // clear session first
         setUser(null);            // reset user
+        await logOut();           // clear session            
         navigate("/reg");         // THEN redirect
         console.log("Tried to go out");
     };
