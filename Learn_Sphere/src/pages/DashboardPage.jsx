@@ -55,8 +55,18 @@ function DashboardPage() {
                 }
 
                 if (currentUser?.uid !== user?.uid) {
-                    setUser(currentUser || null);
-                    if (!currentUser) navigate("/reg");
+                    if (!currentUser) 
+                    {
+                        navigate("/reg");
+                    }
+                    else
+                    {
+                        setUser(currentUser);
+                    }
+                }
+                else if (currentUser == None && user == None)
+                {
+                    navigate("/reg");
                 }
 
             } catch (error) {
@@ -181,7 +191,7 @@ function DashboardPage() {
 
     const logOutUser = async () => {
         console.log("Logging out");
-        await logOut();           // clear session first
+        logOut();           // clear session first
         setUser(null);            // reset user
         navigate("/reg");         // THEN redirect
         console.log("Tried to go out");
