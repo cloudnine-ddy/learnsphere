@@ -4,6 +4,7 @@ import { getCurrentUser, getUserInfo } from "./manageUsers";
 import { deleteStudentLessonByStudentID } from "./studentLesson";
 import { deleteStudentCourseByStudentID } from "./deleteStudentCourse";
 import {deleteStudentClassroomByStudentID} from "./studentClassroom";
+import { deleteFirebaseAuthUser } from "./deleteFirebaseAuthUser";
 
 export async function deleteStudent(studentID) {
 
@@ -30,7 +31,11 @@ export async function deleteStudent(studentID) {
 
         // Step 2: Delete the student document
         const deletions = studentSnapshot.docs.map((d) =>
-            deleteDoc(doc(db, "users", d.id))
+            {
+            console.log(d);
+            deleteDoc(doc(db, "users", d.id));
+            deleteFirebaseAuthUser(d.data().id)
+            }
         );
 
         await Promise.all(deletions);

@@ -22,7 +22,7 @@ import SelectStatus from "../../components/selectable_addable/SelectStatus";
 import Button from "../../components/clickable/Button";
 
 function EditClassroom( { userData, studentList, instructorList, currentUnits }) {
-  
+
   let navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
@@ -37,15 +37,16 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     classroom_instructor: classroomData?.classroom_instructor || "",
     classroom_status: classroomData?.classroom_status || "",
     classroom_startDate: classroomData?.classroom_startDate || "",
-    classroom_durationWeeks: classroomData?.classroom_durationWeeks || 6
+    classroom_durationWeeks: classroomData?.classroom_durationWeeks || 6,
+    classroom_endDate: classroomData?.classroom_endDate || ""
   });
-
+  const [showEditConfirm, setShowEditConfirm] = useState(false);
 
 
 
   useEffect(() => {
     console.log("useEffect triggered with:", classroomData?.classroom_course, userData);
-  
+
     getLessonsbyCourseID(classroomData?.classroom_course, userData)
       .then((courseLessons) => {
         setLessons(courseLessons || []);
@@ -100,6 +101,19 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
       });
   }, []);
 
+  useEffect(() => {
+    if (classroom.classroom_startDate && classroom.classroom_durationWeeks) {
+      const start = new Date(classroom.classroom_startDate);
+      const durationWeeks = Number(classroom.classroom_durationWeeks);
+
+      const end = new Date(start);
+      end.setDate(start.getDate() + durationWeeks * 7);
+
+      const formattedEnd = end.toISOString().split("T")[0];
+      setClassroom((prev) => ({ ...prev, classroom_endDate: formattedEnd }));
+    }
+  }, [classroom.classroom_startDate, classroom.classroom_durationWeeks]);
+
   // Some Functions
   const handleSubmit = (formData) => {
     setEnabled(false);
@@ -132,7 +146,7 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
         const [identifier] = value.split(":");
         return identifier.trim();
     }
-    
+
   function submitForm(e) {
     setEnabled(false);
     if (isValid()) {
@@ -147,20 +161,21 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
         classroom_durationWeeks: classroom.classroom_durationWeeks,
         classroom_lessons: classroomLessons,
         classroom_students: classroomStudents,
+        classroom_endDate: classroom.classroom_endDate
       };
 
       console.log(updates);
       updateClassroomInDatabase(id, updates)
         .then(() => {
           setErrorMessages(["Successfully updated a course!"]);
-          
+
         })
         .then(async () => {
           const classroomID = classroom.classroom_id;
 
           const oldStudents = classroomData?.classroom_students || [];
           const newStudents = classroomStudents;
-          
+
           const addedStudents = newStudents.filter(
             (s) => !oldStudents.includes(s)
           );
@@ -178,7 +193,7 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     }
   }
 
-  
+
 
   const handleClassroomChange = (e) => {
     const { name, value } = e.target;
@@ -212,7 +227,7 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
           return "";
       })
       .filter(Boolean);}, [validStudentOptions]);
-  
+
 
   return (
     <div className={styles.wrapper} disabled={!isEnabled}>
@@ -282,8 +297,8 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
             min={1}
           />
 
-          <p className={styles.justTitle}>{`Classroom End Date: "the end date variable"`}</p>
-          
+          <p className={styles.justTitle}>Classroom End Date: {classroom.classroom_endDate || "N/A"}</p>
+
           <AddFromList
             label="Add Lesson"
             placeholder="Select lesson to include"
@@ -310,7 +325,7 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
           />
 
           {/* <div className={styles.sectionRow}>
-                      
+
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>Students in this classroom</h2>
 
