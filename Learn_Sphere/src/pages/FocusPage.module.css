@@ -1,0 +1,59 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #FFF9D5;
+}
+
+.top {
+    /* background-color: red; */
+    height: 12%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 60px;
+    font-weight: bold;
+    color: black;
+}
+
+
+.middle {
+    /* background-color: yellow; */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: gray;
+}
+
+.timeQuoteContainer p{
+  margin: 0;
+  margin-top: 50px;
+  padding: 0;
+}
+
+.time {
+    font-size: 120px;
+    /* background-color: blue; */
+}
+.quote {
+    font-size: 20px;
+}
+
+.growthSectionContainer {
+    margin-top: auto;
+    padding: 0;
+}
+.bottom {
+    /* background-color: green; */
+    height: 12%;
+    display: flex;
+    flex-direction: row;
+    justify-content:end;
+    align-items:end;
+    opacity: 0.5;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
