@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import { getCourse } from "../../components/getCourses";
-import { getListOfCoursesFromStudent } from "../../components/getStudentCourse";
+import { getListOfCoursesFromStudent, getListOfStudentsFromCourse } from "../../components/getStudentCourse";
 import { getLessonByIDAndName } from "../../components/getLessons";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 // import { deleteLessonFromDatabase, deletePrereq } from "../../components/deleteLessons";
@@ -14,6 +14,7 @@ import styles from "./ViewCourse.module.css";
 
 import InfoBlock from "../../components/display/InfoBlock";
 import MessageBox from "../../components/display/MessageBox";
+import SingleButtonMessageBox from "../../components/display/SingleButtonMessageBox";
 import LessonCard from "../../components/clickable/LessonCard";
 import { deleteCourses } from "../../components/deleteCourses";
 import { deleteClassroomsByCourse } from "../../components/deleteClassroom";
@@ -27,7 +28,10 @@ function ViewCourse({userData}) {
 
     const [showDelete, setShowDelete] = useState(false);
     const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-    
+
+    const [showMessageBox, setShowMessageBox] = useState(false);
+    const [message, setMessage] = useState("");
+
 
     const [isEnrolled, setIsEnrolled] = useState(false);
 
@@ -54,7 +58,7 @@ function ViewCourse({userData}) {
         }
     }, []);
 
-    
+
 
     useEffect(() => {
         if (userData != null)
@@ -69,7 +73,7 @@ function ViewCourse({userData}) {
                     console.log(id);
                     navigate("/home");
                 }
-            }); 
+            });
         }
     }, [userData])
 
@@ -93,10 +97,24 @@ function ViewCourse({userData}) {
         .catch((error) => console.error("Error deleting lesson:", error));
     }
 
-    const handleEdit = () => {
-        console.log("Editing lesson with id: " + id)
-        navigate(`/home/courses/${id}/edit`, { state: {course}}) ;
-    }
+    const handleEdit = async () => {
+        try {
+          const students = await getListOfStudentsFromCourse(course.courseID);
+
+          if (students && students.length > 0) {
+            setMessage("This course already has enrolled students. Editing is disabled to protect existing enrollments.");
+            setShowMessageBox(true);
+            return;
+          }
+
+          console.log("Editing course with id:", id);
+          navigate(`/home/courses/${id}/edit`, { state: { course } });
+        } catch (error) {
+          console.error("Failed to check enrolled students:", error);
+          setMessage("An error occurred while checking enrolled students. Please try again.");
+          setShowMessageBox(true);
+        }
+      };
 
     const handleCancelEnrollment = async () => {
         try {
@@ -140,7 +158,7 @@ function ViewCourse({userData}) {
                 </div>
 
             </div>
-            
+
 
             <div className={styles.infoScroll}>
                 <div className={styles.container}>
@@ -150,7 +168,7 @@ function ViewCourse({userData}) {
                     <InfoBlock title="Last Updated" content={course != null ? `${new Date(course.courseUpdateDate).toDateString()} ${new Date(course.courseUpdateDate).toTimeString()}` : "null"}/>
                     <InfoBlock title="Course Description" content={course != null ? course.courseDescription : "null"}/>
                     {/* <InfoBlock title="Lessons" content={course != null ? course.courseLessons.length > 0 ? course.courseLessons : "No Lessons" : "No Lessons"}/> */}
-                    
+
                     {/* I take this from the LessonDashboard, becauses I need the LessonCard to be here */}
                     {/* I mean now for visualization, I put them manually, but it should be changed to the commented one */}
                     {/* <InfoBlock title="course included" /> */}
@@ -182,6 +200,15 @@ function ViewCourse({userData}) {
                     onConfirm={handleCancelEnrollment}
                 />
             )}
+
+        {showMessageBox && (
+        <SingleButtonMessageBox
+            label="Edit Disabled"
+            message={message}
+            button="OK"
+            onConfirm={() => setShowMessageBox(false)}
+        />
+        )}
         </div>
     );
 }
