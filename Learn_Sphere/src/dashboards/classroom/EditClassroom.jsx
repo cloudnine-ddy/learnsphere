@@ -40,7 +40,7 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     classroom_durationWeeks: classroomData?.classroom_durationWeeks || 6,
     classroom_endDate: classroomData?.classroom_endDate || ""
   });
-
+  const [showEditConfirm, setShowEditConfirm] = useState(false);
 
 
 
@@ -161,6 +161,7 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
         classroom_durationWeeks: classroom.classroom_durationWeeks,
         classroom_lessons: classroomLessons,
         classroom_students: classroomStudents,
+        classroom_endDate: classroom.classroom_endDate
       };
 
       console.log(updates);

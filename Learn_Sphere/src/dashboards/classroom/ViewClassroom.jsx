@@ -18,6 +18,7 @@ import styles from "./ViewClassroom.module.css";
 import InfoBlock from "../../components/display/InfoBlock";
 import MessageBox from "../../components/display/MessageBox";
 import LessonCard from "../../components/clickable/LessonCard";
+import SingleButtonMessageBox from "../../components/display/SingleButtonMessageBox";
 
 function ViewClassroom({ userData }) {
   let navigate = useNavigate();
@@ -27,6 +28,7 @@ function ViewClassroom({ userData }) {
   const [lessons, setLessons] = useState([]);
   const [request, setRequest] = useState([])
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showEditBlocked, setShowEditBlocked] = useState(false);
 
   const [showDelete, setShowDelete] = useState(false);
 
@@ -46,7 +48,7 @@ function ViewClassroom({ userData }) {
 
 
   const [isJoined, setIsJoined] = useState(false);
-  
+
   useEffect(() => {
       if (userData?.role === "student" && classroom) {
           getClassroomByStudent(userData.id).then(courses => {
@@ -59,24 +61,24 @@ function ViewClassroom({ userData }) {
   const handleCancelJoin = async () => {
     try {
       if (!userData?.id || !classroom?.classroom_id) return;
-  
+
       // Step 1: Remove student from classroom_students array
       const updatedStudents = classroom.classroom_students.filter(
         (s) => !s.startsWith(userData.id + ":")
       );
       await updateClassroomStudents(classroom.classroom_id, updatedStudents);
-  
+
       // Step 2: Remove mapping in student_classroom
       await deleteStudentClassroom(userData.id, classroom.classroom_id);
-  
+
       // Step 3: Update local state
       setClassroom((prev) => ({
         ...prev,
         classroom_students: updatedStudents,
       }));
-  
+
       console.log(`✅ Student ${userData.id} left classroom ${classroom.classroom_id}`);
-  
+
       // Close the confirmation box
       setShowCancelConfirm(false);
       navigate("/home/classrooms");
@@ -97,7 +99,7 @@ function ViewClassroom({ userData }) {
                 {
                     navigate("/home");
                 }
-          }); 
+          });
       }
   }, [userData])
 
@@ -108,7 +110,7 @@ function ViewClassroom({ userData }) {
           getRequestsByClassroom(classroom.classroom_id).then(
           (request) => {
                 setRequest(request);
-          }); 
+          });
       }
   }, [userData, classroom])
   if (userData != null && classroom != null)
@@ -135,7 +137,7 @@ function ViewClassroom({ userData }) {
 
 /*   // temporary wannnnnnnnnnnn
   useEffect(() => {
-    const testData = 
+    const testData =
         {
         id: "mock-id-001",
         description: "bibibiiiiiiiiiiiiiiiiiiiiiiii",
@@ -158,6 +160,23 @@ function ViewClassroom({ userData }) {
 
 
   const handleEdit = () => {
+
+      if (!classroom || !classroom.classroom_endDate) return;
+
+      const parseDate = (str) => {
+        if (!str) return null;
+        const [day, month, year] = str.split("/").map(s => s.trim());
+        return new Date(`${year}-${month}-${day}`);
+      };
+
+      const now = new Date();
+      const endDate = parseDate(classroom.classroom_endDate);
+
+      console.log("now:", now, "endDate:", endDate);
+      if (now < endDate) {
+        setShowEditBlocked(true);
+        return;
+      }
         console.log("Editing classroom with id: " + id)
         navigate(`/home/classrooms/${id}/edit`, { state: {classroom}}) ;
   }
@@ -174,31 +193,31 @@ function ViewClassroom({ userData }) {
         try {
             // Step 1: split into ID and name
             const [studentID, studentName] = student_string.split(":").map(s => s.trim());
-        
+
             if (!studentID) {
               console.error("Invalid student string:", student_string);
               return;
             }
-        
+
             // Step 2: filter out this student from classroom_students
             const updatedStudents = classroom.classroom_students.filter(
               (s) => s !== student_string
             );
-        
+
             // Step 3: update classroom
             await updateClassroomStudents(classroom.classroom_id, updatedStudents);
-        
+
             // Step 4: delete from student_classroom collection
             await deleteStudentClassroom(studentID, classroom.classroom_id);
-        
+
             console.log(`✅ Removed ${studentName} (${studentID}) from classroom ${classroom.classroom_id}`);
-        
+
             // Step 5: update local state so UI refreshes
             setClassroom({
               ...classroom,
               classroom_students: updatedStudents,
             });
-        
+
           } catch (err) {
             console.error("Error removing student:", err);
           }
@@ -207,16 +226,16 @@ function ViewClassroom({ userData }) {
 
         const handleApprove = (student_request) => {
             const { request_student_id, request_student_name } = student_request;
-          
+
             // Format "id: name"
             const newStudentEntry = `${request_student_id}: ${request_student_name}`;
-          
+
             // Merge into existing classroom_students
             const updatedStudents = [
               ...(classroom.classroom_students || []),
               newStudentEntry,
             ];
-          
+
             // Update Firestore first (classroom doc)
             updateClassroomStudents(classroom.classroom_id, updatedStudents)
               .then(() => {
@@ -242,15 +261,15 @@ function ViewClassroom({ userData }) {
                       reqSnap.data().request_student_id !== request_student_id
                   )
                 );
-          
+
                 console.log("✅ Student Approved:", newStudentEntry);
               })
               .catch((err) => console.error("❌ Error approving student:", err));
           };
-    
+
       const handleReject = (student_request) => {
         const { request_student_id, request_classroom_id } = student_request;
-      
+
         deleteRequestByStudentAndClassroom(request_student_id, request_classroom_id)
           .then(() => {
             // Update local state so UI refreshes
@@ -259,7 +278,7 @@ function ViewClassroom({ userData }) {
                 (reqSnap) => reqSnap.data().request_student_id !== request_student_id
               )
             );
-      
+
             console.log(`❌ Rejected request from student ${request_student_id}`);
           })
           .catch((err) => console.error("Error rejecting student request:", err));
@@ -311,7 +330,7 @@ function ViewClassroom({ userData }) {
           </div>
 
       </div>
-      
+
 
       <div className={styles.infoScroll}>
           <div className={styles.container}>
@@ -322,10 +341,10 @@ function ViewClassroom({ userData }) {
             <InfoBlock title="Starting Date"    content={classroom != null ? `${new Date(classroom.classroom_startDate).toDateString()} ${new Date(classroom.classroom_startDate).toTimeString()}` : "null"}/>
             <InfoBlock title="Duration (weeks)" content={durationDisplay}/>
             <InfoBlock title="Description"      content={classroom != null ? classroom.classroom_description : "null"}/>
-            
-            
-            
-            
+
+
+
+
         {userData?.role != "student" && (
             <div>
                 <p className={styles.justTitle}>Students Included:</p>
@@ -370,17 +389,17 @@ function ViewClassroom({ userData }) {
             </div>
             )}
             <br />
-            
-            
-            
-            {/* {userData != null && userData.role != 'student' && 
+
+
+
+            {/* {userData != null && userData.role != 'student' &&
                 <InfoBlock title="Students"     content={classroom != null ? classroom.classroom_students?.length > 0 ? classroom.classroom_students : "No Student" : "No Student"}/>} */}
 
             <p className={styles.justTitle}>Lesson included:</p>
             <div className={styles.cardContainer}>
                 {lessons?.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().title} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/lessons/${lesson.id}`}/>)}
             </div>
-              
+
 
 
 
@@ -405,6 +424,14 @@ function ViewClassroom({ userData }) {
               onConfirm={handleCancelEnrollment}
           />
       )} */}
+      {showEditBlocked && (
+      <SingleButtonMessageBox
+    label="Editing Not Allowed"
+    message="You cannot edit this classroom until it has ended."
+    button="OK"
+    onConfirm={() => setShowEditBlocked(false)}
+  />
+)}
   </div>
     // <div className={styles.wrapper}>
     //   <div className={styles.infoHeader}>
