@@ -210,6 +210,26 @@
     margin-right: 10px;
 }
 
+.markButton {
+  background: #ceab93;
+  border: none;
+  color: black;
+  opacity: 0.6;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  align-items: flex-end;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.markButton:hover {
+  background: blue;
+}
+
+
 .removeButton {
   background: #ceab93;
   border: none;

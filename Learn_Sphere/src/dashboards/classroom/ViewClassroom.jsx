@@ -19,6 +19,7 @@ import InfoBlock from "../../components/display/InfoBlock";
 import MessageBox from "../../components/display/MessageBox";
 import LessonCard from "../../components/clickable/LessonCard";
 import SingleButtonMessageBox from "../../components/display/SingleButtonMessageBox";
+import MarkStudentModal from "../../components/display/MarkStudentModal";
 
 function ViewClassroom({ userData }) {
   let navigate = useNavigate();
@@ -31,6 +32,8 @@ function ViewClassroom({ userData }) {
   const [showEditBlocked, setShowEditBlocked] = useState(false);
 
   const [showDelete, setShowDelete] = useState(false);
+  const [activeMarkStudent, setActiveMarkStudent] = useState(null);
+  const [markConfirmation, setMarkConfirmation] = useState(null);
 
   useEffect(() => {
       //Runs on the first render only
@@ -85,6 +88,47 @@ function ViewClassroom({ userData }) {
     } catch (err) {
       console.error("Error cancelling join:", err);
     }
+  };
+
+  const handleOpenMarkModal = (studentEntry) => {
+    if (!studentEntry) return;
+    const parts = studentEntry.split(":");
+    const studentId = parts[0] ?? "";
+    const studentName = parts[1] ?? parts[0] ?? "";
+    setActiveMarkStudent({
+      id: studentId,
+      name: studentName,
+      entry: studentEntry,
+    });
+  };
+
+  const handleCloseMarkModal = () => {
+    setActiveMarkStudent(null);
+  };
+
+  const handleRequestMarkAction = (lessonDoc, action) => {
+    if (!lessonDoc || !activeMarkStudent) return;
+    const data = typeof lessonDoc.data === "function" ? lessonDoc.data() : {};
+    const lessonTitle = data?.title ?? lessonDoc?.id ?? "Lesson";
+    setMarkConfirmation({
+      action,
+      lessonTitle,
+      lessonDoc,
+      student: activeMarkStudent,
+    });
+  };
+
+  const handleConfirmMark = () => {
+    if (markConfirmation) {
+      console.log(
+        `Marking ${markConfirmation.student?.name} (${markConfirmation.student?.id}) in ${markConfirmation.lessonTitle} as ${markConfirmation.action}`
+      );
+    }
+    setMarkConfirmation(null);
+  };
+
+  const handleCancelConfirmMark = () => {
+    setMarkConfirmation(null);
   };
 
 
@@ -357,6 +401,9 @@ function ViewClassroom({ userData }) {
                                 {classroom_students.split(":")[1]}
                             </span>
 
+                            <button className={styles.markButton} onClick={() => handleOpenMarkModal(classroom_students)}>
+                                Mark
+                            </button>
                             <button className={styles.removeButton} onClick={() => handleRemove(classroom_students)}>
                                 Remove
                             </button>
@@ -415,6 +462,24 @@ function ViewClassroom({ userData }) {
       </div>
 
       {showDelete && <MessageBox onCancel={() => setShowDelete(false)} onConfirm={handleDelete}/>}
+      {activeMarkStudent && (
+        <MarkStudentModal
+          studentName={activeMarkStudent.name}
+          lessons={lessons}
+          onClose={handleCloseMarkModal}
+          onSelectAction={handleRequestMarkAction}
+        />
+      )}
+      {markConfirmation && (
+        <MessageBox
+          label="Confirm Mark"
+          message={`Are you sure you want to mark ${markConfirmation.student?.name ?? "this student"} in ${markConfirmation.lessonTitle} as ${markConfirmation.action}?`}
+          button_1="Cancel"
+          button_2="Yes"
+          onCancel={handleCancelConfirmMark}
+          onConfirm={handleConfirmMark}
+        />
+      )}
       {/* {showCancelConfirm && (
           <MessageBox
               label="Delete Classroom"
