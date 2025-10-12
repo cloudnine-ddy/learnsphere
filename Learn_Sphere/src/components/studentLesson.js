@@ -134,6 +134,30 @@ const studentLessonData = {
 
 */
 
+export async function getStudentLesson(studentID, lessonID) {
+
+  /* param
+    studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+  */
+
+  try {
+    // Step 1: get student_lesson docs for this student
+    const studentLessonQuery = query(
+      collection(db, "student_lesson"),
+      where("student_lesson_studentID", "==", studentID),
+      where("student_lesson_lessonID", "==", lessonID)
+    );
+
+    const studentLessonSnapshot = await getDocs(studentLessonQuery);
+
+    return studentLessonSnapshot
+  } 
+  catch (error) {
+    console.error("Error fetching studentLesson:", error);
+    throw error;
+  }
+}
+
 export async function getListOfLessonsFromStudent(studentID) {
 
   /* param

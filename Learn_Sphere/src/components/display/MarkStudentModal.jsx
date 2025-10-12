@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 
 import styles from "./MarkStudentModal.module.css";
+import { getStudentLesson } from "../studentLesson";
 
 const actionLabels = {
   pass: "Pass",
@@ -9,7 +10,7 @@ const actionLabels = {
 };
 
 function MarkStudentModal({
-  studentName,
+  student,
   lessons = [],
   onClose,
   onSelectAction,
@@ -27,7 +28,7 @@ function MarkStudentModal({
       <div className={styles.modal}>
         <header className={styles.header}>
           <h2 className={styles.title}>
-            {studentName ? `Mark for ${studentName}` : "Mark Student"}
+            {student ? `Mark for ${student.name}` : "Mark Student"}
           </h2>
           <button
             type="button"
