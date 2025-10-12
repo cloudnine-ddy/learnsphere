@@ -15,12 +15,9 @@ import { updateClassroomStudents } from "../../components/updateClassrooms";
 import { getClassroomByStudent } from "../../components/getClassroom";
 
 import {
-  addStudentClassroom,
-  deleteStudentClassroom,
-  updateStudentLessonCompletion, 
-  updateStudentLessonPassFail
-} from "../../components/studentClassroom";
-import { deleteStudentClassroomByStudentID } from "../../components/studentClassroom";
+  updateStudentLessonCompletion, updateStudentLessonPassFail
+} from "../../components/studentLesson";
+import { addStudentClassroom, deleteStudentClassroom, deleteStudentClassroomByStudentID } from "../../components/studentClassroom";
 import styles from "./ViewClassroom.module.css";
 
 import InfoBlock from "../../components/display/InfoBlock";
