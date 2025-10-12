@@ -1,10 +1,13 @@
-﻿import React, {useState, useEffect} from "react";
+﻿import React, { useState, useEffect } from "react";
 
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import { getCourse } from "../../components/getCourses";
-import { getListOfCoursesFromStudent, getListOfStudentsFromCourse } from "../../components/getStudentCourse";
+import {
+  getListOfCoursesFromStudent,
+  getListOfStudentsFromCourse,
+} from "../../components/getStudentCourse";
 import { getLessonByIDAndName } from "../../components/getLessons";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 // import { deleteLessonFromDatabase, deletePrereq } from "../../components/deleteLessons";
@@ -20,210 +23,267 @@ import LessonCard from "../../components/clickable/LessonCard";
 import { deleteCourses } from "../../components/deleteCourses";
 import { deleteClassroomsByCourse } from "../../components/deleteClassroom";
 
-function ViewCourse({userData}) {
-    let navigate = useNavigate();
+function ViewCourse({ userData }) {
+  let navigate = useNavigate();
 
-    const {id} = useParams();
-    const [course, setCourse] = useState(null);
-    const [lessons, setLessons] = useState([]);
+  const { id } = useParams();
+  const [course, setCourse] = useState(null);
+  const [lessons, setLessons] = useState([]);
+  const [showDelete, setShowDelete] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showMessageBox, setShowMessageBox] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isEnrolled, setIsEnrolled] = useState(false);
 
-    const [showDelete, setShowDelete] = useState(false);
-    const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-
-    const [showMessageBox, setShowMessageBox] = useState(false);
-    const [message, setMessage] = useState("");
-
-
-    const [isEnrolled, setIsEnrolled] = useState(false);
-
-    useEffect(() => {
-        if (userData?.role === "student" && course) {
-            getListOfCoursesFromStudent(userData.id).then(courses => {
-            const enrolled = courses.some(c => c.data().courseID === course.courseID);
-            setIsEnrolled(enrolled);
-            });
-        }
-    }, [userData, course]);
-
-    useEffect(() => {
-        //Runs on the first render only
-        if (userData == null)
-        {
-            getCurrentUser().then(
-                (user) => {
-                    return getUserInfo(user);
-                })
-                .then((info) => {
-                    userData = info;
-                });
-        }
-    }, []);
-
-
-
-    useEffect(() => {
-        if (userData != null)
-        {
-            getCourse(id, userData).then(
-            (course) => {
-                setCourse(course);
-
-                if (course == null)
-                {
-                    console.log("Course not found");
-                    console.log(id);
-                    navigate("/home");
-                }
-            });
-        }
-    }, [userData])
-
-    useEffect(() => {
-        if (userData != null && course != null) {
-            Promise.all(
-                course.courseLessons.map((lessonString) =>
-                    getLessonByIDAndName(lessonString, userData)
-                )
-            ).then((results) => {
-                setLessons(results.filter(Boolean)); // remove nulls
-            });
-        }
-    }, [course, userData]);
-
-    const handleDelete = () => {
-        deleteCourses(course.courseID)
-        .then(() => deleteClassroomsByCourse(course.courseID))
-        .then(() => setShowDelete(false))
-        .then(() => navigate("/home/courses"))
-        .catch((error) => console.error("Error deleting lesson:", error));
+  useEffect(() => {
+    if (userData?.role === "student" && course) {
+      getListOfCoursesFromStudent(userData.id).then((courses) => {
+        const enrolled = courses.some(
+          (c) => c.data().courseID === course.courseID
+        );
+        setIsEnrolled(enrolled);
+      });
     }
+  }, [userData, course]);
 
-    const handleEdit = async () => {
-        try {
-          const [students, classroomCheck] = await Promise.all([
-            getListOfStudentsFromCourse(course.courseID),
-            checkClassroomDate(course.courseID)
-          ]);
-
-          if (students && students.length > 0) {
-            setMessage("This course already has enrolled students. Editing is disabled to protect existing enrollments.");
-            setShowMessageBox(true);
-            return;
-          }
-
-          const { hasClassroom, allEnded } = classroomCheck;
-
-          if (!allEnded && hasClassroom) {
-            setMessage("The classroom for this course is still ongoing. Editing is disabled until the classroom is ended.");
-            setShowMessageBox(true);
-            return;
-          }
-
-          console.log("Editing course with id:", id);
-          navigate(`/home/courses/${id}/edit`, { state: { course } });
-
-        } catch (error) {
-          console.error("❌ Error checking course eligibility for editing:", error);
-          setMessage("An error occurred while verifying course details. Please try again later.");
-          setShowMessageBox(true);
-        }
-      };
-
-    const handleCancelEnrollment = async () => {
-        try {
-            await unEnrollCourseInDatabase(userData, course.courseID);
-            setShowCancelConfirm(false);
-            navigate("/home/courses");
-        } catch (error) {
-            console.error("Failed to cancel enrollment:", error);
-        }
+  useEffect(() => {
+    //Runs on the first render only
+    if (userData == null) {
+      getCurrentUser()
+        .then((user) => {
+          return getUserInfo(user);
+        })
+        .then((info) => {
+          userData = info;
+        });
     }
+  }, []);
 
-    const handleBack = () => {
-        navigate(-1);
+  useEffect(() => {
+    if (userData != null) {
+      getCourse(id, userData).then((course) => {
+        setCourse(course);
+
+        if (course == null) {
+          console.log("Course not found");
+          console.log(id);
+          navigate("/home");
+        }
+      });
     }
+  }, [userData]);
 
-    return (
-        <div className={styles.wrapper}>
-            <div className={styles.infoHeader}>
+  useEffect(() => {
+    if (userData != null && course != null) {
+      Promise.all(
+        course.courseLessons.map((lessonString) =>
+          getLessonByIDAndName(lessonString, userData)
+        )
+      ).then((results) => {
+        setLessons(results.filter(Boolean)); // remove nulls
+      });
+    }
+  }, [course, userData]);
 
-                <div className={styles.smallRow}>
-                    {course != null ? course.courseID : "null"}
-                </div>
-                <div className={styles.bigRow}>
-                    <div className={styles.courseTitle}>
-                        {course != null ? course.courseTitle : "null"}
-                    </div>
-                    <div className={styles.courseStatus}>
-                        {course != null ? course.courseStatus : "null"}
-                    </div>
-                    {userData != null && userData.role != 'student' && <button className={styles.smallButton} style={{background: "#beb2a4", marginLeft: "auto"}} onClick = {handleEdit}>Edit</button>}
-                    {userData != null && userData.role != 'student' && <button className={styles.smallButton} onClick={() => setShowDelete(true)}>Delete</button>}
-                    {userData != null && userData.role == 'student' && isEnrolled &&  (
-                        <button
-                            className={styles.cancelEnrollButton}
-                            type="button"
-                            onClick={() => setShowCancelConfirm(true)}
-                        >
-                            Cancel Enroll
-                        </button>
-                    )}
-                </div>
+  const handleDelete = () => {
+    deleteCourses(course.courseID)
+      .then(() => deleteClassroomsByCourse(course.courseID))
+      .then(() => setShowDelete(false))
+      .then(() => navigate("/home/courses"))
+      .catch((error) => console.error("Error deleting lesson:", error));
+  };
 
-            </div>
+  const handleEdit = async () => {
+    try {
+      const [students, classroomCheck] = await Promise.all([
+        getListOfStudentsFromCourse(course.courseID),
+        checkClassroomDate(course.courseID),
+      ]);
 
+      if (students && students.length > 0) {
+        setMessage(
+          "This course already has enrolled students. Editing is disabled to protect existing enrollments."
+        );
+        setShowMessageBox(true);
+        return;
+      }
 
-            <div className={styles.infoScroll}>
-                <div className={styles.container}>
-                    <InfoBlock title="Supervisor" content={course != null ? course.courseSupervisor : "null"}/>
-                    <InfoBlock title="Total Credit Point" content={course != null ? course.courseTotalCreditpoint : "null"}/>
-                    <InfoBlock title="Date Created" content={course != null ? `${new Date(course.courseCreateDate).toDateString()} ${new Date(course.courseCreateDate).toTimeString()}` : "null"}/>
-                    <InfoBlock title="Last Updated" content={course != null ? `${new Date(course.courseUpdateDate).toDateString()} ${new Date(course.courseUpdateDate).toTimeString()}` : "null"}/>
-                    <InfoBlock title="Course Description" content={course != null ? course.courseDescription : "null"}/>
-                    {/* <InfoBlock title="Lessons" content={course != null ? course.courseLessons.length > 0 ? course.courseLessons : "No Lessons" : "No Lessons"}/> */}
+      const { hasClassroom, allEnded } = classroomCheck;
 
-                    {/* I take this from the LessonDashboard, becauses I need the LessonCard to be here */}
-                    {/* I mean now for visualization, I put them manually, but it should be changed to the commented one */}
-                    {/* <InfoBlock title="course included" /> */}
-                    <p className={styles.justTitle}>Lesson included:</p>
-                    <div className={styles.cardContainer}>
-                        {lessons.map((lesson) => <LessonCard key={lesson.id} lessonID={lesson.data().lessonID} lessonTitle={lesson.data().title} creditPoint={lesson.data().creditPoint} instructorName={lesson.data().owner} href={`/home/lessons/${lesson.id}`}/>)}
-                    </div>
+      if (!allEnded && hasClassroom) {
+        setMessage(
+          "The classroom for this course is still ongoing. Editing is disabled until the classroom is ended."
+        );
+        setShowMessageBox(true);
+        return;
+      }
 
+      console.log("Editing course with id:", id);
+      navigate(`/home/courses/${id}/edit`, { state: { course } });
+    } catch (error) {
+      console.error("❌ Error checking course eligibility for editing:", error);
+      setMessage(
+        "An error occurred while verifying course details. Please try again later."
+      );
+      setShowMessageBox(true);
+    }
+  };
 
+  const handleCancelEnrollment = async () => {
+    try {
+      await unEnrollCourseInDatabase(userData, course.courseID);
+      setShowCancelConfirm(false);
+      navigate("/home/courses");
+    } catch (error) {
+      console.error("Failed to cancel enrollment:", error);
+    }
+  };
 
-                </div>
-            </div>
+  const handleBack = () => {
+    navigate(-1);
+  };
 
-            <div className={styles.pageFooter}>
-                <button type="button" className={styles.backButton} onClick={handleBack}>
-                    <img src="images/icons/goback.png" alt="Back" className={styles.backIcon} />
-                    <span>Back</span>
-                </button>
-            </div>
-
-            {showDelete && <MessageBox onCancel={() => setShowDelete(false)} onConfirm={handleDelete}/>}
-            {showCancelConfirm && (
-                <MessageBox
-                    label="Cancel Enrollment"
-                    message={`Are you sure you want to leave ${course?.courseTitle ?? "this course"}?`}
-                    button_1="Keep Course"
-                    button_2="Confirm"
-                    onCancel={() => setShowCancelConfirm(false)}
-                    onConfirm={handleCancelEnrollment}
-                />
-            )}
-
-        {showMessageBox && (
-        <SingleButtonMessageBox
-            label="Edit Disabled"
-            message={message}
-            button="OK"
-            onConfirm={() => setShowMessageBox(false)}
-        />
-        )}
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.infoHeader}>
+        <div className={styles.smallRow}>
+          {course != null ? course.courseID : "null"}
         </div>
-    );
+        <div className={styles.bigRow}>
+          <div className={styles.courseTitle}>
+            {course != null ? course.courseTitle : "null"}
+          </div>
+          <div className={styles.courseStatus}>
+            {course != null ? course.courseStatus : "null"}
+          </div>
+          {userData != null && userData.role != "student" && (
+            <button
+              className={styles.smallButton}
+              style={{ background: "#beb2a4", marginLeft: "auto" }}
+              onClick={handleEdit}
+            >
+              Edit
+            </button>
+          )}
+          {userData != null && userData.role != "student" && (
+            <button
+              className={styles.smallButton}
+              onClick={() => setShowDelete(true)}
+            >
+              Delete
+            </button>
+          )}
+          {userData != null && userData.role == "student" && isEnrolled && (
+            <button
+              className={styles.cancelEnrollButton}
+              type="button"
+              onClick={() => setShowCancelConfirm(true)}
+            >
+              Cancel Enroll
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className={styles.infoScroll}>
+        <div className={styles.container}>
+          <InfoBlock
+            title="Supervisor"
+            content={course != null ? course.courseSupervisor : "null"}
+          />
+          <InfoBlock
+            title="Total Credit Point"
+            content={course != null ? course.courseTotalCreditpoint : "null"}
+          />
+          <InfoBlock
+            title="Date Created"
+            content={
+              course != null
+                ? `${new Date(
+                    course.courseCreateDate
+                  ).toDateString()} ${new Date(
+                    course.courseCreateDate
+                  ).toTimeString()}`
+                : "null"
+            }
+          />
+          <InfoBlock
+            title="Last Updated"
+            content={
+              course != null
+                ? `${new Date(
+                    course.courseUpdateDate
+                  ).toDateString()} ${new Date(
+                    course.courseUpdateDate
+                  ).toTimeString()}`
+                : "null"
+            }
+          />
+          <InfoBlock
+            title="Course Description"
+            content={course != null ? course.courseDescription : "null"}
+          />
+
+          <p className={styles.justTitle}>Lesson included:</p>
+          <div className={styles.cardContainer}>
+            {lessons.map((lesson) => (
+              <LessonCard
+                key={lesson.id}
+                lessonID={lesson.data().lessonID}
+                lessonTitle={lesson.data().title}
+                creditPoint={lesson.data().creditPoint}
+                instructorName={lesson.data().owner}
+                href={`/home/lessons/${lesson.id}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.pageFooter}>
+        <button
+          type="button"
+          className={styles.backButton}
+          onClick={handleBack}
+        >
+          <img
+            src="images/icons/goback.png"
+            alt="Back"
+            className={styles.backIcon}
+          />
+          <span>Back</span>
+        </button>
+      </div>
+
+      {showDelete && (
+        <MessageBox
+          onCancel={() => setShowDelete(false)}
+          onConfirm={handleDelete}
+        />
+      )}
+      {showCancelConfirm && (
+        <MessageBox
+          label="Cancel Enrollment"
+          message={`Are you sure you want to leave ${
+            course?.courseTitle ?? "this course"
+          }?`}
+          button_1="Keep Course"
+          button_2="Confirm"
+          onCancel={() => setShowCancelConfirm(false)}
+          onConfirm={handleCancelEnrollment}
+        />
+      )}
+
+      {showMessageBox && (
+        <SingleButtonMessageBox
+          label="Edit Disabled"
+          message={message}
+          button="OK"
+          onConfirm={() => setShowMessageBox(false)}
+        />
+      )}
+    </div>
+  );
 }
 
 export default ViewCourse;

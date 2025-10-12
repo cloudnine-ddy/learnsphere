@@ -7,8 +7,6 @@ import RegisterForm from "../forms/RegisterForm";
 import RoleSelection from "../components/functional/RoleSelection";
 import AuthHeader from "../layout/AuthHeader";
 
-
-
 function RegisterPage() {
   const [selectedRole, setSelectedRole] = useState("student");
 

@@ -4,12 +4,13 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.5); /* dim background */
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
+
 .box {
     display: flex;
     flex-direction: column;
@@ -62,10 +63,10 @@
 }
 
 .smallButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-  outline: none;
-  border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    outline: none;
+    border-color: transparent;
 }
 
 .smallButton:focus {

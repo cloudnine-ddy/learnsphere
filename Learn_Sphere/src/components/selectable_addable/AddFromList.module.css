@@ -1,6 +1,6 @@
 .wholeFiled {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .label {
@@ -11,34 +11,34 @@
 }
 
 .addingPart {
-    display: flex;
-    flex-direction: row;
-    position: relative;
-    padding: 10px 12px;
-    font-size: 15px;
-    border-radius: 12px;
-    border: 1px solid transparent;
-    background: #B2C8CF;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  padding: 10px 12px;
+  font-size: 15px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: #B2C8CF;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .addingPart select {
-    width: 100%;
-    font-size: 18px;
-    border: none;
-    background: #B2C8CF;
-    justify-content: space-between;
-    outline: none;
-    box-shadow: none;  
+  width: 100%;
+  font-size: 18px;
+  border: none;
+  background: #B2C8CF;
+  justify-content: space-between;
+  outline: none;
+  box-shadow: none;
 }
 
 .addingPart select option {
-    width: 100%;
-    font-size: 18px;
-    color: black;
-    border: none;
-    background: B2C8CF;
+  width: 100%;
+  font-size: 18px;
+  color: black;
+  border: none;
+  background: B2C8CF;
 }
 
 .selectedList {

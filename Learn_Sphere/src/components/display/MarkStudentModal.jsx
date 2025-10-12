@@ -79,7 +79,11 @@ function MarkStudentModal({
           )}
         </div>
         <footer className={styles.footer}>
-          <button type="button" className={styles.cancelButton} onClick={onClose}>
+          <button
+            type="button"
+            className={styles.cancelButton}
+            onClick={onClose}
+          >
             Cancel
           </button>
         </footer>

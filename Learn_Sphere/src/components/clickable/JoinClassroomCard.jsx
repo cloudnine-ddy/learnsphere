@@ -10,7 +10,7 @@ function JoinClassroomCard({
   courseTitle,
   classroomSupervisor,
   href,
-  onJoin
+  onJoin,
 }) {
   const handleJoinClick = (event) => {
     event.preventDefault();
@@ -25,7 +25,7 @@ function JoinClassroomCard({
     <Link to={href}>
       <div className={styles.lessonCard}>
         <div className={styles.lessonInfo}>
-        <p className={styles.lessonId}>{classroomId}</p>
+          <p className={styles.lessonId}>{classroomId}</p>
           <p className={styles.lessonTitle}>{classroomName}</p>
           <p className={styles.lessonCreditPoint}>{courseTitle}</p>
           <p className={styles.lessonInstructor}>{classroomSupervisor}</p>

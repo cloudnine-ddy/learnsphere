@@ -226,3 +226,41 @@ export async function getLessonsbyCourseID(courseID, userData) {
 
     return lessons;
 }
+
+
+export async function canChangeLessonStatus(lessonID) {
+    try {
+      // Get all courses that include this lesson
+      const q = query(collection(db, "courses"), where("courseLessons", "array-contains", lessonID));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        return { canChange: true };
+      }
+
+      // Check if any related course is still Published
+      let hasActive = false;
+      snap.forEach((doc) => {
+        const course = doc.data();
+        if (course.courseStatus === "Published") {
+          hasActive = true;
+        }
+      });
+
+      if (hasActive) {
+        return {
+          canChange: false,
+          reason: "This lesson is used in at least one published course. Unpublish or archive those courses first."
+        };
+      }
+
+      // All related courses are Draft or Archived → allowed
+      return { canChange: true };
+    } catch (err) {
+      console.error("Error checking related courses:", err);
+      return {
+        canChange: false,
+        reason: "An error occurred while checking related courses."
+      };
+    }
+  }

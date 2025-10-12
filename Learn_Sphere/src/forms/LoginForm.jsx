@@ -1,5 +1,4 @@
-import React, {useState} from "react";
-
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { signInUser } from "../components/manageUsers";
@@ -10,16 +9,14 @@ import InputField from "../components/typable/InputField";
 import PasswordField from "../components/typable/PasswordField";
 import Button from "../components/clickable/Button";
 
-
-
-function LoginForm({showError, setShowError}) {
+function LoginForm({ showError, setShowError }) {
   const navigate = useNavigate();
 
   const [isEnabled, setEnabled] = useState(true);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessages, setErrorMessages] = useState([])
+  const [errorMessages, setErrorMessages] = useState([]);
 
   const submitForm = (e) => {
     setEnabled(false);
@@ -28,20 +25,18 @@ function LoginForm({showError, setShowError}) {
     let emailPattern = /\w+@\w+\.([a-z])+/;
 
     if (!email.match(emailPattern)) {
-      message.push("Enter a valid email!")
+      message.push("Enter a valid email!");
     }
 
     if (/\s/.test(password)) {
-      message.push("Password cannot have spaces!")
+      message.push("Password cannot have spaces!");
     }
 
     if (message.length > 0) {
       setErrorMessages(message);
       setEnabled(true);
       return;
-    }
-    else
-    {
+    } else {
       setErrorMessages([]);
     }
 
@@ -54,7 +49,7 @@ function LoginForm({showError, setShowError}) {
         if (user) {
           console.log("User signed in:", user); // Debugging log
           navigate("/home");
-          console.log(username,password,errorMessages)
+          console.log(username, password, errorMessages);
         }
       })
       .catch((error) => {
@@ -63,40 +58,57 @@ function LoginForm({showError, setShowError}) {
         setErrorMessages([error]);
         setEnabled(true);
       });
-    
+
     //console.log("login successful")
     //navigate("/home");
-  }
+  };
 
   return (
-      <form onSubmit={submitForm} className={styles.infoFooter} disabled={!isEnabled}>
-        <div className={styles.infoSection}>
-          <div className={styles.infoHeader}>
-            <h1 className={styles.infoTitle}>Login</h1>
-          </div>
+    <form
+      onSubmit={submitForm}
+      className={styles.infoFooter}
+      disabled={!isEnabled}
+    >
+      <div className={styles.infoSection}>
+        <div className={styles.infoHeader}>
+          <h1 className={styles.infoTitle}>Login</h1>
+        </div>
 
-          <div className={styles.infoScroll}>
-            <InputField label="Email" id="email" placeholder="Enter email" value = {email} onChange={(e) => setEmail(e.target.value)}   />
-            <PasswordField label="Password" id="password" placeholder="Enter password"  value={password} onChange={(e) => setPassword(e.target.value)} />
+        <div className={styles.infoScroll}>
+          <InputField
+            label="Email"
+            id="email"
+            placeholder="Enter email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <PasswordField
+            label="Password"
+            id="password"
+            placeholder="Enter password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-            {errorMessages.length>0 && (
-                <div>
-                  {errorMessages.map((msg,idx) => (
-                      <p key = {idx} style={{ color: "red"}}>
-                        {msg}
-                      </p>
-                  ))}
-                </div>
-            )}
+          {errorMessages.length > 0 && (
+            <div>
+              {errorMessages.map((msg, idx) => (
+                <p key={idx} style={{ color: "red" }}>
+                  {msg}
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
 
-          </div>
-
-          <div className={styles.infoFooter}>
-            <Button type="submit" label="Login"/>
-            <div className={styles.noAccount}>No account?<a href="/reg"> Sign Up</a></div>
+        <div className={styles.infoFooter}>
+          <Button type="submit" label="Login" />
+          <div className={styles.noAccount}>
+            No account?<a href="/reg"> Sign Up</a>
           </div>
         </div>
-      </form>
+      </div>
+    </form>
   );
 }
 
