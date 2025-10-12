@@ -32,14 +32,14 @@ export async function getClassrooms(status, userData) {
 export async function getClassroom(id, userData) {
     if (userData != null) {
         const docRef = doc(db, "classrooms", id);
-        
+
         const docSnap = await getDoc(docRef);
-        
+
         if (docSnap.exists()) {
             if (docSnap.data().classroom_status != 'Published' && userData.role == 'student') {
                 return null;
             }
-            
+
             return docSnap.data();
         }
         else {
@@ -51,35 +51,35 @@ export async function getClassroom(id, userData) {
 
 export async function getClassroomByStudent(studentID) {
     const classrooms = [];
-  
+
     try {
       // 1️⃣ Get mappings from student_classroom
       const scQuery = query(
         collection(db, "student_classroom"),
         where("student_classroom_studentID", "==", studentID)
       );
-  
-      const scSnap = await getDocs(scQuery);    
-  
+
+      const scSnap = await getDocs(scQuery);
+
       if (scSnap.empty) {
         console.warn("⚠️ No classroom mappings found for student:", studentID);
         return classrooms;
       }
-  
+
       // 2️⃣ For each mapping, query classrooms by classroom_id field
       const classroomSnaps = await Promise.all(
         scSnap.docs.map(async (docSnap) => {
           const data = docSnap.data();
           const classroomID = data.student_classroom_classroomID;
-  
+
           // query classrooms where classroom_id == classroomID
           const cQuery = query(
             collection(db, "classrooms"),
             where("classroom_id", "==", classroomID)
           );
-  
+
           const cSnap = await getDocs(cQuery);
-  
+
           if (!cSnap.empty) {
             return cSnap.docs[0]; // return the first matching classroom doc
           } else {
@@ -88,18 +88,18 @@ export async function getClassroomByStudent(studentID) {
           }
         })
       );
-  
+
       // 3️⃣ Keep only valid docs
       return classroomSnaps.filter(Boolean);
     } catch (error) {
       console.error("❌ Error in getClassroomByStudent:", error);
-      return classrooms;   
+      return classrooms;
     }
   }
 
 
 export async function getClassroomsNonJoin(student) {
-    /* 
+    /*
       student - the whole student object, e.g.,
       {id: "student123", firstName: "John", lastName: "Doe", title: "Mr.", role: "student"}
     */
@@ -175,3 +175,41 @@ export async function getClassroomsNonJoin(student) {
         return classrooms;
     }
 }
+
+export async function checkClassroomDate(courseID) {
+    try {
+      const q = query(
+        collection(db, "classrooms"),
+        where("classroom_course", "==", courseID)
+      );
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        return { hasClassroom: false, allEnded: false };
+      }
+
+      const now = new Date();
+      let allEnded = true;
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (data.classroom_endDate) {
+          // convert dd/mm/yyyy → yyyy-mm-dd safely
+          const [day, month, year] = data.classroom_endDate.split("/").map(s => s.trim());
+          const endDate = new Date(`${year}-${month}-${day}`);
+
+          if (endDate >= now) {
+            allEnded = false;
+          }
+        } else {
+          // no end date = still ongoing
+          allEnded = false;
+        }
+      });
+
+      return { hasClassroom: true, allEnded };
+    } catch (error) {
+      console.error("❌ Error checking classroom date:", error);
+      throw error;
+    }
+  }

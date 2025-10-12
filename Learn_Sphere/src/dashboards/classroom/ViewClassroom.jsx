@@ -207,19 +207,22 @@ function ViewClassroom({ userData }) {
 
       if (!classroom || !classroom.classroom_endDate) return;
 
-      const parseDate = (str) => {
-        if (!str) return null;
-        const [day, month, year] = str.split("/").map(s => s.trim());
-        return new Date(`${year}-${month}-${day}`);
-      };
 
-      const now = new Date();
-      const endDate = parseDate(classroom.classroom_endDate);
+      if (classroom.classroom_status === "Published") {
+        const parseDate = (str) => {
+          if (!str) return null;
+          const [day, month, year] = str.split("/").map(s => s.trim());
+          return new Date(`${year}-${month}-${day}`);
+        };
 
-      console.log("now:", now, "endDate:", endDate);
-      if (now < endDate) {
-        setShowEditBlocked(true);
-        return;
+        const now = new Date();
+        const endDate = parseDate(classroom.classroom_endDate);
+
+        console.log("now:", now, "endDate:", endDate);
+        if (now < endDate) {
+          setShowEditBlocked(true);
+          return;
+        }
       }
         console.log("Editing classroom with id: " + id)
         navigate(`/home/classrooms/${id}/edit`, { state: {classroom}}) ;
@@ -384,7 +387,7 @@ function ViewClassroom({ userData }) {
             <InfoBlock title="Last Updated"     content={classroom != null ? `${new Date(classroom.classroom_updatedDate).toDateString()} ${new Date(classroom.classroom_updatedDate).toTimeString()}` : "null"}/>
             <InfoBlock title="Starting Date"    content={classroom != null ? `${new Date(classroom.classroom_startDate).toDateString()} ${new Date(classroom.classroom_startDate).toTimeString()}` : "null"}/>
             <InfoBlock title="Duration (weeks)" content={durationDisplay}/>
-            <InfoBlock title="Ending Date" content="ending date variable"/>
+            <InfoBlock title="Ending Date"    content={classroom != null ? `${new Date(classroom.classroom_endDate).toDateString()} ${new Date(classroom.classroom_endDate).toTimeString()}` : "null"}/>
             <InfoBlock title="Description"      content={classroom != null ? classroom.classroom_description : "null"}/>
 
 
