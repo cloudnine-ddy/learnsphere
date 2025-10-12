@@ -188,6 +188,8 @@ export async function checkClassroomDate(courseID) {
         return { hasClassroom: false, allEnded: false };
       }
 
+      console.log(snapshot.empty);
+
       const now = new Date();
       let allEnded = true;
 

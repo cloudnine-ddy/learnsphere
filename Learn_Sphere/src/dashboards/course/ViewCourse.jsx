@@ -9,6 +9,7 @@ import { getLessonByIDAndName } from "../../components/getLessons";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 // import { deleteLessonFromDatabase, deletePrereq } from "../../components/deleteLessons";
 import { unEnrollCourseInDatabase } from "../../components/enrollCourses";
+import { checkClassroomDate } from "../../components/getClassroom";
 
 import styles from "./ViewCourse.module.css";
 
@@ -99,7 +100,10 @@ function ViewCourse({userData}) {
 
     const handleEdit = async () => {
         try {
-          const students = await getListOfStudentsFromCourse(course.courseID);
+          const [students, classroomCheck] = await Promise.all([
+            getListOfStudentsFromCourse(course.courseID),
+            checkClassroomDate(course.courseID)
+          ]);
 
           if (students && students.length > 0) {
             setMessage("This course already has enrolled students. Editing is disabled to protect existing enrollments.");
@@ -107,11 +111,20 @@ function ViewCourse({userData}) {
             return;
           }
 
+          const { hasClassroom, allEnded } = classroomCheck;
+
+          if (!allEnded && hasClassroom) {
+            setMessage("The classroom for this course is still ongoing. Editing is disabled until the classroom is ended.");
+            setShowMessageBox(true);
+            return;
+          }
+
           console.log("Editing course with id:", id);
           navigate(`/home/courses/${id}/edit`, { state: { course } });
+
         } catch (error) {
-          console.error("Failed to check enrolled students:", error);
-          setMessage("An error occurred while checking enrolled students. Please try again.");
+          console.error("❌ Error checking course eligibility for editing:", error);
+          setMessage("An error occurred while verifying course details. Please try again later.");
           setShowMessageBox(true);
         }
       };
