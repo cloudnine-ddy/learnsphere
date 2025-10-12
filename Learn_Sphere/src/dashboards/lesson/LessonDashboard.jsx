@@ -96,7 +96,7 @@ function LessonDashboard({ userData }) {
     <>
       <div className={styles.infoHeader}>
         <div className={styles.infoTitleRow}>
-          <div className={styles.infoTitle}>My Lessons</div>
+          <div className={styles.infoTitle}>Lessons</div>
           {userData?.role !== "student" && (
             <Link to="/home/newlesson" className={styles.actionButton}>
               Add Lesson

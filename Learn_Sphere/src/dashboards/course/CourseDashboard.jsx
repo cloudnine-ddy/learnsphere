@@ -81,7 +81,7 @@ function CourseDashboard({ userData }) {
     <>
       <div className={styles.infoHeader}>
         <div className={styles.infoTitleRow}>
-          <div className={styles.infoTitle}>My Courses</div>
+          <div className={styles.infoTitle}>Courses</div>
           {userData?.role === "student" && (
             <Link to="/home/joincourse" className={styles.actionButton}>
               Join Course
