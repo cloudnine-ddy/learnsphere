@@ -111,6 +111,7 @@ function CourseDashboard({ userData }) {
               creditPoint={course.data().courseTotalCreditpoint}
               instructorName={course.data().courseSupervisor}
               href={`/home/courses/${course.id}`}
+              showProgress={userData?.role === "student"}
             />
           ))}
         </div>
