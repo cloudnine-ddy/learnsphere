@@ -21,14 +21,15 @@
   background-color: #f4f2f2;
   border: none;
   color: black;
-  padding: 15px ;
+  padding: 15px;
   border-radius: 30px;
   font-size: 18px;
   /* transition: all ease-in-out .5s; */
   /* margin-right: -2rem; */
 }
 
-.searchInput:hover, .searchInput:focus {
+.searchInput:hover,
+.searchInput:focus {
   box-shadow: 0 0 1em #00000013;
 }
 
@@ -42,7 +43,7 @@
   color: #ccc;
 }
 
-.searchInput:focus + .searchInput {
+.searchInput:focus+.searchInput {
   background-color: #f0eeee;
 }
 
@@ -67,23 +68,23 @@
 }
 
 .resultField {
-    height: 50px;
-    display: flex;
-    flex-direction: row;
-    font-size: 20px;
-    border-radius: 18px;
-    border: none;
-    background-color: #e4cea5;
-    justify-content: space-between;
-    padding-left: 20px;
-    padding-right: 20px;
-    align-items: center;
-    margin-top: 8px;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  font-size: 20px;
+  border-radius: 18px;
+  border: none;
+  background-color: #e4cea5;
+  justify-content: space-between;
+  padding-left: 20px;
+  padding-right: 20px;
+  align-items: center;
+  margin-top: 8px;
 }
 
 .resultItem {
-    font: 20px;
-    color: black;
+  font: 20px;
+  color: black;
 }
 
 .deleteButton {

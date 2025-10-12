@@ -41,26 +41,25 @@
 }
 
 .infoScroll::-webkit-scrollbar {
-  width: 8px;
+    width: 8px;
 }
 
 .infoScroll::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 
 .infoScroll::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 6px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
 }
 
 .infoScroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.4);
 }
 
 .cardContainer {
     display: flex;
     flex-wrap: wrap;
-    /* grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); */
     gap: 20px;
     padding-bottom: 10px;
     overflow-y: auto;

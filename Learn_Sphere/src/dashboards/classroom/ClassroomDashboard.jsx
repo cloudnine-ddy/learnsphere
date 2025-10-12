@@ -1,13 +1,15 @@
 ﻿import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 
-import { getClassrooms, getClassroomByStudent } from "../../components/getClassroom";
-
-import FilterDropdown from "../../components/selectable_addable/FilterDropdown";
-import ClassroomCard from "../../components/clickable/ClassroomCard";
+import {
+  getClassrooms,
+  getClassroomByStudent,
+} from "../../components/getClassroom";
 
 import styles from "./ClassroomDashboard.module.css";
 
+import FilterDropdown from "../../components/selectable_addable/FilterDropdown";
+import ClassroomCard from "../../components/clickable/ClassroomCard";
 const INSTRUCTOR_MY_CLASSROOMS = "INSTRUCTOR_MY_CLASSROOMS";
 
 function ClassroomDashboard({ userData }) {
@@ -16,89 +18,65 @@ function ClassroomDashboard({ userData }) {
   const [classrooms, setClassrooms] = useState([]);
 
   const instructorDisplayName = useMemo(() => {
-          if (!userData || userData.role === "student") {
-              return "";
-          }
-  
-          const parts = [userData.title, userData.firstName, userData.lastName].filter(Boolean);
-          return parts.join(" ").replace(/\s+/g, " ").trim();
-      }, [userData]);
+    if (!userData || userData.role === "student") {
+      return "";
+    }
+
+    const parts = [
+      userData.title,
+      userData.firstName,
+      userData.lastName,
+    ].filter(Boolean);
+    return parts.join(" ").replace(/\s+/g, " ").trim();
+  }, [userData]);
 
   const changeEvent = (event, state) => {
     setFilter(state);
     setLabel(event.target.text);
   };
 
-
-
-
   useEffect(() => {
-      if (!userData) {
-          return;
-      }
+    if (!userData) {
+      return;
+    }
 
-      if (userData.role === "student") {
-          getClassroomByStudent(userData.id).then((studentClassrooms) => {
-              setClassrooms(studentClassrooms);
-          });
-          return;
-      }
+    if (userData.role === "student") {
+      getClassroomByStudent(userData.id).then((studentClassrooms) => {
+        setClassrooms(studentClassrooms);
+      });
+      return;
+    }
 
-      if (filter === INSTRUCTOR_MY_CLASSROOMS) {
-          getClassrooms(true, userData).then((allClassrooms) => {
-              const filtered = allClassrooms.filter((classroom) => {
-                  const supervisor = classroom.data().classroom_instructor || "";
-                  return instructorDisplayName
-                      ? supervisor.trim().toLowerCase() === instructorDisplayName.trim().toLowerCase()
-                      : false;
-              });
-              setClassrooms(filtered);
-          });
-      } else {
-        getClassrooms(filter, userData).then((allClassrooms) => {
-            setClassrooms(allClassrooms);
+    if (filter === INSTRUCTOR_MY_CLASSROOMS) {
+      getClassrooms(true, userData).then((allClassrooms) => {
+        const filtered = allClassrooms.filter((classroom) => {
+          const supervisor = classroom.data().classroom_instructor || "";
+          return instructorDisplayName
+            ? supervisor.trim().toLowerCase() ===
+                instructorDisplayName.trim().toLowerCase()
+            : false;
         });
-      }
+        setClassrooms(filtered);
+      });
+    } else {
+      getClassrooms(filter, userData).then((allClassrooms) => {
+        setClassrooms(allClassrooms);
+      });
+    }
   }, [filter, userData, instructorDisplayName]);
 
   const instructorOptions = [
-        { label: "All Classrooms", state: true },
-        { label: "My Classrooms", state: INSTRUCTOR_MY_CLASSROOMS },
-        { label: "Draft", state: "Draft" },
-        { label: "Published", state: "Published" },
-        { label: "Archived", state: "Archived" }
-    ];
-
-  const studentOptions = [
-      { label: "All Classrooms", state: true }
+    { label: "All Classrooms", state: true },
+    { label: "My Classrooms", state: INSTRUCTOR_MY_CLASSROOMS },
+    { label: "Draft", state: "Draft" },
+    { label: "Published", state: "Published" },
+    { label: "Archived", state: "Archived" },
   ];
 
-  const filterOptions = userData?.role === "student" ? studentOptions : instructorOptions;
+  const studentOptions = [{ label: "All Classrooms", state: true }];
 
-
-
-
-  /*// temporary wannnnnnnnnnnn
-  useEffect(() => {
-    const testData = [
-        {
-        id: "mock-id-001",
-        classroomName: "Biology Year 10",
-        courseTitle: "Biology",
-        supervisor: "Dr. John Smith",
-        status: "Published"
-        },
-        {
-        id: "mock-id-002",
-        classroomName: "Physics Lab Group A",
-        courseTitle: "Physics",
-        supervisor: "Dr. Jane Doe",
-        status: "Published"
-        }
-    ];
-    setClassrooms(testData);
-    }, []);
-  */
+  const filterOptions =
+    userData?.role === "student" ? studentOptions : instructorOptions;
 
   return (
     <>
@@ -107,7 +85,7 @@ function ClassroomDashboard({ userData }) {
           <div className={styles.infoTitle}>My Classrooms</div>
           {userData?.role === "student" && (
             <Link to="/home/joinclassroom" className={styles.actionButton}>
-                Join Classroom
+              Join Classroom
             </Link>
           )}
           {userData?.role !== "student" && (
@@ -116,7 +94,13 @@ function ClassroomDashboard({ userData }) {
             </Link>
           )}
         </div>
-        {userData && <FilterDropdown label={label} options={filterOptions} changeEvent={changeEvent} />}
+        {userData && (
+          <FilterDropdown
+            label={label}
+            options={filterOptions}
+            changeEvent={changeEvent}
+          />
+        )}
       </div>
 
       <div className={styles.infoScroll}>
@@ -128,7 +112,7 @@ function ClassroomDashboard({ userData }) {
               classroomName={classroom.data().classroom_name}
               courseTitle={classroom.data().classroom_course}
               supervisor={classroom.data().classroom_instructor}
-              href={`/home/classrooms/${classroom.id}` }
+              href={`/home/classrooms/${classroom.id}`}
             />
           ))}
         </div>

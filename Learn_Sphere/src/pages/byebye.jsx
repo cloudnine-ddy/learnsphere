@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./LoginPage.module.css";
 
 function ByeBye() {
   return (

@@ -10,7 +10,6 @@
     background-color: lightgreen;
 }
 
-
 .title {
     background-color: transparent;
     height: 30%;
@@ -19,7 +18,7 @@
     padding-right: 12px;
     padding-bottom: 5px;
     align-content: center;
-    align-content:end;
+    align-content: end;
     font-weight: bold;
     color: black;
     font-size: 21px;

@@ -3,14 +3,15 @@ import { useMemo } from "react";
 
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-
-import { getListOfCoursesFromStudent, getListOfStudentsFromCourse } from "../../components/getStudentCourse";
+import {
+  getListOfCoursesFromStudent,
+  getListOfStudentsFromCourse,
+} from "../../components/getStudentCourse";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { updateClassroomInDatabase } from "../../components/updateClassrooms";
 import { addStudentClassroom } from "../../components/studentClassroom";
 import { getCourses } from "../../components/getCourses";
 import { getLessonsbyCourseID } from "../../components/getLessons";
-
 
 import styles from "./EditClassroom.module.css";
 
@@ -21,8 +22,12 @@ import SelectOneFromList from "../../components/selectable_addable/SelectOneFrom
 import SelectStatus from "../../components/selectable_addable/SelectStatus";
 import Button from "../../components/clickable/Button";
 
-function EditClassroom( { userData, studentList, instructorList, currentUnits }) {
-
+function EditClassroom({
+  userData,
+  studentList,
+  instructorList,
+  currentUnits,
+}) {
   let navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
@@ -38,14 +43,16 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     classroom_status: classroomData?.classroom_status || "",
     classroom_startDate: classroomData?.classroom_startDate || "",
     classroom_durationWeeks: classroomData?.classroom_durationWeeks || 6,
-    classroom_endDate: classroomData?.classroom_endDate || ""
+    classroom_endDate: classroomData?.classroom_endDate || "",
   });
   const [showEditConfirm, setShowEditConfirm] = useState(false);
 
-
-
   useEffect(() => {
-    console.log("useEffect triggered with:", classroomData?.classroom_course, userData);
+    console.log(
+      "useEffect triggered with:",
+      classroomData?.classroom_course,
+      userData
+    );
 
     getLessonsbyCourseID(classroomData?.classroom_course, userData)
       .then((courseLessons) => {
@@ -56,11 +63,11 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
         console.error("Failed to load lessons for course:", err);
       });
 
-    getListOfStudentsFromCourse(classroomData?.classroom_course).then((students) => {
+    getListOfStudentsFromCourse(classroomData?.classroom_course).then(
+      (students) => {
         setValidStudentOptions(students);
-    });
-
-
+      }
+    );
   }, [classroom, userData]);
 
   const [filter, setFilter] = useState(true);
@@ -87,7 +94,6 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     classroomData?.classroom_students || []
   );
 
-  // Check Student/Instructor -> Student? Go Home
   useEffect(() => {
     //Runs only at first render to kick out classroom_students
     getCurrentUser()
@@ -135,17 +141,17 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
   }
 
   function extractIdentifier(value) {
-        if (!value) {
-            return "";
-        }
-
-        if (!value.includes(":")) {
-            return value.trim();
-        }
-
-        const [identifier] = value.split(":");
-        return identifier.trim();
+    if (!value) {
+      return "";
     }
+
+    if (!value.includes(":")) {
+      return value.trim();
+    }
+
+    const [identifier] = value.split(":");
+    return identifier.trim();
+  }
 
   function submitForm(e) {
     setEnabled(false);
@@ -161,14 +167,13 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
         classroom_durationWeeks: classroom.classroom_durationWeeks,
         classroom_lessons: classroomLessons,
         classroom_students: classroomStudents,
-        classroom_endDate: classroom.classroom_endDate
+        classroom_endDate: classroom.classroom_endDate,
       };
 
       console.log(updates);
       updateClassroomInDatabase(id, updates)
         .then(() => {
           setErrorMessages(["Successfully updated a course!"]);
-
         })
         .then(async () => {
           const classroomID = classroom.classroom_id;
@@ -185,15 +190,13 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
             await addStudentClassroom(classroomID, studentID);
           }
         })
-          .then(() => navigate(`/home/classrooms/${id}`))
+        .then(() => navigate(`/home/classrooms/${id}`))
         .catch((error) => setErrorMessages([error.message] || String(error)));
     } else {
       setErrorMessages(["Missing and invalid values! Check the form again."]);
       setEnabled(true);
     }
   }
-
-
 
   const handleClassroomChange = (e) => {
     const { name, value } = e.target;
@@ -204,30 +207,36 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
     }
   };
 
-
-  const classroomStudentOptions = useMemo(() => {return validStudentOptions
+  const classroomStudentOptions = useMemo(() => {
+    return validStudentOptions
       .map((option) => {
-          if (typeof option === "string") {
-              return option;
+        if (typeof option === "string") {
+          return option;
+        }
+
+        if (typeof option === "object" && option !== null) {
+          if (typeof option.data === "function") {
+            const data = option.data();
+            const id = data.id || option.id || "";
+            const name = [data.firstName, data.lastName]
+              .filter(Boolean)
+              .join(" ")
+              .trim();
+            return [id, name].filter(Boolean).join(": ").trim();
           }
 
-          if (typeof option === "object" && option !== null) {
-              if (typeof option.data === "function") {
-                  const data = option.data();
-                  const id = data.id || option.id || "";
-                  const name = [data.firstName, data.lastName].filter(Boolean).join(" ").trim();
-                  return [id, name].filter(Boolean).join(": ").trim();
-              }
+          const id = option.id || option.id || "";
+          const name = [option.firstName, option.lastName]
+            .filter(Boolean)
+            .join(" ")
+            .trim();
+          return [id, name].filter(Boolean).join(": ").trim();
+        }
 
-              const id = option.id || option.id || "";
-              const name = [option.firstName, option.lastName].filter(Boolean).join(" ").trim();
-              return [id, name].filter(Boolean).join(": ").trim();
-          }
-
-          return "";
+        return "";
       })
-      .filter(Boolean);}, [validStudentOptions]);
-
+      .filter(Boolean);
+  }, [validStudentOptions]);
 
   return (
     <div className={styles.wrapper} disabled={!isEnabled}>
@@ -254,27 +263,22 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
           />
 
           <TextArea
-              label="Classroom Description"
-              type="textarea"
-              id="classroom_description"
-              name="classroom_description"
-              value={classroom.classroom_description}
-              onChange={handleClassroomChange}
-          />
-          {/* <SelectOneFromList
-            label="Course"
-            name="classroom_course"
-            object={classroom}
-            list={courseList.map(course => course.data().courseID)}
+            label="Classroom Description"
+            type="textarea"
+            id="classroom_description"
+            name="classroom_description"
+            value={classroom.classroom_description}
             onChange={handleClassroomChange}
-          /> */}
+          />
 
           <SelectOneFromList
             label="Supervisor"
             name="classroom_instructor"
             object={classroom}
-            list={instructorList.map(instructor => `${instructor.title} ${instructor.firstName} ${instructor.lastName}`)}
-            // list={instructorList}
+            list={instructorList.map(
+              (instructor) =>
+                `${instructor.title} ${instructor.firstName} ${instructor.lastName}`
+            )}
             onChange={handleClassroomChange}
           />
 
@@ -297,7 +301,9 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
             min={1}
           />
 
-          <p className={styles.justTitle}>Classroom End Date: {classroom.classroom_endDate || "N/A"}</p>
+          <p className={styles.justTitle}>
+            Classroom End Date: {classroom.classroom_endDate || "N/A"}
+          </p>
 
           <AddFromList
             label="Add Lesson"
@@ -323,81 +329,9 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
             object={classroom}
             onChange={handleClassroomChange}
           />
-
-          {/* <div className={styles.sectionRow}>
-
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Students in this classroom</h2>
-
-              <div className={styles.studentControlRow}>
-                <div className={styles.studentInputWrapper}>
-                  <label className={styles.label} htmlFor="student-input">
-                    Add Student
-                  </label>
-                  <input
-                    id="student-input"
-                    className={styles.input}
-                    type="text"
-                    placeholder="Enter student email or ID"
-                    value={studentInput}
-                    onChange={(event) => setStudentInput(event.target.value)}
-                  />
-                </div>
-                <button type="button" className={styles.addStudentButton} onClick={handleAddStudent}>
-                  Add
-                </button>
-              </div>
-
-              {sortedStudentOptions.length > 0 && (
-                <div className={styles.suggestionRow}>
-                  <label className={styles.label} htmlFor="student-suggestions">
-                    Choose existing student
-                  </label>
-                  <select
-                    id="student-suggestions"
-                    className={styles.select}
-                    defaultValue=""
-                    onChange={handleSelectStudent}
-                  >
-                    <option value="" disabled>
-                      Select student
-                    </option>
-                    {sortedStudentOptions.map((student) => (
-                      <option key={student} value={student}>
-                        {student}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {selectedStudents.length === 0 ? (
-                <p className={styles.emptyMessage}>No classroom_students have been assigned yet.</p>
-              ) : (
-                <ul className={styles.studentList}>
-                  {selectedStudents.map((student) => (
-                    <li key={student} className={styles.studentItem}>
-                      <span>{student}</span>
-                      <button
-                        type="button"
-                        className={styles.removeStudentButton}
-                        onClick={() => handleRemoveStudent(student)}
-                      >
-                        Remove
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section> */}
-          {/* </div> */}
         </div>
       </div>
       <div className={styles.infoFooter}>
-        {/* <button type="button" className={styles.backButton} onClick={goback}>
-            <img src="images/icons/goback.png" alt="Back" className={styles.backIcon} />
-            <span>Back</span>
-          </button> */}
         <button
           onClick={handleCancel}
           className={styles.smallButton}
@@ -417,10 +351,6 @@ function EditClassroom( { userData, studentList, instructorList, currentUnits })
             ))}
           </div>
         )}
-
-        <div className={styles.footerActions}>
-          {/* <Button label="Save Changes" type="submit" /> */}
-        </div>
       </div>
     </div>
   );
