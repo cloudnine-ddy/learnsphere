@@ -1,5 +1,4 @@
 ﻿import React, { useState, useEffect } from "react";
-
 import { useNavigate } from "react-router-dom";
 
 import { addCoursesToDatabase } from "../../components/addCourses";
@@ -18,206 +17,224 @@ import SelectStatus from "../../components/selectable_addable/SelectStatus";
 import InfoBlock from "../../components/display/InfoBlock";
 
 function AddCourse({ instructorList, prerequisiteOptions }) {
-    const [course, setCourse] = useState({
-        courseId: "",
-        title: "",
-        description: "",
-        totalCreditPoints: 0,
-        supervisor: "",
-        status: ""
-    });
+  const [course, setCourse] = useState({
+    courseId: "",
+    title: "",
+    description: "",
+    totalCreditPoints: 0,
+    supervisor: "",
+    status: "",
+  });
 
-    const navigate = useNavigate();
-    const [isEnabled, setEnabled] = useState(true);
+  const navigate = useNavigate();
+  const [isEnabled, setEnabled] = useState(true);
+  const [courseLessons, setCourseLessons] = useState([]);
+  const [errorMessages, setErrorMessages] = useState([]);
+  const [publishedLessons, setPublishedLessons] = useState([]);
 
-    const [courseLessons, setCourseLessons] = useState([]);
-    const [errorMessages, setErrorMessages] = useState([]);
-    const [publishedLessons, setPublishedLessons] = useState([]);
+  useEffect(() => {
+    getCurrentUser()
+      .then((user) => getUserInfo(user))
+      .then((info) => {
+        if (info?.role === "student") {
+          navigate("/home");
+        }
+      });
+  }, [navigate]);
 
-    useEffect(() => {
-        getCurrentUser()
-            .then((user) => getUserInfo(user))
-            .then((info) => {
-                if (info?.role === "student") {
-                    navigate("/home");
-                }
-            });
-    }, [navigate]);
-
-    useEffect(() => {
-        getCurrentUser()
-            .then((user) => getUserInfo(user))
-            .then(async (info) => {
-                if (info?.role === "student") {
-                    navigate("/home");
-                } else {
-                    // Fetch published lessons once the user is confirmed
-                    const lessons = await getPublishedLessons(info);
-                    setPublishedLessons(lessons);
-                }
-            });
-    }, [navigate]);
-
-    useEffect(() => {
-        const totalCreditPoints = courseLessons.reduce((sum, lessonString) => {
-            const lessonId = lessonString.split(":")[0].trim();
-            const lesson = publishedLessons.find((item) => item.data().lessonID === lessonId);
-            return lesson ? sum + lesson.data().creditPoint : sum;
-        }, 0);
-
-        setCourse((prev) => ({
-            ...prev,
-            totalCreditPoints
-        }));
-    }, [courseLessons, publishedLessons]);
-
-    async function submitForm() {
-        setEnabled(false);
-
-        if (await isValid()) {
-          addCoursesToDatabase(
-            course.courseId,
-            course.title,
-            course.description,
-            courseLessons,
-            course.totalCreditPoints,
-            course.supervisor,
-            course.status
-          )
-            .then(() => {
-              setErrorMessages(["✅ Successfully created a course!"]);
-              navigate("/home/courses");
-            })
-            .catch((error) => {
-              setErrorMessages([error.message || String(error)]);
-              setEnabled(true);
-            });
+  useEffect(() => {
+    getCurrentUser()
+      .then((user) => getUserInfo(user))
+      .then(async (info) => {
+        if (info?.role === "student") {
+          navigate("/home");
         } else {
+          // Fetch published lessons once the user is confirmed
+          const lessons = await getPublishedLessons(info);
+          setPublishedLessons(lessons);
+        }
+      });
+  }, [navigate]);
+
+  useEffect(() => {
+    const totalCreditPoints = courseLessons.reduce((sum, lessonString) => {
+      const lessonId = lessonString.split(":")[0].trim();
+      const lesson = publishedLessons.find(
+        (item) => item.data().lessonID === lessonId
+      );
+      return lesson ? sum + lesson.data().creditPoint : sum;
+    }, 0);
+
+    setCourse((prev) => ({
+      ...prev,
+      totalCreditPoints,
+    }));
+  }, [courseLessons, publishedLessons]);
+
+  async function submitForm() {
+    setEnabled(false);
+
+    if (await isValid()) {
+      addCoursesToDatabase(
+        course.courseId,
+        course.title,
+        course.description,
+        courseLessons,
+        course.totalCreditPoints,
+        course.supervisor,
+        course.status
+      )
+        .then(() => {
+          setErrorMessages(["✅ Successfully created a course!"]);
+          navigate("/home/courses");
+        })
+        .catch((error) => {
+          setErrorMessages([error.message || String(error)]);
           setEnabled(true);
-        }
-      }
+        });
+    } else {
+      setEnabled(true);
+    }
+  }
 
-    async function isValid() {
-        let validation = true;
-      // Check for empty course fields
-        if (Object.values(course).some((value) => value === "")) {
-            validation = false;
-            setErrorMessages(["Missing and invalid values! Check the form again."]);
-        }
-
-        // Check for missing prerequisites
-        const missingDeps = await validateCourseLessons(courseLessons);
-        if (Object.keys(missingDeps).length > 0) {
-            validation = false;
-            setErrorMessages([
-                "Missing prerequisites for some lessons: " +
-                Object.entries(missingDeps)
-                    .map(([lesson, deps]) => `${lesson} → [${deps.join(", ")}]`)
-                    .join("; ")
-            ]);
-        }
-
-        return validation;
+  async function isValid() {
+    let validation = true;
+    // Check for empty course fields
+    if (Object.values(course).some((value) => value === "")) {
+      validation = false;
+      setErrorMessages(["Missing and invalid values! Check the form again."]);
     }
 
-    const handleCourseChange = (e) => {
-        const { name, value } = e.target;
-        setCourse((prev) => ({ ...prev, [name]: value }));
+    // Check for missing prerequisites
+    const missingDeps = await validateCourseLessons(courseLessons);
+    if (Object.keys(missingDeps).length > 0) {
+      validation = false;
+      setErrorMessages([
+        "Missing prerequisites for some lessons: " +
+          Object.entries(missingDeps)
+            .map(([lesson, deps]) => `${lesson} → [${deps.join(", ")}]`)
+            .join("; "),
+      ]);
+    }
 
-        if (errorMessages.length > 0) {
-            setErrorMessages([]);
-        }
-    };
+    return validation;
+  }
 
-    const handleBack = () => {
-        navigate(-1);
-    };
+  const handleCourseChange = (e) => {
+    const { name, value } = e.target;
+    setCourse((prev) => ({ ...prev, [name]: value }));
 
-    return (
-        <div className={styles.wrapper} disabled={!isEnabled}>
-            <div className={styles.infoHeader}>
-                <div className={styles.infoTitle}>Add Course</div>
-            </div>
+    if (errorMessages.length > 0) {
+      setErrorMessages([]);
+    }
+  };
 
-            <div className={styles.infoScroll}>
-                <div className={styles.container}>
-                    <InputField
-                        label="Course ID"
-                        type="text"
-                        id="courseId"
-                        name="courseId"
-                        value={course.courseId}
-                        onChange={handleCourseChange}
-                        required
-                    />
+  const handleBack = () => {
+    navigate(-1);
+  };
 
-                    <InputField
-                        label="Title"
-                        type="text"
-                        id="title"
-                        name="title"
-                        value={course.title}
-                        onChange={handleCourseChange}
-                        required
-                    />
+  return (
+    <div className={styles.wrapper} disabled={!isEnabled}>
+      <div className={styles.infoHeader}>
+        <div className={styles.infoTitle}>Add Course</div>
+      </div>
 
-                    <TextArea
-                        label="Description"
-                        type="textarea"
-                        id="description"
-                        name="description"
-                        value={course.description}
-                        onChange={handleCourseChange}
-                    />
+      <div className={styles.infoScroll}>
+        <div className={styles.container}>
+          <InputField
+            label="Course ID"
+            type="text"
+            id="courseId"
+            name="courseId"
+            value={course.courseId}
+            onChange={handleCourseChange}
+            required
+          />
 
-                    <AddFromList
-                        label={"Lessons Included"}
-                        placeholder={"Please select lessons needed to be included"}
-                        prerequisites={courseLessons}
-                        setPrerequisites={setCourseLessons}
-                        prerequisiteOptions={publishedLessons.map(
-                            (option) => `${option.data().lessonID}: ${option.data().title}`
-                        )}
-                    />
+          <InputField
+            label="Title"
+            type="text"
+            id="title"
+            name="title"
+            value={course.title}
+            onChange={handleCourseChange}
+            required
+          />
 
-                    <InfoBlock title="Total Credit Point" content={course != null ? course.totalCreditPoints : "null"}/>
+          <TextArea
+            label="Description"
+            type="textarea"
+            id="description"
+            name="description"
+            value={course.description}
+            onChange={handleCourseChange}
+          />
 
-                    <SelectOneFromList
-                        name="supervisor"
-                        label="Supervisor"
-                        object={course}
-                        list={[""].concat(
-                            instructorList.map(
-                                (instructor) => `${instructor.title} ${instructor.firstName} ${instructor.lastName}`
-                            )
-                        )}
-                        onChange={handleCourseChange}
-                    />
-                    <SelectStatus name="status" label="Status" object={course} onChange={handleCourseChange} />
-                </div>
-            </div>
+          <AddFromList
+            label={"Lessons Included"}
+            placeholder={"Please select lessons needed to be included"}
+            prerequisites={courseLessons}
+            setPrerequisites={setCourseLessons}
+            prerequisiteOptions={publishedLessons.map(
+              (option) => `${option.data().lessonID}: ${option.data().title}`
+            )}
+          />
 
-            <div className={styles.infoFooter}>
-                <div className={styles.footerActions}>
-                    <button type="button" className={styles.backButton} onClick={handleBack}>
-                        <img src="images/icons/goback.png" alt="Back" className={styles.backIcon} />
-                        <span>Back</span>
-                    </button>
-                    <Button onClick={submitForm} label="Add" />
-                </div>
+          <InfoBlock
+            title="Total Credit Point"
+            content={course != null ? course.totalCreditPoints : "null"}
+          />
 
-                {errorMessages.length > 0 && (
-                    <div>
-                        {errorMessages.map((msg, idx) => (
-                            <p key={idx} style={{ color: "red" }}>
-                                {msg}
-                            </p>
-                        ))}
-                    </div>
-                )}
-            </div>
+          <SelectOneFromList
+            name="supervisor"
+            label="Supervisor"
+            object={course}
+            list={[""].concat(
+              instructorList.map(
+                (instructor) =>
+                  `${instructor.title} ${instructor.firstName} ${instructor.lastName}`
+              )
+            )}
+            onChange={handleCourseChange}
+          />
+          <SelectStatus
+            name="status"
+            label="Status"
+            object={course}
+            onChange={handleCourseChange}
+          />
         </div>
-    );
+      </div>
+
+      <div className={styles.infoFooter}>
+        <div className={styles.footerActions}>
+          <button
+            type="button"
+            className={styles.backButton}
+            onClick={handleBack}
+          >
+            <img
+              src="images/icons/goback.png"
+              alt="Back"
+              className={styles.backIcon}
+            />
+            <span>Back</span>
+          </button>
+          <Button onClick={submitForm} label="Add" />
+        </div>
+
+        {errorMessages.length > 0 && (
+          <div>
+            {errorMessages.map((msg, idx) => (
+              <p key={idx} style={{ color: "red" }}>
+                {msg}
+              </p>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default AddCourse;

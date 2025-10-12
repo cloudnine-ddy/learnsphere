@@ -15,12 +15,20 @@ export default function GrowthSection({ progress }) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.icon}><img src={stageIcon} alt="Growth Stage" className={styles.growthImage} /></div>
+      <div className={styles.icon}>
+        <img
+          src={stageIcon}
+          alt="Growth Stage"
+          className={styles.growthImage}
+        />
+      </div>
       <div className={styles.progressBar}>
-        <div className={styles.progressFill} style={{ width: `${progress}%` }}></div>
+        <div
+          className={styles.progressFill}
+          style={{ width: `${progress}%` }}
+        ></div>
       </div>
       <p className={styles.progressText}>{progress.toFixed(2)}% Complete</p>
-
     </div>
   );
 }

@@ -9,123 +9,134 @@ import MessageBox from "../../components/display/MessageBox";
 import SingleButtonMessageBox from "../../components/display/SingleButtonMessageBox";
 
 function JoinClassroom({ userData }) {
-    const navigate = useNavigate();
-    const [classrooms, setClassrooms] = useState([]);
-    const [pendingClassroom, setPendingClassroom] = useState(null);
-    const [singleMessage, setSingleMessage] = useState({ visible: false, message: "" });
+  const navigate = useNavigate();
+  const [classrooms, setClassrooms] = useState([]);
+  const [pendingClassroom, setPendingClassroom] = useState(null);
+  const [singleMessage, setSingleMessage] = useState({
+    visible: false,
+    message: "",
+  });
 
-    useEffect(() => {
-        getClassroomsNonJoin(userData).then((classroomSnapshots) => {
-            setClassrooms(classroomSnapshots);
+  useEffect(() => {
+    getClassroomsNonJoin(userData).then((classroomSnapshots) => {
+      setClassrooms(classroomSnapshots);
+    });
+  }, [userData]);
+
+  const requestClassroom = async (classroomID) => {
+    try {
+      await createRequest(userData, classroomID);
+
+      // Show success message instead of navigating immediately
+      setSingleMessage({
+        visible: true,
+        message: "Your request has been submitted successfully.",
+      });
+    } catch (err) {
+      console.error("Failed to join:", err);
+
+      if (err.message === "REQUEST_ALREADY_EXISTS") {
+        setSingleMessage({
+          visible: true,
+          message: "You have already requested this classroom.",
         });
-    }, [userData]);
-
-    const requestClassroom = async (classroomID) => {
-        try {
-            await createRequest(userData, classroomID);
-    
-            // Show success message instead of navigating immediately
-            setSingleMessage({
-                visible: true,
-                message: "Your request has been submitted successfully.",
-            });
-        } catch (err) {
-            console.error("Failed to join:", err);
-    
-            if (err.message === "REQUEST_ALREADY_EXISTS") {
-                setSingleMessage({
-                    visible: true,
-                    message: "You have already requested this classroom.",
-                });
-            } else {
-                setSingleMessage({
-                    visible: true,
-                    message: "Failed to join classroom. Please try again.",
-                });
-            }
-        }
-    };
-
-    const handleConfirmJoin = async () => {
-        if (!pendingClassroom) return;
-
-        const classroomID = pendingClassroom.classroom_id;
-        setPendingClassroom(null);
-        await requestClassroom(classroomID);
-    };
-
-    const handleCancelJoin = () => {
-        setPendingClassroom(null);
-    };
-
-    const handleRequestJoin = (classroom) => {
-        setPendingClassroom({
-            classroom_id: classroom.data().classroom_id,
-            classroom_name: classroom.data().classroom_name,
+      } else {
+        setSingleMessage({
+          visible: true,
+          message: "Failed to join classroom. Please try again.",
         });
-    };
+      }
+    }
+  };
 
-    const handleBack = () => {
-        navigate(-1);
-    };
+  const handleConfirmJoin = async () => {
+    if (!pendingClassroom) return;
 
-    const handleCloseSingleMessage = () => {
-        if (singleMessage.message.includes("successfully")) {
-            navigate("/home/classrooms"); 
-        }
-        setSingleMessage({ visible: false, message: "" });
-    };
+    const classroomID = pendingClassroom.classroom_id;
+    setPendingClassroom(null);
+    await requestClassroom(classroomID);
+  };
 
-    return (
-        <div className={styles.joinCoursePage}>
-            <div className={styles.infoHeader}>
-                <div className={styles.infoTitle}>Join Classroom</div>
-            </div>
+  const handleCancelJoin = () => {
+    setPendingClassroom(null);
+  };
 
-            <div className={styles.infoScroll}>
-                <div className={styles.cardContainer}>
-                    {classrooms.map((classroom) => (
-                        <JoinClassroomCard
-                            key={classroom.id}
-                            classroomId={classroom.data().classroom_id}
-                            classroomName={classroom.data().classroom_name}
-                            courseTitle={classroom.data().classroom_course}
-                            classroomSupervisor={classroom.data().classroom_instructor}
-                            href={`/home/classrooms/${classroom.id}`}
-                            onJoin={() => handleRequestJoin(classroom)}
-                        />
-                    ))}
-                </div>
-            </div>
+  const handleRequestJoin = (classroom) => {
+    setPendingClassroom({
+      classroom_id: classroom.data().classroom_id,
+      classroom_name: classroom.data().classroom_name,
+    });
+  };
 
-            <div className={styles.pageFooter}>
-                <button type="button" className={styles.backButton} onClick={handleBack}>
-                    <img src="images/icons/goback.png" alt="Back" className={styles.backIcon} />
-                    <span>Back</span>
-                </button>
-            </div>
+  const handleBack = () => {
+    navigate(-1);
+  };
 
-            {pendingClassroom && (
-                <MessageBox
-                    label="Join Lesson"
-                    message={`Are you sure you want to join ${pendingClassroom.classroom_name}?`}
-                    button_1="Cancel"
-                    button_2="Confirm"
-                    onCancel={handleCancelJoin}
-                    onConfirm={handleConfirmJoin}
-                />
-            )}
+  const handleCloseSingleMessage = () => {
+    if (singleMessage.message.includes("successfully")) {
+      navigate("/home/classrooms");
+    }
+    setSingleMessage({ visible: false, message: "" });
+  };
 
-            {singleMessage.visible && (
-                <SingleButtonMessageBox
-                    label="Notice"
-                    message={singleMessage.message}
-                    button_1="OK"
-                    onConfirm={handleCloseSingleMessage}
-                />
-            )}
+  return (
+    <div className={styles.joinCoursePage}>
+      <div className={styles.infoHeader}>
+        <div className={styles.infoTitle}>Join Classroom</div>
+      </div>
+
+      <div className={styles.infoScroll}>
+        <div className={styles.cardContainer}>
+          {classrooms.map((classroom) => (
+            <JoinClassroomCard
+              key={classroom.id}
+              classroomId={classroom.data().classroom_id}
+              classroomName={classroom.data().classroom_name}
+              courseTitle={classroom.data().classroom_course}
+              classroomSupervisor={classroom.data().classroom_instructor}
+              href={`/home/classrooms/${classroom.id}`}
+              onJoin={() => handleRequestJoin(classroom)}
+            />
+          ))}
         </div>
-    );
+      </div>
+
+      <div className={styles.pageFooter}>
+        <button
+          type="button"
+          className={styles.backButton}
+          onClick={handleBack}
+        >
+          <img
+            src="images/icons/goback.png"
+            alt="Back"
+            className={styles.backIcon}
+          />
+          <span>Back</span>
+        </button>
+      </div>
+
+      {pendingClassroom && (
+        <MessageBox
+          label="Join Lesson"
+          message={`Are you sure you want to join ${pendingClassroom.classroom_name}?`}
+          button_1="Cancel"
+          button_2="Confirm"
+          onCancel={handleCancelJoin}
+          onConfirm={handleConfirmJoin}
+        />
+      )}
+
+      {singleMessage.visible && (
+        <SingleButtonMessageBox
+          label="Notice"
+          message={singleMessage.message}
+          button_1="OK"
+          onConfirm={handleCloseSingleMessage}
+        />
+      )}
+    </div>
+  );
 }
 
 export default JoinClassroom;

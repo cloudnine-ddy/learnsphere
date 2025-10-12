@@ -9,7 +9,7 @@ function CourseCard({
   courseTitle,
   creditPoint,
   instructorName,
-  href
+  href,
 }) {
   return (
     <Link to={href}>
@@ -17,7 +17,9 @@ function CourseCard({
         <div className={styles.lessonInfo}>
           <p className={styles.lessonId}>{courseID}</p>
           <p className={styles.lessonTitle}>{courseTitle}</p>
-          <p className={styles.lessonCreditPoint}>Total Credit Point: {creditPoint}</p>
+          <p className={styles.lessonCreditPoint}>
+            Total Credit Point: {creditPoint}
+          </p>
           <p className={styles.lessonInstructor}>{instructorName}</p>
         </div>
 

@@ -1,52 +1,52 @@
 .wholeField {
-    height: 500px;
-    width: 500px;
+  height: 500px;
+  width: 500px;
 }
 
 .button {
-    width: 100%;
-    padding: 16px;
-    background: #ffcc70;
-    border: 2px solid transparent;
-    border-radius: 15px;
-    font-weight: bold;
-    color: black;
-    font-size: 22px;
-    cursor: pointer;
-    transition: 0.2s ease;
+  width: 100%;
+  padding: 16px;
+  background: #ffcc70;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  font-weight: bold;
+  color: black;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   outline: none;
   border-color: transparent;
 }
 
 .button:focus {
-    outline: none;
-    border-color: transparent;
+  outline: none;
+  border-color: transparent;
 }
 
 .wrapper {
-    height: 400px;
-    width: 500px;
-    overflow-y: auto;
+  height: 400px;
+  width: 500px;
+  overflow-y: auto;
 }
 
 .tokenField {
-    height: 50px;
-    display: flex;
-    flex-direction: row;
-    font-size: 20px;
-    border-radius: 18px;
-    border: none;
-    background-color: #e4cea5;
-    justify-content: space-between;
-    padding-left: 20px;
-    padding-right: 20px;
-    align-items: center;
-    margin-top: 8px;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  font-size: 20px;
+  border-radius: 18px;
+  border: none;
+  background-color: #e4cea5;
+  justify-content: space-between;
+  padding-left: 20px;
+  padding-right: 20px;
+  align-items: center;
+  margin-top: 8px;
 }
 
 .wrapper::-webkit-scrollbar {
@@ -63,26 +63,26 @@
 }
 
 .wrapper::-webkit-scrollbar-thumb:hover {
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .token {
-    font: 20px;
-    color: black;
+  font: 20px;
+  color: black;
 }
 
 .tokenStatusAvailable {
-    font: 20px;
-    color: rgb(38, 144, 237);
-    margin-left: auto;
-    margin-right: 10px;
+  font: 20px;
+  color: rgb(38, 144, 237);
+  margin-left: auto;
+  margin-right: 10px;
 }
 
 .tokenStatusUsed {
-    font: 20px;
-    color: red;
-    margin-left: auto;
-    margin-right: 10px;
+  font: 20px;
+  color: red;
+  margin-left: auto;
+  margin-right: 10px;
 }
 
 .deleteButton {

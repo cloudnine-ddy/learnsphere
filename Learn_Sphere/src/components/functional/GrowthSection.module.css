@@ -2,12 +2,6 @@
   margin-top: 2rem;
   text-align: center;
 }
-/* 
-.icon {
-  font-size: 4rem;
-  margin-bottom: 0.5rem;
-  transition: all 0.3s ease-in-out;
-} */
 
 .icon {
   display: flex;

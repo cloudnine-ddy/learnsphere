@@ -10,7 +10,7 @@ function JoinCourseCard({
   creditPoint,
   courseSupervisor,
   href,
-  onJoin
+  onJoin,
 }) {
   const handleJoinClick = (event) => {
     event.preventDefault();
