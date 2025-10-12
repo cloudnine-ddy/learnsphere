@@ -1,4 +1,4 @@
-﻿.wrapper {
+.wrapper {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -42,6 +42,29 @@
 
 
 }
+
+.lessonMarking {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #3d3d3d;
+    margin-bottom: 10px;
+    margin-right: 20px;
+}
+
+.markingLabel {
+    padding: 6px 14px;
+    background: #d9f5df;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    color: #1f6f38;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
 
 .smallButton {
     background: #897351;

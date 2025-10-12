@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
@@ -21,6 +21,7 @@ function ViewLesson({ userData }) {
   const [lesson, setLesson] = useState(null);
 
   const [showDelete, setShowDelete] = useState(false);
+  const markingState = lesson?.markingState ?? "Pass";
 
   useEffect(() => {
     //Runs on the first render only
@@ -79,6 +80,11 @@ function ViewLesson({ userData }) {
           <div className={styles.lessonStatus}>
             {lesson != null ? lesson.status : "null"}
           </div>
+          {userData?.role === "student" && (
+            <div className={styles.lessonMarking}>
+              <span className={styles.markingLabel}>{markingState}</span>
+            </div>
+          )}
           {userData != null && userData.role != "student" && (
             <button
               className={styles.smallButton}
