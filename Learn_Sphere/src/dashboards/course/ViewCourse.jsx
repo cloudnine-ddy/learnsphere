@@ -34,6 +34,7 @@ function ViewCourse({ userData }) {
   const [showMessageBox, setShowMessageBox] = useState(false);
   const [message, setMessage] = useState("");
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const courseProgress = 75;
 
   useEffect(() => {
     if (userData?.role === "student" && course) {
@@ -174,13 +175,37 @@ function ViewCourse({ userData }) {
             </button>
           )}
           {userData != null && userData.role == "student" && isEnrolled && (
-            <button
-              className={styles.cancelEnrollButton}
-              type="button"
-              onClick={() => setShowCancelConfirm(true)}
-            >
-              Cancel Enroll
-            </button>
+            <div className={styles.studentActions}>
+              <div className={styles.courseProgress}>
+                <div className={styles.courseProgressHeader}>
+                  <span className={styles.courseProgressLabel}>Progress</span>
+                  <span className={styles.courseProgressValue}>
+                    {`${courseProgress}%`}
+                  </span>
+                </div>
+                <div
+                  className={styles.courseProgressBar}
+                  role="progressbar"
+                  aria-label="Course progress"
+                  aria-valuenow={courseProgress}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  title={`Course progress ${courseProgress}%`}
+                >
+                  <div
+                    className={styles.courseProgressFill}
+                    style={{ width: `${courseProgress}%` }}
+                  />
+                </div>
+              </div>
+              <button
+                className={styles.cancelEnrollButton}
+                type="button"
+                onClick={() => setShowCancelConfirm(true)}
+              >
+                Cancel Enroll
+              </button>
+            </div>
           )}
         </div>
       </div>
