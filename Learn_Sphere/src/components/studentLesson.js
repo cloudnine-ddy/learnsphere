@@ -11,10 +11,11 @@ export async function addStudentLesson(lessonID, studentID) {
   const studentLessonData = {
     student_lesson_lessonID: lessonID,
     student_lesson_studentID: studentID,
-    student_lesson_completion: 0,
+    student_lesson_completion: "unchecked",
+    student_lesson_passFail: "unchecked"
   };
 
-  // Save the course data to Firestore 
+  // Save the course data to Firestore
 
   try {
 
@@ -32,12 +33,127 @@ export async function addStudentLesson(lessonID, studentID) {
 
 }
 
-/* Data Structure
+export async function getStudentLesson(studentID, lessonID) {
+
+  /* param
+    studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+  */
+
+  try {
+    // Step 1: get student_lesson docs for this student
+    const studentLessonQuery = query(
+      collection(db, "student_lesson"),
+      where("student_lesson_studentID", "==", studentID),
+      where("student_lesson_lessonID", "==", lessonID)
+    );
+
+    const studentLessonSnapshot = await getDocs(studentLessonQuery);
+
+    return studentLessonSnapshot
+  } 
+  catch (error) {
+    console.error("Error fetching studentLesson:", error);
+    throw error;
+  }
+}
+
+/*
+
+**************** UPDATE FUNCTIONS ****************
+Data Structure
 const studentLessonData = {
 
         student_lesson_lessonID: lessonID,
         student_lesson_studentID: studentID,
         student_lesson_completion: completion,
+        student_lesson_passFail: passFail,
+    };
+
+*/
+
+export async function updateStudentLessonCompletion(studentID, lessonID, completion) {
+
+  /* param
+      studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+      lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
+      completion - the completion status of the lesson. Example "completed"
+  */
+
+  const studentLessonQuery = query(
+    collection(db, "student_lesson"),
+    where("student_lesson_studentID", "==", studentID),
+    where("student_lesson_lessonID", "==", lessonID)
+  );
+
+  const studentLessonSnapshot = await getDocs(studentLessonQuery);
+
+  if (studentLessonSnapshot.empty) {
+    console.log("No matching student_lesson found to update.");
+    return false;
+  }
+
+  // Step 2: Update the student_lesson document
+  const updates = studentLessonSnapshot.docs.map((d) => {
+    updateDoc(doc(db, "student_lesson", d.id), {
+      student_lesson_completion: completion,
+    })
+  }
+  );
+
+  await Promise.all(updates);
+
+  console.log("✅ Successfully updated student_lesson completion.");
+  return true;
+
+}
+
+export async function updateStudentLessonPassFail(studentID, lessonID, passFail) {
+
+  /* param
+      studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+      lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
+      passFail - the passFail status of the lesson. Example "pass"
+  */
+
+  const studentLessonQuery = query(
+    collection(db, "student_lesson"),
+    where("student_lesson_studentID", "==", studentID),
+    where("student_lesson_lessonID", "==", lessonID)
+  );
+
+  const studentLessonSnapshot = await getDocs(studentLessonQuery);
+
+  if (studentLessonSnapshot.empty) {
+    console.log("No matching student_lesson found to update.");
+    return false;
+  }
+
+  // Step 2: Update the student_lesson document
+  const updates = studentLessonSnapshot.docs.map((d) => {
+    updateDoc(doc(db, "student_lesson", d.id), {
+      student_lesson_passFail: passFail,
+    })
+  }
+  );
+
+  await Promise.all(updates);
+
+  console.log("✅ Successfully updated student_lesson passFail.");
+  return true;
+
+}
+
+
+/*
+
+**************** GETTER FUNCTIONS ****************
+Data Structure
+const studentLessonData = {
+
+        student_lesson_lessonID: lessonID,
+        student_lesson_studentID: studentID,
+        student_lesson_completion: completion,
+        student_lesson_passFail: passFail,
     };
 
 */
@@ -131,23 +247,31 @@ export async function getListOfStudentsFromCourse(lessonID) {
   }
 }
 
-/* Data Structure
+
+
+/*
+
+**************** DELETE FUNCTIONS ****************
+
+Data Structure
 const studentLessonData = {
 
         student_lesson_lessonID: lessonID,
         student_lesson_studentID: studentID,
         student_lesson_completion: completion,
+        student_lesson_passFail: passFail,
     };
+
 
 */
 
 export async function deleteStudentLesson(studentID, lessonID) {
 
-    /* param
-        studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
-        lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
-    */
-   
+  /* param
+      studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+      lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
+  */
+
   try {
     // Step 1: Query for the document(s)
     const scQuery = query(
@@ -186,7 +310,7 @@ export async function deleteStudentLessonByLessonID(lessonID) {
   */
 
   try {
-    // Search for the lesson_classroom 
+    // Search for the lesson_classroom
 
     const scQuery = query(
       collection(db, "student_lesson"),
@@ -217,7 +341,7 @@ export async function deleteStudentLessonByStudentID(studentID) {
   */
 
   try {
-    // Search for the lesson_classroom 
+    // Search for the lesson_classroom
 
     const scQuery = query(
       collection(db, "student_lesson"),

@@ -15,10 +15,9 @@ import { updateClassroomStudents } from "../../components/updateClassrooms";
 import { getClassroomByStudent } from "../../components/getClassroom";
 
 import {
-  addStudentClassroom,
-  deleteStudentClassroom,
-} from "../../components/studentClassroom";
-import { deleteStudentClassroomByStudentID } from "../../components/studentClassroom";
+  updateStudentLessonCompletion, updateStudentLessonPassFail
+} from "../../components/studentLesson";
+import { addStudentClassroom, deleteStudentClassroom, deleteStudentClassroomByStudentID } from "../../components/studentClassroom";
 import styles from "./ViewClassroom.module.css";
 
 import InfoBlock from "../../components/display/InfoBlock";
@@ -128,8 +127,19 @@ function ViewClassroom({ userData }) {
   const handleConfirmMark = () => {
     if (markConfirmation) {
       console.log(
-        `Marking ${markConfirmation.student?.name} (${markConfirmation.student?.id}) in ${markConfirmation.lessonTitle} as ${markConfirmation.action}`
+        `Marking ${markConfirmation.student?.name} (${markConfirmation.student?.id}) in ${markConfirmation.lessonTitle} (${markConfirmation.lessonDoc.id}) as ${markConfirmation.action}`
       );
+
+      if (markConfirmation.action == "unmark")
+      {
+          updateStudentLessonCompletion(markConfirmation.student?.id, markConfirmation.lessonDoc?.id, false)
+          updateStudentLessonPassFail(markConfirmation.student?.id, markConfirmation.lessonDoc?.id, "unchecked")
+      }
+      else
+      {
+        updateStudentLessonCompletion(markConfirmation.student?.id, markConfirmation.lessonDoc?.id, true)
+        updateStudentLessonPassFail(markConfirmation.student?.id, markConfirmation.lessonDoc?.id, markConfirmation.action)
+      }
     }
     setMarkConfirmation(null);
   };
@@ -180,7 +190,8 @@ function ViewClassroom({ userData }) {
   };
 
   const handleEdit = () => {
-    if (!classroom || !classroom.classroom_endDate) return;
+
+      if (!classroom) return;
 
     if (classroom.classroom_status === "Published") {
       const parseDate = (str) => {
@@ -557,7 +568,7 @@ function ViewClassroom({ userData }) {
       )}
       {activeMarkStudent && (
         <MarkStudentModal
-          studentName={activeMarkStudent.name}
+          student={activeMarkStudent}
           lessons={lessons}
           onClose={handleCloseMarkModal}
           onSelectAction={handleRequestMarkAction}
