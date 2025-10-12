@@ -4,6 +4,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
 import { updateLessonInDatabase } from "../../components/updateLessons";
+import { canChangeLessonStatus } from "../../components/getLessons";
 
 import styles from "./EditLesson.module.css";
 
@@ -64,34 +65,57 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
             });
     }, [])
 
-    function submitForm(e)
-    {
-        setEnabled(false)
-        if (isValid()){
-            const updates = {
-                title: lesson.title,
-                description: lesson.description,
-                objectives: objectives,
-                readingList: readingList,
-                prerequisites: prerequisites,
-                assignments: assignmentList,
-                creditPoint: lesson.creditPoints,
-                owner: lesson.instructor,
-                status: lesson.status
-            };
+    async function submitForm(e) {
+        e.preventDefault();
+        setEnabled(false);
 
-            console.log(updates);
-            updateLessonInDatabase(id, updates)
-            .then(() => {
-                setErrorMessages(["Successfully updated a lesson!"]);
-                navigate(`/home/lessons/${id}`);
-            })
-            .catch((error) => setErrorMessages([error]));
-            } else {
-                setErrorMessages(["Missing and invalid values! Check the form again."]);
-                setEnabled(true);
+        if (!isValid()) {
+          setErrorMessages(["Missing and invalid values! Check the form again."]);
+          setEnabled(true);
+          return;
+        }
+
+        try {
+          const originalStatus = lessonData.status;
+          const newStatus = lesson.status;
+          if (
+            originalStatus === "Published" &&
+            newStatus !== "Published"
+          ) {
+            const lessonIdentifier = `${lesson.lessonId}: ${lesson.title}`;
+            const check = await canChangeLessonStatus(lessonIdentifier);
+            console.log("Lesson cannot be changed to status:", check.canChange);
+            if (!check.canChange) {
+              setErrorMessages([check.reason]);
+              setEnabled(true);
+              setLesson(prev => ({ ...prev, status: "Published" }));
+              return;
             }
-    };
+          }
+
+          // ✅ Proceed with update
+          const updates = {
+            title: lesson.title,
+            description: lesson.description,
+            objectives,
+            readingList,
+            prerequisites,
+            assignments: assignmentList,
+            creditPoint: lesson.creditPoints,
+            owner: lesson.instructor,
+            status: lesson.status
+          };
+
+          await updateLessonInDatabase(id, updates);
+          setErrorMessages(["Successfully updated a lesson!"]);
+          navigate(`/home/lessons/${id}`);
+        } catch (error) {
+          console.error("Failed to update lesson:", error);
+          setErrorMessages(["An error occurred while saving the lesson."]);
+        } finally {
+          setEnabled(true);
+        }
+      }
 
     function isValid()
     {
@@ -121,7 +145,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
                 </div>
             </div>
 
-            
+
 
 
             <div className={styles.infoScroll}>
@@ -182,7 +206,7 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
                 setItemList={setAssignmentList}
                 />
 
-                <AddFromList 
+                <AddFromList
                     label={"Prerequisite Lessons"}
                     placeholder={"Please select prerequisite lessons"}
                     prerequisites={prerequisites}
@@ -213,16 +237,16 @@ function EditLesson( { instructorList, prerequisiteOptions }) {
 
                 </div>
             </div>
-            
+
             <div className={styles.infoFooter}>
-                <button 
-                    onClick={handleCancel} 
+                <button
+                    onClick={handleCancel}
                     className={styles.smallButton}
                     style={{background: "#beb2a4", marginLeft: "auto"}}
                     >Cancel
                 </button>
-                <button 
-                    onClick={submitForm} 
+                <button
+                    onClick={submitForm}
                     className={styles.smallButton}>
                         Save Change
                 </button>
