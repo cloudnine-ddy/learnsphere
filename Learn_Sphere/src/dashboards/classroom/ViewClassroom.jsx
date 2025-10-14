@@ -34,10 +34,11 @@ function ViewClassroom({ userData }) {
   const [lessons, setLessons] = useState([]);
   const [request, setRequest] = useState([]);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-  const [showEditBlocked, setShowEditBlocked] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [activeMarkStudent, setActiveMarkStudent] = useState(null);
   const [markConfirmation, setMarkConfirmation] = useState(null);
+  const [showMessageBox, setShowMessageBox] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     //Runs on the first render only
@@ -183,6 +184,12 @@ function ViewClassroom({ userData }) {
   }, [userData, classroom]);
 
   const handleDelete = () => {
+    if (classroom.classroom_status === "Published") {
+      setMessage("This classroom is already published. Deleting is not allowed.");
+      setShowMessageBox(true);
+      return;
+    }
+
     deleteClassroom(classroom.classroom_id)
       .then(() => setShowDelete(false))
       .then(() => navigate("/home/classrooms"))
@@ -205,7 +212,8 @@ function ViewClassroom({ userData }) {
 
       console.log("now:", now, "endDate:", endDate);
       if (now < endDate) {
-        setShowEditBlocked(true);
+        setMessage("This classroom has already ended. Editing is not allowed.");
+        setShowMessageBox(true);
         return;
       }
     }
@@ -453,32 +461,42 @@ function ViewClassroom({ userData }) {
               <p className={styles.justTitle}>Students Included:</p>
               {classroom != null ? (
                 classroom.classroom_students?.length > 0 ? (
-                  <div>
-                    {classroom.classroom_students.map((classroom_students) => (
-                      <div
-                        key={classroom_students}
-                        className={styles.tokenField}
-                      >
-                        <span className={styles.token}>
-                          {classroom_students.split(":")[1]}
-                        </span>
-
-                        <button
-                          className={styles.markButton}
-                          onClick={() =>
-                            handleOpenMarkModal(classroom_students)
-                          }
-                        >
-                          Mark
-                        </button>
-                        <button
-                          className={styles.removeButton}
-                          onClick={() => handleRemove(classroom_students)}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    ))}
+                  <div className={styles.tableWrapper}>
+                    <table className={styles.studentTable}>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {classroom.classroom_students.map((entry) => {
+                          const [, rawName = ""] = entry.split(":");
+                          const studentName = rawName.trim() || entry.trim();
+                          return (
+                            <tr key={entry}>
+                              <td>{studentName || "—"}</td>
+                              <td className={styles.tableActions}>
+                                <button
+                                  className={styles.markButton}
+                                  onClick={() => handleOpenMarkModal(entry)}
+                                  type="button"
+                                >
+                                  Mark
+                                </button>
+                                <button
+                                  className={styles.removeButton}
+                                  onClick={() => handleRemove(entry)}
+                                  type="button"
+                                >
+                                  Remove
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 ) : (
                   "No Student"
@@ -494,30 +512,45 @@ function ViewClassroom({ userData }) {
               <p className={styles.justTitle}>Students Waiting For Approval:</p>
               {request != null ? (
                 request?.length > 0 ? (
-                  <div>
-                    {request.map((reqSnap) => {
-                      const data = reqSnap.data();
-                      return (
-                        <div key={reqSnap.id} className={styles.tokenField}>
-                          <span className={styles.token}>
-                            {data.request_student_name.split(":")[1]}
-                          </span>
-
-                          <button
-                            className={styles.approveButton}
-                            onClick={() => handleApprove(data)}
-                          >
-                            Approve
-                          </button>
-                          <button
-                            className={styles.rejectButton}
-                            onClick={() => handleReject(data)}
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      );
-                    })}
+                  <div className={styles.tableWrapper}>
+                    <table className={styles.studentTable}>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {request.map((reqSnap) => {
+                          const data = reqSnap.data();
+                          const [, rawName = ""] = (
+                            data.request_student_name || ""
+                          ).split(":");
+                          const studentName = rawName.trim() || "—";
+                          return (
+                            <tr key={reqSnap.id}>
+                              <td>{studentName || "—"}</td>
+                              <td className={styles.tableActions}>
+                                <button
+                                  className={styles.approveButton}
+                                  onClick={() => handleApprove(data)}
+                                  type="button"
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  className={styles.rejectButton}
+                                  onClick={() => handleReject(data)}
+                                  type="button"
+                                >
+                                  Reject
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 ) : (
                   "No Student"
@@ -587,12 +620,12 @@ function ViewClassroom({ userData }) {
         />
       )}
 
-      {showEditBlocked && (
+      {showMessageBox && (
         <SingleButtonMessageBox
-          label="Editing Not Allowed"
-          message="You cannot edit this classroom until it has ended."
+          label="Action Not Allowed"
+          message={message}
           button="OK"
-          onConfirm={() => setShowEditBlocked(false)}
+          onConfirm={() => setShowMessageBox(false)}
         />
       )}
     </div>

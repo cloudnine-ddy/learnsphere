@@ -11,12 +11,14 @@ function CourseCard({
   instructorName,
   href,
   progress = 75,
+  showProgress = true,
 }) {
   const parsedProgress = Number.isFinite(progress)
     ? progress
     : parseFloat(progress) || 0;
   const clampedProgress = Math.min(100, Math.max(0, parsedProgress));
   const progressPercent = Math.round(clampedProgress);
+  const displayProgress = showProgress;
 
   return (
     <Link to={href}>
@@ -30,20 +32,22 @@ function CourseCard({
           <p className={styles.lessonInstructor}>{instructorName}</p>
         </div>
 
-        <div
-          className={styles.lessonExtraArea}
-          role="progressbar"
-          aria-label="Course progress"
-          aria-valuenow={progressPercent}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          title={`Course progress ${progressPercent}%`}
-        >
+        {displayProgress && (
           <div
-            className={styles.progressFill}
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
+            className={styles.lessonExtraArea}
+            role="progressbar"
+            aria-label="Course progress"
+            aria-valuenow={progressPercent}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            title={`Course progress ${progressPercent}%`}
+          >
+            <div
+              className={styles.progressFill}
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+        )}
       </div>
     </Link>
   );
