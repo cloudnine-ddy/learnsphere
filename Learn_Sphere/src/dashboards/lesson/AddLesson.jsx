@@ -153,6 +153,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
                         setCurrentItem={setCurrentAssignment}
                         itemList={assignmentList}
                         setItemList={setAssignmentList}
+                        multiline
                     />
 
                     <AddFromList
