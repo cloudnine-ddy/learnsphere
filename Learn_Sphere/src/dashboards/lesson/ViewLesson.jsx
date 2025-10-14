@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +13,7 @@ import styles from "./ViewLesson.module.css";
 
 import InfoBlock from "../../components/display/InfoBlock";
 import MessageBox from "../../components/display/MessageBox";
+import SingleButtonMessageBox from "../../components/display/SingleButtonMessageBox";
 
 function ViewLesson({ userData }) {
   let navigate = useNavigate();
@@ -22,6 +23,7 @@ function ViewLesson({ userData }) {
 
   const [showDelete, setShowDelete] = useState(false);
   const markingState = lesson?.markingState ?? "Pass";
+  const [messagebox, setMessageBox] = useState(false);
 
   useEffect(() => {
     //Runs on the first render only
@@ -49,8 +51,10 @@ function ViewLesson({ userData }) {
   }, [userData]);
 
   const handleDelete = () => {
-    console.log(id);
-    console.log(lesson.lessonID);
+    if (lesson.status === "Published"){
+        setMessageBox(true);
+        return;
+    }
     deletePrereqAndCourse(lesson.lessonID, id)
       .then(() => deleteLessonFromDatabase(id))
       .then(() => setShowDelete(false))
@@ -203,6 +207,7 @@ function ViewLesson({ userData }) {
           onConfirm={handleDelete}
         />
       )}
+      { messagebox && <SingleButtonMessageBox label="Action Not Allowed" message="This lesson is already published. Deleting is not allowed." button="OK" onConfirm={() => setMessageBox(false)}/>}
     </div>
   );
 }

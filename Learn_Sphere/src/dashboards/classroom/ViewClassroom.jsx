@@ -34,10 +34,11 @@ function ViewClassroom({ userData }) {
   const [lessons, setLessons] = useState([]);
   const [request, setRequest] = useState([]);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-  const [showEditBlocked, setShowEditBlocked] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [activeMarkStudent, setActiveMarkStudent] = useState(null);
   const [markConfirmation, setMarkConfirmation] = useState(null);
+  const [showMessageBox, setShowMessageBox] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     //Runs on the first render only
@@ -183,6 +184,12 @@ function ViewClassroom({ userData }) {
   }, [userData, classroom]);
 
   const handleDelete = () => {
+    if (classroom.classroom_status === "Published") {
+      setMessage("This classroom is already published. Deleting is not allowed.");
+      setShowMessageBox(true);
+      return;
+    }
+
     deleteClassroom(classroom.classroom_id)
       .then(() => setShowDelete(false))
       .then(() => navigate("/home/classrooms"))
@@ -205,7 +212,8 @@ function ViewClassroom({ userData }) {
 
       console.log("now:", now, "endDate:", endDate);
       if (now < endDate) {
-        setShowEditBlocked(true);
+        setMessage("This classroom has already ended. Editing is not allowed.");
+        setShowMessageBox(true);
         return;
       }
     }
@@ -587,12 +595,12 @@ function ViewClassroom({ userData }) {
         />
       )}
 
-      {showEditBlocked && (
+      {showMessageBox && (
         <SingleButtonMessageBox
-          label="Editing Not Allowed"
-          message="You cannot edit this classroom until it has ended."
+          label="Action Not Allowed"
+          message={message}
           button="OK"
-          onConfirm={() => setShowEditBlocked(false)}
+          onConfirm={() => setShowMessageBox(false)}
         />
       )}
     </div>

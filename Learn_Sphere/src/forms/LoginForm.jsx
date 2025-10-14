@@ -48,6 +48,7 @@ function LoginForm({ showError, setShowError }) {
         console.log(user);
         if (user) {
           console.log("User signed in:", user); // Debugging log
+          console.log("User ID:", user.id);
           navigate("/home");
           console.log(username, password, errorMessages);
         }

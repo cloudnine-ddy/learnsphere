@@ -133,7 +133,8 @@ function AddClassroom({
       )
     );
 
-    getListOfStudentsFromCourse(courseDoc.id)
+    // getListOfStudentsFromCourse(courseDoc.id)
+    getListOfStudentsFromCourse(courseId)
       .then((students) => setValidStudentOptions(students.map((s) => s.data())))
       .catch(console.error);
   };
