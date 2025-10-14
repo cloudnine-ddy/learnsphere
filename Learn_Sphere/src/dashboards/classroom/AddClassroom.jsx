@@ -52,10 +52,11 @@ function AddClassroom({
           2,
           "0"
         )}/${String(end.getMonth() + 1).padStart(2, "0")}/${end.getFullYear()}`;
+        setFormattedEndDate(formattedEnd);
 
         setClassroom((prev) => ({
           ...prev,
-          classroom_endDate: formattedEnd,
+          classroom_endDate: end,
         }));
       } else {
         setClassroom((prev) => ({
@@ -77,6 +78,7 @@ function AddClassroom({
   const [validStudentOptions, setValidStudentOptions] = useState([]);
   const [userData, setUserData] = useState(null);
   const [publishedCourses, setPublishedCourses] = useState([]);
+  const [formattedEndDate, setFormattedEndDate] = useState("");
 
   const [classroomLessons, setClassroomLessons] = useState([]);
   const [classroomStudents, setClassroomStudents] = useState([]);
@@ -391,7 +393,7 @@ function AddClassroom({
           />
 
           <p className={styles.justTitle}>
-            Classroom End Date: {classroom.classroom_endDate || "N/A"}
+            Classroom End Date: {formattedEndDate || "N/A"}
           </p>
 
           <SelectOneFromList

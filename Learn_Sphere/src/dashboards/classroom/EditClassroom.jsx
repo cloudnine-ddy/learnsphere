@@ -114,9 +114,8 @@ function EditClassroom({
 
       const end = new Date(start);
       end.setDate(start.getDate() + durationWeeks * 7);
-
-      const formattedEnd = end.toISOString().split("T")[0];
-      setClassroom((prev) => ({ ...prev, classroom_endDate: formattedEnd }));
+      
+      setClassroom((prev) => ({ ...prev, classroom_endDate: end.toISOString() }));
     }
   }, [classroom.classroom_startDate, classroom.classroom_durationWeeks]);
 
@@ -163,7 +162,7 @@ function EditClassroom({
         classroom_course: classroom.classroom_course,
         classroom_instructor: classroom.classroom_instructor,
         classroom_status: classroom.classroom_status,
-        classroom_startDate: classroom.classroom_startDate,
+        classroom_startDate: new Date(classroom.classroom_startDate).toISOString(),
         classroom_durationWeeks: classroom.classroom_durationWeeks,
         classroom_lessons: classroomLessons,
         classroom_students: classroomStudents,
@@ -302,7 +301,7 @@ function EditClassroom({
           />
 
           <p className={styles.justTitle}>
-            Classroom End Date: {classroom.classroom_endDate || "N/A"}
+            Classroom End Date: {classroom.classroom_endDate.split("T")[0] || "N/A"}
           </p>
 
           <AddFromList

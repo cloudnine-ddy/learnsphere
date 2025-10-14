@@ -20,6 +20,7 @@ export async function addClassroomsToDatabase(
 
     // Convert the startDate to a Date object
     const start = new Date(classroomStartDate);
+    const end = new Date(classroomEndDate);
 
     if (user != null && userinfo.role !== "student") {
         const classroomData = {
@@ -35,7 +36,7 @@ export async function addClassroomsToDatabase(
             classroom_createdDate: new Date().toISOString(),
             classroom_updatedDate: new Date().toISOString(),
             classroom_status: classroomStatus,
-            classroom_endDate: classroomEndDate,
+            classroom_endDate: end.toISOString(),
         };
 
         try {
