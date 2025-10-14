@@ -87,6 +87,15 @@ function ViewCourse({ userData }) {
   }, [course, userData]);
 
   const handleDelete = () => {
+    if (course.courseStatus === "Published"){
+        setMessage("This course is already published. Deleting is not allowed.");
+        setShowMessageBox(true);
+        return;
+    }
+
+    console.log(course.courseStatus)
+
+
     deleteCourses(course.courseID)
       .then(() => deleteClassroomsByCourse(course.courseID))
       .then(() => setShowDelete(false))
@@ -301,7 +310,7 @@ function ViewCourse({ userData }) {
 
       {showMessageBox && (
         <SingleButtonMessageBox
-          label="Edit Disabled"
+          label="Action Not Allowed"
           message={message}
           button="OK"
           onConfirm={() => setShowMessageBox(false)}
