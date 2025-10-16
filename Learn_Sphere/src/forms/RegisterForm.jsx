@@ -107,7 +107,6 @@ function RegisterForm({ selectedRole }) {
     <form
       className={styles.infoSection}
       onSubmit={submitForm}
-      disabled={!isEnabled}
     >
       <div className={styles.infoHeader}>
         <h1 className={styles.infoTitle}>Sign Up</h1>
@@ -132,6 +131,7 @@ function RegisterForm({ selectedRole }) {
           placeholder="Enter first name"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
+          isEnabled={isEnabled}
         />
         <InputField
           label="Last Name"
@@ -139,6 +139,7 @@ function RegisterForm({ selectedRole }) {
           placeholder="Enter last name"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
+          isEnabled={isEnabled}
         />
         <InputField
           label="Email"
@@ -146,6 +147,7 @@ function RegisterForm({ selectedRole }) {
           placeholder="Enter email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          isEnabled={isEnabled}
         />
 
         <PasswordField
@@ -168,15 +170,16 @@ function RegisterForm({ selectedRole }) {
           placeholder="Enter token"
           value={token}
           onChange={(e) => setToken(e.target.value)}
+          isEnabled={isEnabled}
         />
       </div>
 
       <div className={styles.infoFooter}>
         <TermsCheckbox />
-        <Button type="submit" label="Register" />
+        <Button type="submit" label="Register" isEnabled={isEnabled}/>
         <ErrorMessage messages={errorMessages} />
         <div className={styles.haveAccount}>
-          Have an account?<a href="/login"> Login Here</a>
+          Have an account?<a href="/login" isEnabled={isEnabled}> Login Here</a>
         </div>
       </div>
     </form>

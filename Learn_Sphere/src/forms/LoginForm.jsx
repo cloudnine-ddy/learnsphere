@@ -68,7 +68,6 @@ function LoginForm({ showError, setShowError }) {
     <form
       onSubmit={submitForm}
       className={styles.infoFooter}
-      disabled={!isEnabled}
     >
       <div className={styles.infoSection}>
         <div className={styles.infoHeader}>
@@ -82,6 +81,7 @@ function LoginForm({ showError, setShowError }) {
             placeholder="Enter email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            isEnabled={isEnabled}
           />
           <PasswordField
             label="Password"
@@ -103,9 +103,9 @@ function LoginForm({ showError, setShowError }) {
         </div>
 
         <div className={styles.infoFooter}>
-          <Button type="submit" label="Login" />
+          <Button type="submit" label="Login" isEnabled={isEnabled}/>
           <div className={styles.noAccount}>
-            No account?<a href="/reg"> Sign Up</a>
+            No account?<a href="/reg" isEnabled={isEnabled}> Sign Up</a>
           </div>
         </div>
       </div>

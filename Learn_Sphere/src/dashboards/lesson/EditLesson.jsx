@@ -121,7 +121,6 @@ function EditLesson({ instructorList, prerequisiteOptions }) {
   }
 
   const handleLessonChange = (e) => {
-    e.target.disabled = true;
     const { name, value } = e.target;
     setLesson((prev) => ({ ...prev, [name]: value }));
 
@@ -131,7 +130,7 @@ function EditLesson({ instructorList, prerequisiteOptions }) {
   };
 
   return (
-    <div className={styles.wrapper} disabled={!isEnabled}>
+    <div className={styles.wrapper}>
       <div className={styles.infoHeader}>
         <div className={styles.infoTitle}>Edit Lesson</div>
       </div>
@@ -146,6 +145,7 @@ function EditLesson({ instructorList, prerequisiteOptions }) {
             value={lesson.lessonId}
             onChange={handleLessonChange}
             required
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -156,6 +156,7 @@ function EditLesson({ instructorList, prerequisiteOptions }) {
             value={lesson.title}
             onChange={handleLessonChange}
             required
+            isEnabled={isEnabled}
           />
 
           <TextArea
@@ -165,6 +166,7 @@ function EditLesson({ instructorList, prerequisiteOptions }) {
             name="description"
             value={lesson.description}
             onChange={handleLessonChange}
+            isEnabled={isEnabled}
           />
 
           <AddToList
@@ -174,6 +176,7 @@ function EditLesson({ instructorList, prerequisiteOptions }) {
             setCurrentItem={setCurrentObjectives}
             itemList={objectives}
             setItemList={setObjectives}
+            isEnabled={isEnabled}
           />
 
           <AddToList
@@ -183,6 +186,7 @@ function EditLesson({ instructorList, prerequisiteOptions }) {
             setCurrentItem={setCurrentBook}
             itemList={readingList}
             setItemList={setReadingList}
+            isEnabled={isEnabled}
           />
 
           <AddToList
@@ -193,6 +197,7 @@ function EditLesson({ instructorList, prerequisiteOptions }) {
             itemList={assignmentList}
             setItemList={setAssignmentList}
             multiline
+            isEnabled={isEnabled}
           />
 
           <AddFromList
@@ -203,6 +208,7 @@ function EditLesson({ instructorList, prerequisiteOptions }) {
             prerequisiteOptions={prerequisiteOptions.map(
               (option) => `${option.data().lessonID}: ${option.data().title}`
             )}
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -214,6 +220,7 @@ function EditLesson({ instructorList, prerequisiteOptions }) {
             onChange={handleLessonChange}
             min="0"
             required
+            isEnabled={isEnabled}
           />
 
           <SelectOneFromList
@@ -227,12 +234,14 @@ function EditLesson({ instructorList, prerequisiteOptions }) {
               )
             )}
             onChange={handleLessonChange}
+            isEnabled={isEnabled}
           />
           <SelectStatus
             name="status"
             label="Status"
             object={lesson}
             onChange={handleLessonChange}
+            isEnabled={isEnabled}
           />
         </div>
       </div>
@@ -242,10 +251,11 @@ function EditLesson({ instructorList, prerequisiteOptions }) {
           onClick={handleCancel}
           className={styles.smallButton}
           style={{ background: "#beb2a4", marginLeft: "auto" }}
+          isEnabled={isEnabled}
         >
           Cancel
         </button>
-        <button onClick={submitForm} className={styles.smallButton}>
+        <button onClick={submitForm} className={styles.smallButton} isEnabled={isEnabled}>
           Save Change
         </button>
         {errorMessages.length > 0 && (

@@ -315,7 +315,7 @@ function AddClassroom({
   const footerWrapperClass = styles.infoFooter || "";
 
   return (
-    <div className={styles.wrapper} disabled={!isEnabled}>
+    <div className={styles.wrapper}>
       <div className={styles.infoHeader}>
         <div className={styles.infoTitle}>Add Classroom</div>
       </div>
@@ -329,6 +329,7 @@ function AddClassroom({
             value={classroom.classroom_id}
             onChange={handleClassroomChange}
             required
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -338,6 +339,7 @@ function AddClassroom({
             value={classroom.classroom_name}
             onChange={handleClassroomChange}
             required
+            isEnabled={isEnabled}
           />
 
           <SelectOneFromList
@@ -347,6 +349,7 @@ function AddClassroom({
             list={classroomCourseOptions}
             onChange={handleClassroomChange}
             required
+            isEnabled={isEnabled}
           />
 
           <TextArea
@@ -356,6 +359,7 @@ function AddClassroom({
             name="classroom_description"
             value={classroom.classroom_description}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
 
           <AddFromList
@@ -364,6 +368,7 @@ function AddClassroom({
             prerequisites={classroomLessons}
             setPrerequisites={setClassroomLessons}
             prerequisiteOptions={classroomLessonOptions}
+            isEnabled={isEnabled}
           />
 
           <AddFromList
@@ -372,6 +377,7 @@ function AddClassroom({
             prerequisites={classroomStudents}
             setPrerequisites={setClassroomStudents}
             prerequisiteOptions={classroomStudentOptions}
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -381,6 +387,7 @@ function AddClassroom({
             value={classroom.classroom_startDate}
             onChange={handleClassroomChange}
             required
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -390,6 +397,7 @@ function AddClassroom({
             value={classroom.classroom_durationWeeks}
             onChange={handleClassroomChange}
             min={1}
+            isEnabled={isEnabled}
           />
 
           <p className={styles.justTitle}>
@@ -403,6 +411,7 @@ function AddClassroom({
             list={classroom_instructorOptions}
             onChange={handleClassroomChange}
             required
+            isEnabled={isEnabled}
           />
 
           <SelectStatus
@@ -410,6 +419,7 @@ function AddClassroom({
             name="classroom_status"
             object={classroom}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
         </div>
       </div>
@@ -420,6 +430,7 @@ function AddClassroom({
             type="button"
             className={styles.backButton}
             onClick={handleBack}
+            isEnabled={isEnabled}
           >
             <img
               src="images/icons/goback.png"
@@ -428,7 +439,7 @@ function AddClassroom({
             />
             <span>Back</span>
           </button>
-          <Button onClick={submitForm} label="Add" />
+          <Button onClick={submitForm} label="Add" isEnabled={isEnabled}/>
         </div>
 
         {errorMessages.length > 0 && (

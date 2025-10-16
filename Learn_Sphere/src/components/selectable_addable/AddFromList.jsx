@@ -8,6 +8,7 @@ function AddFromList({
   prerequisites,
   setPrerequisites,
   prerequisiteOptions,
+  isEnabled=true
 }) {
   const handleAdd = (e) => {
     const selected = e.target.value;
@@ -28,7 +29,7 @@ function AddFromList({
       <label className={styles.label}>{label}</label>
 
       <div className={styles.addingPart}>
-        <select onChange={handleAdd} defaultValue="">
+        <select onChange={handleAdd} defaultValue="" isEnabled={isEnabled}>
           <option value="" disabled>
             {placeholder}
           </option>
@@ -47,6 +48,7 @@ function AddFromList({
             <button
               className={styles.deleteButton}
               onClick={() => handleDelete(prereq)}
+              isEnabled={isEnabled}
             >
               Delete
             </button>

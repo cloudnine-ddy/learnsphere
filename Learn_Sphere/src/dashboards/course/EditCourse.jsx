@@ -134,7 +134,7 @@ function EditCourse({ instructorList, prerequisiteOptions }) {
   };
 
   return (
-    <div className={styles.wrapper} disabled={!isEnabled}>
+    <div className={styles.wrapper}>
       <div className={styles.infoHeader}>
         <div className={styles.infoTitle}>Edit Course</div>
       </div>
@@ -149,6 +149,7 @@ function EditCourse({ instructorList, prerequisiteOptions }) {
             value={course.courseID}
             onChange={handleCourseChange}
             required
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -159,6 +160,7 @@ function EditCourse({ instructorList, prerequisiteOptions }) {
             value={course.courseTitle}
             onChange={handleCourseChange}
             required
+            isEnabled={isEnabled}
           />
 
           <TextArea
@@ -168,6 +170,7 @@ function EditCourse({ instructorList, prerequisiteOptions }) {
             name="courseDescription"
             value={course.courseDescription}
             onChange={handleCourseChange}
+            isEnabled={isEnabled}
           />
 
           <AddFromList
@@ -178,6 +181,7 @@ function EditCourse({ instructorList, prerequisiteOptions }) {
             prerequisiteOptions={publishedLessons.map(
               (option) => `${option.data().lessonID}: ${option.data().title}`
             )}
+            isEnabled={isEnabled}
           />
           <p
             className={styles.justTitle}
@@ -195,12 +199,14 @@ function EditCourse({ instructorList, prerequisiteOptions }) {
               )
             )}
             onChange={handleCourseChange}
+            isEnabled={isEnabled}
           />
           <SelectStatus
             name="courseStatus"
             label="Status"
             object={course}
             onChange={handleCourseChange}
+            isEnabled={isEnabled}
           />
         </div>
       </div>
@@ -210,10 +216,11 @@ function EditCourse({ instructorList, prerequisiteOptions }) {
           onClick={handleCancel}
           className={styles.smallButton}
           style={{ background: "#beb2a4", marginLeft: "auto" }}
+          isEnabled={isEnabled}
         >
           Cancel
         </button>
-        <button onClick={submitForm} className={styles.smallButton}>
+        <button onClick={submitForm} className={styles.smallButton} isEnabled={isEnabled}>
           Save Change
         </button>
         {errorMessages.length > 0 && (

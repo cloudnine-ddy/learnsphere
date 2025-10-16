@@ -238,7 +238,7 @@ function EditClassroom({
   }, [validStudentOptions]);
 
   return (
-    <div className={styles.wrapper} disabled={!isEnabled}>
+    <div className={styles.wrapper}>
       <div className={styles.infoHeader}>
         <div className={styles.infoTitle}>Edit Classroom</div>
       </div>
@@ -251,6 +251,7 @@ function EditClassroom({
             name="classroom_id"
             value={classroom.classroom_id}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -259,6 +260,7 @@ function EditClassroom({
             name="classroom_name"
             value={classroom.classroom_name}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
 
           <TextArea
@@ -268,6 +270,7 @@ function EditClassroom({
             name="classroom_description"
             value={classroom.classroom_description}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
 
           <SelectOneFromList
@@ -279,6 +282,7 @@ function EditClassroom({
                 `${instructor.title} ${instructor.firstName} ${instructor.lastName}`
             )}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -288,6 +292,7 @@ function EditClassroom({
             type="date"
             value={classroom.classroom_startDate}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -298,6 +303,7 @@ function EditClassroom({
             value={classroom.classroom_durationWeeks}
             onChange={handleClassroomChange}
             min={1}
+            isEnabled={isEnabled}
           />
 
           <p className={styles.justTitle}>
@@ -312,6 +318,7 @@ function EditClassroom({
             prerequisiteOptions={lessons.map(
               (lesson) => `${lesson.data().lessonID}: ${lesson.data().title}`
             )}
+            isEnabled={isEnabled}
           />
 
           <AddFromList
@@ -320,6 +327,7 @@ function EditClassroom({
             prerequisites={classroomStudents}
             setPrerequisites={setClassroomStudents}
             prerequisiteOptions={classroomStudentOptions}
+            isEnabled={isEnabled}
           />
 
           <SelectStatus
@@ -327,6 +335,7 @@ function EditClassroom({
             label="Status"
             object={classroom}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
         </div>
       </div>
@@ -335,10 +344,11 @@ function EditClassroom({
           onClick={handleCancel}
           className={styles.smallButton}
           style={{ background: "#beb2a4", marginLeft: "auto" }}
+          isEnabled={isEnabled}
         >
           Cancel
         </button>
-        <button onClick={submitForm} className={styles.smallButton}>
+        <button onClick={submitForm} className={styles.smallButton} isEnabled={isEnabled}>
           Save Change
         </button>
         {errorMessages.length > 0 && (
