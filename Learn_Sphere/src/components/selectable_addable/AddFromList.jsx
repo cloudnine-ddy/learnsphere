@@ -29,7 +29,7 @@ function AddFromList({
       <label className={styles.label}>{label}</label>
 
       <div className={styles.addingPart}>
-        <select onChange={handleAdd} defaultValue="" isEnabled={isEnabled}>
+        <select onChange={handleAdd} defaultValue="" disabled={!isEnabled}>
           <option value="" disabled>
             {placeholder}
           </option>
@@ -48,7 +48,7 @@ function AddFromList({
             <button
               className={styles.deleteButton}
               onClick={() => handleDelete(prereq)}
-              isEnabled={isEnabled}
+              disabled={!isEnabled}
             >
               Delete
             </button>

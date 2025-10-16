@@ -8,7 +8,7 @@ function SelectStatus({ label, object, name, onChange, isEnabled=true }) {
       <label className={styles.label}>{label}</label>
 
       <div className={styles.selectingPart}>
-        <select name={name} value={object[name]} onChange={onChange} isEnabled={isEnabled}>
+        <select name={name} value={object[name]} onChange={onChange} disabled={!isEnabled}>
           <option value=""></option>
           <option value="Draft">Draft</option>
           <option value="Published">Published</option>

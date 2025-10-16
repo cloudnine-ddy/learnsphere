@@ -59,7 +59,7 @@ function AddToList({
           }`}
           type="button"
           onClick={handleAddItem}
-          isEnabled={isEnabled}
+          disabled={!isEnabled}
         >
           Add
         </button>
@@ -73,7 +73,7 @@ function AddToList({
               className={styles.deleteButton}
               onClick={() => handleDelete(item)}
               type="button"
-              isEnabled={isEnabled}
+              disabled={!isEnabled}
             >
               Delete
             </button>

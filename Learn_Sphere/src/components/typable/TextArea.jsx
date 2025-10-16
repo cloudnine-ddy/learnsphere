@@ -26,7 +26,7 @@ function TextArea({
           value={value}
           onChange={onChange}
           required
-          isEnabled={isEnabled}
+          disabled={!isEnabled}
         />
       </div>
     </div>

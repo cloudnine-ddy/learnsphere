@@ -28,7 +28,7 @@ function InputField({
           value={value}
           onChange={onChange}
           min={min}
-          isEnabled={isEnabled}
+          disabled={!isEnabled}
           required
         />
       </div>

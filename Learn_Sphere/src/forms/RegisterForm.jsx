@@ -121,6 +121,7 @@ function RegisterForm({ selectedRole }) {
             value={role}
             onChange={setRole}
             options={roles}
+            isEnabled={isEnabled}
           />
         ) : (
           false
