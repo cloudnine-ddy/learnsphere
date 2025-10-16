@@ -22,6 +22,7 @@ import SingleButtonMessageBox from "../../components/display/SingleButtonMessage
 import LessonCard from "../../components/clickable/LessonCard";
 import { deleteCourses } from "../../components/deleteCourses";
 import { deleteClassroomsByCourse } from "../../components/deleteClassroom";
+import { calculateStudentProgress } from "../../components/studentLesson";
 
 function ViewCourse({ userData }) {
   let navigate = useNavigate();
@@ -34,7 +35,7 @@ function ViewCourse({ userData }) {
   const [showMessageBox, setShowMessageBox] = useState(false);
   const [message, setMessage] = useState("");
   const [isEnrolled, setIsEnrolled] = useState(false);
-  const courseProgress = 75;
+  const [courseProgress, setCourseProgress] = useState(0);
 
   useEffect(() => {
     if (userData?.role === "student" && course) {
@@ -82,9 +83,19 @@ function ViewCourse({ userData }) {
         )
       ).then((results) => {
         setLessons(results.filter(Boolean)); // remove nulls
-      });
+      })
     }
   }, [course, userData]);
+
+  useEffect(() => {
+    if (userData != null && lessons != null && lessons.length >= 1) {
+      let lessonCodes = lessons.map((lesson) => {return lesson.data().lessonID});
+      calculateStudentProgress(userData.id, lessonCodes)
+      .then((progress) => {
+        setCourseProgress(progress.toFixed(2)); // remove nulls
+      })
+    }
+  }, [course, lessons])
 
   const handleDelete = () => {
     if (course.courseStatus === "Published"){

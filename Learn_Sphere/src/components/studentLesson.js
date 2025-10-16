@@ -448,3 +448,35 @@ export async function handleStudentLessonMarking(studentID, classroom, lessonID,
     throw "Invalid studentID or lessonID!";
   }
 }
+
+export async function calculateStudentProgress(studentID, lessons)
+{
+  try
+  {
+    let studentLessonQuery = query(
+      collection(db, "student_lesson"),
+      where("student_lesson_studentID", "==", studentID),
+      where("student_lesson_lessonID", "in", lessons)
+    );
+
+    let studentLessonSnapshot = await getDocs(studentLessonQuery);
+
+    let studentLessons = studentLessonSnapshot.docs;
+    let total = studentLessons.length;
+    let passed = 0;
+
+    for (let i = 0; i < total; i++)
+    {
+      if (studentLessons[i].data().student_lesson_passFail == "pass")
+      {
+        passed += 1;
+      }
+    }
+
+    return (passed / total * 100);
+  }
+  catch (error) {
+    console.error("Error calculating student progress:", error);
+    throw error;
+  }
+}
