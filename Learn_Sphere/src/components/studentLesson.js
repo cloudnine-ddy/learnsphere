@@ -51,7 +51,7 @@ export async function getStudentLesson(studentID, lessonID) {
 
     const studentLessonSnapshot = await getDocs(studentLessonQuery);
 
-    return studentLessonSnapshot
+    return studentLessonSnapshot.docs;
   } 
   catch (error) {
     console.error("Error fetching studentLesson:", error);

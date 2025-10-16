@@ -13,7 +13,7 @@ function SelectOneFromList({ label, object, name, list, onChange, required, isEn
           value={object[name]}
           onChange={onChange}
           required={required}
-          disabled={isEnabled}
+          disabled={!isEnabled}
         >
           {list.map((user, idx) => (
             <option key={idx} value={user}>
