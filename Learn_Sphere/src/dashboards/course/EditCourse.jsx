@@ -79,7 +79,7 @@ function EditCourse({ instructorList, prerequisiteOptions }) {
       const lesson = publishedLessons.find(
         (lesson) => lesson.data().lessonID == lessonid
       );
-      return lesson ? sum + (lesson.data().creditPoint || 0) : sum;
+      return lesson ? sum + Number(lesson.data().creditPoint || 0) : sum;
     }, 0);
 
     setCourse((prev) => ({
