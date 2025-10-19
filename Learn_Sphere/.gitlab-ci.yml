@@ -1,0 +1,17 @@
+# .gitlab-ci.yml
+image: node:20
+
+pages:
+  stage: deploy
+  cache:
+    paths:
+      - node_modules/
+  script:
+    - npm ci
+    - npm run build
+    - mv dist public   # Pages 会发布 public 目录
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"   # 如果你用的是 master，就改成 "master"
