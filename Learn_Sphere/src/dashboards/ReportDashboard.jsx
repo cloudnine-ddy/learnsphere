@@ -224,16 +224,19 @@ function ReportDashboard({ userData }) {
               <ReportSquare
                 title={"Active Lesson"}
                 number={formatCount(lessonStats.active, loading)}
+                variant={"active"}
                 description={"Current running"}
               />
               <ReportSquare
                 title={"Draft Lesson"}
                 number={formatCount(lessonStats.draft, loading)}
+                variant={"draft"}
                 description={"Not yet published"}
               />
               <ReportSquare
                 title={"Archive Lesson"}
                 number={formatCount(lessonStats.archived, loading)}
+                variant={"archived"}
                 description={"Inactive"}
               />
               <ReportSquare
@@ -255,16 +258,19 @@ function ReportDashboard({ userData }) {
               <ReportSquare
                 title={"Active Course"}
                 number={formatCount(courseStats.active, loading)}
+                variant={"active"}
                 description={"Current running"}
               />
               <ReportSquare
                 title={"Draft Course"}
                 number={formatCount(courseStats.draft, loading)}
+                variant={"draft"}
                 description={"Not yet published"}
               />
               <ReportSquare
                 title={"Archive Course"}
                 number={formatCount(courseStats.archived, loading)}
+                variant={"archived"}
                 description={"Inactive"}
               />
               <ReportSquare
@@ -286,16 +292,19 @@ function ReportDashboard({ userData }) {
               <ReportSquare
                 title={"Active Classroom"}
                 number={formatCount(classroomStats.active, loading)}
+                variant={"active"}
                 description={"Current running"}
               />
               <ReportSquare
                 title={"Draft Classroom"}
                 number={formatCount(classroomStats.draft, loading)}
+                variant={"draft"}
                 description={"Not yet published"}
               />
               <ReportSquare
                 title={"Archive Classroom"}
                 number={formatCount(classroomStats.archived, loading)}
+                variant={"archived"}
                 description={"Inactive"}
               />
               <ReportSquare
