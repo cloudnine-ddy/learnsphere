@@ -14,4 +14,4 @@ pages:
     paths:
       - public
   rules:
-    - if: $CI_COMMIT_BRANCH == "main"   # 如果你用的是 master，就改成 "master"
+    - if: $CI_COMMIT_BRANCH == "courseFrontEnd"   # 如果你用的是 master，就改成 "master"
