@@ -17,7 +17,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home/*" element={<DashboardPage />} />
         <Route path="/byebye" element={<ByeBye />} />
-        <Route path="/focus" element={<FocusPage totalTime="10" />} />
+        <Route path="/focus" element={<FocusPage />} />
       </Routes>
     </BrowserRouter>
   );
