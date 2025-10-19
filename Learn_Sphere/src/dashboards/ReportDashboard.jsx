@@ -1,146 +1,277 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 
 import { getLessons } from "../components/getLessons";
+import { getCourses } from "../components/getCourses";
+import { getClassrooms } from "../components/getClassroom";
 
 import styles from "./ReportDashboard.module.css";
-import { getListOfLessonsFromStudent } from "../components/studentLesson";
-
-import FilterDropdown from "../components/selectable_addable/FilterDropdown";
-import LessonCard from "../components/clickable/LessonCard";
 import ReportSquare from "../components/display/reportSquare";
 
-const INSTRUCTOR_MY_LESSONS = "INSTRUCTOR_MY_LESSONS";
+const EMPTY_STATS = { total: 0, active: 0, archived: 0, average: 0 };
 
+function snapshotData(docSnap) {
+  return typeof docSnap?.data === "function" ? docSnap.data() : docSnap || {};
+}
 
+function calculateLessonStats(snapshots) {
+  const total = snapshots.length;
+  let active = 0;
+  let archived = 0;
+  let creditSum = 0;
+
+  snapshots.forEach((docSnap) => {
+    const data = snapshotData(docSnap);
+    const status = data?.status;
+
+    if (status === "Published") {
+      active += 1;
+    }
+    if (status === "Archived") {
+      archived += 1;
+    }
+
+    const credit = Number(data?.creditPoint);
+    if (!Number.isNaN(credit)) {
+      creditSum += credit;
+    }
+  });
+
+  return {
+    total,
+    active,
+    archived,
+    average: total > 0 ? creditSum / total : 0,
+  };
+}
+
+function calculateCourseStats(snapshots) {
+  const total = snapshots.length;
+  let active = 0;
+  let archived = 0;
+  let creditSum = 0;
+
+  snapshots.forEach((docSnap) => {
+    const data = snapshotData(docSnap);
+    const status = data?.courseStatus;
+
+    if (status === "Published") {
+      active += 1;
+    }
+    if (status === "Archived") {
+      archived += 1;
+    }
+
+    const credit = Number(
+      data?.courseTotalCreditpoint ?? data?.courseTotalCreditPoint
+    );
+    if (!Number.isNaN(credit)) {
+      creditSum += credit;
+    }
+  });
+
+  return {
+    total,
+    active,
+    archived,
+    average: total > 0 ? creditSum / total : 0,
+  };
+}
+
+function calculateClassroomStats(snapshots) {
+  const total = snapshots.length;
+  let active = 0;
+  let archived = 0;
+  let studentCount = 0;
+
+  snapshots.forEach((docSnap) => {
+    const data = snapshotData(docSnap);
+    const status = data?.classroom_status;
+
+    if (status === "Published") {
+      active += 1;
+    }
+    if (status === "Archived") {
+      archived += 1;
+    }
+
+    const students = Array.isArray(data?.classroom_students)
+      ? data.classroom_students.filter(Boolean).length
+      : 0;
+    studentCount += students;
+  });
+
+  return {
+    total,
+    active,
+    archived,
+    average: total > 0 ? studentCount / total : 0,
+  };
+}
+
+function formatCount(value, loading) {
+  if (loading) {
+    return "...";
+  }
+
+  return Number.isFinite(value) ? value.toLocaleString() : "0";
+}
+
+function formatAverage(value, loading) {
+  if (loading) {
+    return "...";
+  }
+
+  if (!Number.isFinite(value) || value === 0) {
+    return "0";
+  }
+
+  return value % 1 === 0 ? value.toLocaleString() : value.toFixed(1);
+}
 
 function ReportDashboard({ userData }) {
-    // const [filter, setFilter] = useState(true);
-    // const [label, setLabel] = useState("All Lessons");
-    // const [lessons, setLessons] = useState([]);
+  const [lessonStats, setLessonStats] = useState({ ...EMPTY_STATS });
+  const [courseStats, setCourseStats] = useState({ ...EMPTY_STATS });
+  const [classroomStats, setClassroomStats] = useState({ ...EMPTY_STATS });
+  const [loading, setLoading] = useState(false);
 
-    // const instructorDisplayName = useMemo(() => {
-    //     if (!userData || userData.role === "student") {
-    //         return "";
-    //     }
+  useEffect(() => {
+    if (!userData) {
+      setLessonStats({ ...EMPTY_STATS });
+      setCourseStats({ ...EMPTY_STATS });
+      setClassroomStats({ ...EMPTY_STATS });
+      return;
+    }
 
-    //     const parts = [userData.title, userData.firstName, userData.lastName].filter(Boolean);
-    //     return parts.join(" ").replace(/\s+/g, " ").trim();
-    // }, [userData]);
+    let cancelled = false;
+    setLoading(true);
 
-    // useEffect(() => {
-    //     if (!userData) {
-    //         setLessons([]);
-    //         return;
-    //     }
+    async function loadReportData() {
+      try {
+        const [lessonDocs, courseDocs, classroomDocs] = await Promise.all([
+          getLessons(true, userData),
+          getCourses(true, userData),
+          getClassrooms(true, userData),
+        ]);
 
-    //     let cancelled = false;
+        if (cancelled) {
+          return;
+        }
 
-    //     async function loadLessons() {
-    //         try {
-    //             let fetchedLessons = [];
+        setLessonStats(calculateLessonStats(lessonDocs));
+        setCourseStats(calculateCourseStats(courseDocs));
+        setClassroomStats(calculateClassroomStats(classroomDocs));
+      } catch (error) {
+        console.error("Failed to load report data:", error);
+        if (!cancelled) {
+          setLessonStats({ ...EMPTY_STATS });
+          setCourseStats({ ...EMPTY_STATS });
+          setClassroomStats({ ...EMPTY_STATS });
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
 
-    //             if (userData.role === "student") {
-    //                 fetchedLessons = await getListOfLessonsFromStudent(userData.id);
-    //             } else if (filter === INSTRUCTOR_MY_LESSONS) {
-    //                 if (!instructorDisplayName) {
-    //                     setLessons([]);
-    //                     return;
-    //                 }
-    //                 fetchedLessons = await getLessons(true, userData, { ownerName: instructorDisplayName });
-    //             } else {
-    //                 fetchedLessons = await getLessons(filter, userData);
-    //             }
+    loadReportData();
 
-    //             if (!cancelled) {
-    //                 setLessons(fetchedLessons);
-    //             }
-    //         } catch (error) {
-    //             console.error("Failed to load lessons:", error);
-    //             if (!cancelled) {
-    //                 setLessons([]);
-    //             }
-    //         }
-    //     }
-
-    //     loadLessons();
-
-    //     return () => {
-    //         cancelled = true;
-    //     };
-    // }, [filter, userData, instructorDisplayName]);
-
-    const changeEvent = (event, state) => {
-        event.preventDefault();
-        setFilter(state);
-        setLabel(event.target.text);
+    return () => {
+      cancelled = true;
     };
+  }, [userData]);
 
-    // const instructorOptions = [
-    //     { label: "All Lessons", state: true },
-    //     { label: "My Lessons", state: INSTRUCTOR_MY_LESSONS },
-    //     { label: "Draft", state: "Draft" },
-    //     { label: "Published", state: "Published" },
-    //     { label: "Archived", state: "Archived" }
-    // ];
-
-    // const studentOptions = [
-    //     { label: "All Lessons", state: true }
-    // ];
-
-    // const filterOptions = userData?.role === "student" ? studentOptions : instructorOptions;
-
-    return (
-        <div className={styles.wrapper}>
-            <div className={styles.infoHeader}>
-                <div className={styles.infoTitleRow}>
-                    <div className={styles.infoTitle}>Report</div>
-                </div>
-            </div>
-            <div className={styles.infoScroll}>
-                <div className={styles.rowContainer}>
-                    <div className={styles.reportRow}>
-
-                        <div className={styles.rowTitle}>
-                            Lesson
-                        </div>
-                        
-                        <div className={styles.rowContent}>
-                            <ReportSquare title={"Total Lesson"} number={"100"} description={"All created lessons"} />
-                            <ReportSquare title={"Active Lesson"} number={"100"} description={"Current running"} />
-                            <ReportSquare title={"Archive Lesson"} number={"100"} description={"Inactive"} />
-                            <ReportSquare title={"Adverage No. of Lesson"} number={"100"} description={"per lesson"} />
-                        </div>
-                        
-                    </div>
-
-                    <div className={styles.reportRow}>
-                        <div className={styles.rowTitle}>
-                            Course
-                        </div>
-                        <div className={styles.rowContent}>
-                            <ReportSquare title={"Total Course"} number={"100"} description={"All created courses"} />
-                            <ReportSquare title={"Active Course"} number={"100"} description={"Current running"} />
-                            <ReportSquare title={"Archive Course"} number={"100"} description={"Inactive"} />
-                            <ReportSquare title={"Adverage No. of Credit Point"} number={"100"} description={"per course"} />
-                        </div>
-                    </div>
-
-                    <div className={styles.reportRow}>
-                        <div className={styles.rowTitle}>
-                            Classroom
-                        </div>
-                        <div className={styles.rowContent}>
-                            <ReportSquare title={"Total Classroom"} number={"100"} description={"All created classroom"} />
-                            <ReportSquare title={"Active Classroom"} number={"100"} description={"Current running"} />
-                            <ReportSquare title={"Archive Classroom"} number={"100"} description={"Inactive"} />
-                            <ReportSquare title={"Adverage No. of Students"} number={"100"} description={"per classroom"} />
-                        </div>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.infoHeader}>
+        <div className={styles.infoTitleRow}>
+          <div className={styles.infoTitle}>Report</div>
         </div>
-    );
+      </div>
+      <div className={styles.infoScroll}>
+        <div className={styles.rowContainer}>
+          <div className={styles.reportRow}>
+            <div className={styles.rowTitle}>Lesson</div>
+
+            <div className={styles.rowContent}>
+              <ReportSquare
+                title={"Total Lesson"}
+                number={formatCount(lessonStats.total, loading)}
+                description={"All created lessons"}
+              />
+              <ReportSquare
+                title={"Active Lesson"}
+                number={formatCount(lessonStats.active, loading)}
+                description={"Current running"}
+              />
+              <ReportSquare
+                title={"Archive Lesson"}
+                number={formatCount(lessonStats.archived, loading)}
+                description={"Inactive"}
+              />
+              <ReportSquare
+                title={"Adverage No. of Lesson"}
+                number={formatAverage(lessonStats.average, loading)}
+                description={"per lesson"}
+              />
+            </div>
+          </div>
+
+          <div className={styles.reportRow}>
+            <div className={styles.rowTitle}>Course</div>
+            <div className={styles.rowContent}>
+              <ReportSquare
+                title={"Total Course"}
+                number={formatCount(courseStats.total, loading)}
+                description={"All created courses"}
+              />
+              <ReportSquare
+                title={"Active Course"}
+                number={formatCount(courseStats.active, loading)}
+                description={"Current running"}
+              />
+              <ReportSquare
+                title={"Archive Course"}
+                number={formatCount(courseStats.archived, loading)}
+                description={"Inactive"}
+              />
+              <ReportSquare
+                title={"Adverage No. of Credit Point"}
+                number={formatAverage(courseStats.average, loading)}
+                description={"per course"}
+              />
+            </div>
+          </div>
+
+          <div className={styles.reportRow}>
+            <div className={styles.rowTitle}>Classroom</div>
+            <div className={styles.rowContent}>
+              <ReportSquare
+                title={"Total Classroom"}
+                number={formatCount(classroomStats.total, loading)}
+                description={"All created classroom"}
+              />
+              <ReportSquare
+                title={"Active Classroom"}
+                number={formatCount(classroomStats.active, loading)}
+                description={"Current running"}
+              />
+              <ReportSquare
+                title={"Archive Classroom"}
+                number={formatCount(classroomStats.archived, loading)}
+                description={"Inactive"}
+              />
+              <ReportSquare
+                title={"Adverage No. of Students"}
+                number={formatAverage(classroomStats.average, loading)}
+                description={"per classroom"}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default ReportDashboard;
