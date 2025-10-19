@@ -274,6 +274,102 @@
     box-shadow: 0 8px 14px rgba(0, 0, 0, 0.18);
 }
 
+.completionTitle {
+    margin: 0 0 8px;
+    font-size: 24px;
+    color: #1f3a2c;
+}
+
+.completionMessage {
+    margin: 0 0 16px;
+    font-size: 16px;
+    color: rgba(31, 58, 44, 0.85);
+    line-height: 1.6;
+}
+
+.completionForm {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.completionLabel {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2f2a19;
+}
+
+.durationInputRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.durationInput {
+    width: 96px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.85);
+    color: #2f2a19;
+    text-align: center;
+}
+
+.durationInput:focus {
+    outline: none;
+    border-color: #c4e4d3;
+    box-shadow: 0 0 0 3px rgba(196, 228, 211, 0.45);
+}
+
+.durationSuffix {
+    font-size: 15px;
+    color: rgba(47, 42, 25, 0.75);
+}
+
+.completionError {
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: #a13d3d;
+}
+
+.completionActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.homeButton,
+.restartButton {
+    padding: 12px 18px;
+    border-radius: 14px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.homeButton {
+    background: rgba(47, 42, 25, 0.15);
+    color: #2f2a19;
+}
+
+.homeButton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 14px rgba(0, 0, 0, 0.15);
+}
+
+.restartButton {
+    background: #c4e4d3;
+    color: #1f3a2c;
+}
+
+.restartButton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 14px rgba(0, 0, 0, 0.18);
+}
+
 @media (max-width: 1024px) {
     .content {
         flex-direction: column;
@@ -317,6 +413,15 @@
 
     .cancelButton,
     .confirmButton {
+        width: 100%;
+    }
+
+    .completionActions {
+        flex-direction: column-reverse;
+    }
+
+    .homeButton,
+    .restartButton {
         width: 100%;
     }
 

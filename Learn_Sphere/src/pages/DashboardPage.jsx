@@ -280,7 +280,7 @@ function DashboardPage() {
               <Link to="/focus" onClick={openFocusPrompt}>
                 <h3 className={styles.menuItem}>
                   <img
-                    src="../images/icons/classroom.png"
+                    src="../images/icons/focus.png"
                     className={styles.menuIcon}
                   />
                   Focus Mode
