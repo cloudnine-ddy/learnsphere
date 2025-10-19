@@ -62,7 +62,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
       const lesson = publishedLessons.find(
         (item) => item.data().lessonID === lessonId
       );
-      return lesson ? sum + lesson.data().creditPoint : sum;
+      return lesson ? sum + Number(lesson.data().creditPoint) : sum;
     }, 0);
 
     setCourse((prev) => ({
