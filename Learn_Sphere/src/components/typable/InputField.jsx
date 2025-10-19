@@ -11,6 +11,7 @@ function InputField({
   onChange,
   style = {},
   min,
+  isEnabled=true
 }) {
   return (
     <div className={styles.formRow} style={style}>
@@ -27,6 +28,7 @@ function InputField({
           value={value}
           onChange={onChange}
           min={min}
+          disabled={!isEnabled}
           required
         />
       </div>

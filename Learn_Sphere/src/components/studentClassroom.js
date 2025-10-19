@@ -1,5 +1,7 @@
 import { collection, query, where, getDocs, deleteDoc, doc, getDoc, addDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig.js";
+import { getClassroom } from "./getClassroom.js";
+import { getUserInfo } from "./manageUsers.js";
 
 export async function addStudentClassroom(classroomID, studentID) {
 
@@ -66,14 +68,15 @@ export async function getListOfClassroomsFromStudent(studentID) {
       const batch = classroomIds.slice(i, i + 10);
       const classroomQuery = query(
         collection(db, "classrooms"),
-        where("classroomID", "in", batch) // query by Firestore doc IDs
+        where("classroom_id", "in", batch) // query by Firestore doc IDs
       );
       chunks.push(getDocs(classroomQuery));
     }
 
     // Step 4: combine results into raw snapshots
     const results = await Promise.all(chunks);
-    const classrooms = results.flatMap(snapshot => snapshot.docs);
+    const classrooms = results.flatMap((snapshot) => {return snapshot.docs});
+
 
     return classrooms; // array of DocumentSnapshots (need .data() later)
   } catch (error) {
@@ -117,7 +120,7 @@ export async function getListOfStudentsFromClassroom(classroomID) {
     // Step 4: combine results
     const results = await Promise.all(chunks);
     const students = results.flatMap(snapshot =>
-      snapshot.docs
+      {return snapshot.docs}
     );
 
     return students; // array of student documents
@@ -226,4 +229,4 @@ export async function deleteStudentClassroomByStudentID(studentID) {
         console.error("Error deleting classroom references:", error);
         throw error;
     }
-}
+  }

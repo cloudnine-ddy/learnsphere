@@ -9,6 +9,7 @@ function TextArea({
   placeholder = "",
   value,
   onChange,
+  isEnabled=true
 }) {
   return (
     <div className={styles.formRow}>
@@ -25,6 +26,7 @@ function TextArea({
           value={value}
           onChange={onChange}
           required
+          disabled={!isEnabled}
         />
       </div>
     </div>

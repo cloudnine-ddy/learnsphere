@@ -1,5 +1,7 @@
-import { collection, query, where, getDocs, deleteDoc, doc, documentId, addDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+import { collection, query, where, getDocs, deleteDoc, doc, documentId, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { db } from "./firebaseConfig.js";
+import { getListOfClassroomsFromStudent } from "./studentClassroom.js";
+import { getClassroom, getClassroomByStudent } from "./getClassroom.js";
 
 export async function addStudentLesson(lessonID, studentID) {
 
@@ -12,7 +14,7 @@ export async function addStudentLesson(lessonID, studentID) {
     student_lesson_lessonID: lessonID,
     student_lesson_studentID: studentID,
     student_lesson_completion: "unchecked",
-    student_lesson_passFail: "unchecked"
+    student_lesson_passFail: "unchecked",
   };
 
   // Save the course data to Firestore
@@ -49,7 +51,7 @@ export async function getStudentLesson(studentID, lessonID) {
 
     const studentLessonSnapshot = await getDocs(studentLessonQuery);
 
-    return studentLessonSnapshot
+    return studentLessonSnapshot.docs;
   } 
   catch (error) {
     console.error("Error fetching studentLesson:", error);
@@ -86,8 +88,9 @@ export async function updateStudentLessonCompletion(studentID, lessonID, complet
   );
 
   const studentLessonSnapshot = await getDocs(studentLessonQuery);
+  console.log(studentLessonSnapshot.docs);
 
-  if (studentLessonSnapshot.empty) {
+  if (studentLessonSnapshot.docs.length <= 0) {
     console.log("No matching student_lesson found to update.");
     return false;
   }
@@ -123,7 +126,7 @@ export async function updateStudentLessonPassFail(studentID, lessonID, passFail)
 
   const studentLessonSnapshot = await getDocs(studentLessonQuery);
 
-  if (studentLessonSnapshot.empty) {
+  if (studentLessonSnapshot.docs.length <= 0) {
     console.log("No matching student_lesson found to update.");
     return false;
   }
@@ -143,6 +146,41 @@ export async function updateStudentLessonPassFail(studentID, lessonID, passFail)
 
 }
 
+export async function updateStudentLessonEndDate(studentID, lessonID, endDate) {
+
+  /* param
+      studentID - the student 'id:' field in the 'users' database. Example "0LFC6foIENRL34Twvy67sLG46zj1"
+      lessonID - the lesson 'lessonID:' field in the 'lessons' database. Example "FIT1045"
+      passFail - the passFail status of the lesson. Example "pass"
+  */
+
+  const studentLessonQuery = query(
+    collection(db, "student_lesson"),
+    where("student_lesson_studentID", "==", studentID),
+    where("student_lesson_lessonID", "==", lessonID)
+  );
+
+  const studentLessonSnapshot = await getDocs(studentLessonQuery);
+
+  if (studentLessonSnapshot.docs.length <= 0) {
+    console.log("No matching student_lesson found to update.");
+    return false;
+  }
+
+  // Step 2: Update the student_lesson document
+  const updates = studentLessonSnapshot.docs.map((d) => {
+    updateDoc(doc(db, "student_lesson", d.id), {
+      student_lesson_endDate: endDate.toISOString(),
+    })
+  }
+  );
+
+  await Promise.all(updates);
+
+  console.log("✅ Successfully updated student_lesson passFail.");
+  return true;
+
+}
 
 /*
 
@@ -365,3 +403,80 @@ export async function deleteStudentLessonByStudentID(studentID) {
   }
 }
 
+export async function handleStudentLessonMarking(studentID, classroom, lessonID, action)
+{
+  if (studentID != null && lessonID != null)
+  {
+  if (action == "Unmark")
+  {
+      updateStudentLessonCompletion(studentID, lessonID, "unchecked");
+      updateStudentLessonPassFail(studentID, lessonID, "unchecked");
+
+      let classes = await getListOfClassroomsFromStudent(studentID)
+      let maxDate = new Date(Math.max(...classes.map((c) => {
+        return new Date(c.data().classroom_endDate).getTime(); 
+      })));
+
+      updateStudentLessonEndDate(studentID, lessonID, maxDate)
+  }
+  else
+  {
+    updateStudentLessonCompletion(studentID, lessonID, "complete")
+    updateStudentLessonPassFail(studentID, lessonID, action)
+
+    let maxDate
+
+    if (action == "Pass")
+    {
+      maxDate = classroom.data().classroom_endDate;
+    }
+    else
+    {
+      let classes = await getListOfClassroomsFromStudent(studentID);
+      console.log(classes);
+      maxDate = new Date(Math.max(...classes.map((c) => {
+        return new Date(c.data().classroom_endDate).getTime(); 
+      })));
+      console.log(maxDate);
+    }
+
+    updateStudentLessonEndDate(studentID, lessonID, maxDate)
+  }
+  }
+  else
+  {
+    throw "Invalid studentID or lessonID!";
+  }
+}
+
+export async function calculateStudentProgress(studentID, lessons)
+{
+  try
+  {
+    let studentLessonQuery = query(
+      collection(db, "student_lesson"),
+      where("student_lesson_studentID", "==", studentID),
+      where("student_lesson_lessonID", "in", lessons)
+    );
+
+    let studentLessonSnapshot = await getDocs(studentLessonQuery);
+
+    let studentLessons = studentLessonSnapshot.docs;
+    let total = studentLessons.length;
+    let passed = 0;
+
+    for (let i = 0; i < total; i++)
+    {
+      if (studentLessons[i].data().student_lesson_passFail == "pass")
+      {
+        passed += 1;
+      }
+    }
+
+    return (passed / total * 100);
+  }
+  catch (error) {
+    console.error("Error calculating student progress:", error);
+    throw error;
+  }
+}

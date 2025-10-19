@@ -134,7 +134,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
   };
 
   return (
-    <div className={styles.wrapper} disabled={!isEnabled}>
+    <div className={styles.wrapper}>
       <div className={styles.infoHeader}>
         <div className={styles.infoTitle}>Add Course</div>
       </div>
@@ -149,6 +149,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
             value={course.courseId}
             onChange={handleCourseChange}
             required
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -159,6 +160,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
             value={course.title}
             onChange={handleCourseChange}
             required
+            isEnabled={isEnabled}
           />
 
           <TextArea
@@ -168,6 +170,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
             name="description"
             value={course.description}
             onChange={handleCourseChange}
+            isEnabled={isEnabled}
           />
 
           <AddFromList
@@ -178,6 +181,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
             prerequisiteOptions={publishedLessons.map(
               (option) => `${option.data().lessonID}: ${option.data().title}`
             )}
+            isEnabled={isEnabled}
           />
 
           <InfoBlock
@@ -196,12 +200,14 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
               )
             )}
             onChange={handleCourseChange}
+            isEnabled={isEnabled}
           />
           <SelectStatus
             name="status"
             label="Status"
             object={course}
             onChange={handleCourseChange}
+            isEnabled={isEnabled}
           />
         </div>
       </div>
@@ -212,6 +218,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
             type="button"
             className={styles.backButton}
             onClick={handleBack}
+            isEnabled={isEnabled}
           >
             <img
               src="images/icons/goback.png"
@@ -220,7 +227,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
             />
             <span>Back</span>
           </button>
-          <Button onClick={submitForm} label="Add" />
+          <Button onClick={submitForm} label="Add" isEnabled={isEnabled}/>
         </div>
 
         {errorMessages.length > 0 && (

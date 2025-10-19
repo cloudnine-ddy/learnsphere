@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import styles from "./PasswordField.module.css";
 
-function PasswordField({ label, id, placeholder = "", value, onChange }) {
+function PasswordField({ label, id, placeholder = "", value, onChange, isEnabled=true }) {
   const [show, setShow] = useState(false);
   return (
     <div className={styles.formRow}>
@@ -18,6 +18,7 @@ function PasswordField({ label, id, placeholder = "", value, onChange }) {
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          disabled={!isEnabled}
           required
         />
         <button

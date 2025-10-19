@@ -15,6 +15,7 @@ import { updateClassroomStudents } from "../../components/updateClassrooms";
 import { getClassroomByStudent } from "../../components/getClassroom";
 
 import {
+  handleStudentLessonMarking,
   updateStudentLessonCompletion, updateStudentLessonPassFail
 } from "../../components/studentLesson";
 import { addStudentClassroom, deleteStudentClassroom, deleteStudentClassroomByStudentID } from "../../components/studentClassroom";
@@ -127,20 +128,12 @@ function ViewClassroom({ userData }) {
 
   const handleConfirmMark = () => {
     if (markConfirmation) {
+      console.log(markConfirmation.lessonDoc.data().lessonID);
       console.log(
-        `Marking ${markConfirmation.student?.name} (${markConfirmation.student?.id}) in ${markConfirmation.lessonTitle} (${markConfirmation.lessonDoc.id}) as ${markConfirmation.action}`
+        `Marking ${markConfirmation.student?.name} (${markConfirmation.student?.id}) in ${markConfirmation.lessonTitle} (${markConfirmation.lessonDoc.data().lessonID}) as ${markConfirmation.action}`
       );
 
-      if (markConfirmation.action == "unmark")
-      {
-          updateStudentLessonCompletion(markConfirmation.student?.id, markConfirmation.lessonDoc?.id, false)
-          updateStudentLessonPassFail(markConfirmation.student?.id, markConfirmation.lessonDoc?.id, "unchecked")
-      }
-      else
-      {
-        updateStudentLessonCompletion(markConfirmation.student?.id, markConfirmation.lessonDoc?.id, true)
-        updateStudentLessonPassFail(markConfirmation.student?.id, markConfirmation.lessonDoc?.id, markConfirmation.action)
-      }
+      handleStudentLessonMarking(markConfirmation.student?.id, classroom, markConfirmation.lessonDoc?.data().lessonID, markConfirmation.action)
     }
     setMarkConfirmation(null);
   };

@@ -14,6 +14,7 @@ import styles from "./ViewLesson.module.css";
 import InfoBlock from "../../components/display/InfoBlock";
 import MessageBox from "../../components/display/MessageBox";
 import SingleButtonMessageBox from "../../components/display/SingleButtonMessageBox";
+import { getStudentLesson } from "../../components/studentLesson";
 
 function ViewLesson({ userData }) {
   let navigate = useNavigate();
@@ -22,7 +23,7 @@ function ViewLesson({ userData }) {
   const [lesson, setLesson] = useState(null);
 
   const [showDelete, setShowDelete] = useState(false);
-  const markingState = lesson?.markingState ?? "Pass";
+  const [markingState, setMarkingState] = useState("");
   const [messagebox, setMessageBox] = useState(false);
 
   useEffect(() => {
@@ -49,6 +50,18 @@ function ViewLesson({ userData }) {
       });
     }
   }, [userData]);
+
+  useEffect(() => {
+    if (userData?.role === "student" && lesson != null)
+    {
+      console.log(userData?.id, lesson?.lessonID);
+      getStudentLesson(userData?.id, lesson?.lessonID).then(
+        (res) => {
+          setMarkingState(res[0].data().student_lesson_passFail);
+        }
+      );
+    }
+  }, [userData, lesson]);
 
   const handleDelete = () => {
     if (lesson.status === "Published"){

@@ -27,7 +27,7 @@ export async function signInUser(email, password)
 export async function registerUser(firstName, lastName, email, password, title, token, selectedRole)
 {
     let user = null;
-    let validToken = await useToken(token, selectedRole);
+    let validToken = await useToken(email, token, selectedRole);
 
     if (validToken)
     {
@@ -201,7 +201,7 @@ export async function createToken(token, role)
 
     if (user != null && userInfo.role != "student")
     {
-        let tokenObject = {value: token, owner: user.uid, status:"Available", role: role};
+        let tokenObject = {value: token, owner: user.uid, status:"Available", role: role, users:[]};
 
         const existingToken = await getDoc(doc(db, "tokens", token));
         console.log(existingToken.data(), token);
@@ -223,13 +223,13 @@ export async function createToken(token, role)
     }
 }
 
-export async function useToken(token, role)
+export async function useToken(email, token, role)
 {
     const existingToken = await getDoc(doc(db, "tokens", token));
 
-    if (existingToken.data() != null && existingToken.data().role == role)
+    if (existingToken.data() != null && existingToken.data().role == role && !existingToken.data().users.includes(email))
     {
-        await updateDoc(doc(db, "tokens", token), { status : "Used" });
+        await updateDoc(doc(db, "tokens", token), { status : "Used", users: [...existingToken.data().users, email]});
         return true;
     }
     else

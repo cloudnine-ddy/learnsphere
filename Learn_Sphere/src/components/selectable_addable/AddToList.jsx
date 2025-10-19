@@ -13,6 +13,7 @@ function AddToList({
   itemList,
   setItemList,
   multiline = false,
+  isEnabled=true
 }) {
   const handleAddItem = () => {
     if (currentItem.trim()) {
@@ -58,6 +59,7 @@ function AddToList({
           }`}
           type="button"
           onClick={handleAddItem}
+          disabled={!isEnabled}
         >
           Add
         </button>
@@ -71,6 +73,7 @@ function AddToList({
               className={styles.deleteButton}
               onClick={() => handleDelete(item)}
               type="button"
+              disabled={!isEnabled}
             >
               Delete
             </button>

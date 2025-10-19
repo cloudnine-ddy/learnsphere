@@ -114,9 +114,8 @@ function EditClassroom({
 
       const end = new Date(start);
       end.setDate(start.getDate() + durationWeeks * 7);
-
-      const formattedEnd = end.toISOString().split("T")[0];
-      setClassroom((prev) => ({ ...prev, classroom_endDate: formattedEnd }));
+      
+      setClassroom((prev) => ({ ...prev, classroom_endDate: end.toISOString() }));
     }
   }, [classroom.classroom_startDate, classroom.classroom_durationWeeks]);
 
@@ -163,7 +162,7 @@ function EditClassroom({
         classroom_course: classroom.classroom_course,
         classroom_instructor: classroom.classroom_instructor,
         classroom_status: classroom.classroom_status,
-        classroom_startDate: classroom.classroom_startDate,
+        classroom_startDate: new Date(classroom.classroom_startDate).toISOString(),
         classroom_durationWeeks: classroom.classroom_durationWeeks,
         classroom_lessons: classroomLessons,
         classroom_students: classroomStudents,
@@ -239,7 +238,7 @@ function EditClassroom({
   }, [validStudentOptions]);
 
   return (
-    <div className={styles.wrapper} disabled={!isEnabled}>
+    <div className={styles.wrapper}>
       <div className={styles.infoHeader}>
         <div className={styles.infoTitle}>Edit Classroom</div>
       </div>
@@ -252,6 +251,7 @@ function EditClassroom({
             name="classroom_id"
             value={classroom.classroom_id}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -260,6 +260,7 @@ function EditClassroom({
             name="classroom_name"
             value={classroom.classroom_name}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
 
           <TextArea
@@ -269,6 +270,7 @@ function EditClassroom({
             name="classroom_description"
             value={classroom.classroom_description}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
 
           <SelectOneFromList
@@ -280,6 +282,7 @@ function EditClassroom({
                 `${instructor.title} ${instructor.firstName} ${instructor.lastName}`
             )}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -289,6 +292,7 @@ function EditClassroom({
             type="date"
             value={classroom.classroom_startDate}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
 
           <InputField
@@ -299,10 +303,11 @@ function EditClassroom({
             value={classroom.classroom_durationWeeks}
             onChange={handleClassroomChange}
             min={1}
+            isEnabled={isEnabled}
           />
 
           <p className={styles.justTitle}>
-            Classroom End Date: {classroom.classroom_endDate || "N/A"}
+            Classroom End Date: {classroom.classroom_endDate.split("T")[0] || "N/A"}
           </p>
 
           <AddFromList
@@ -313,6 +318,7 @@ function EditClassroom({
             prerequisiteOptions={lessons.map(
               (lesson) => `${lesson.data().lessonID}: ${lesson.data().title}`
             )}
+            isEnabled={isEnabled}
           />
 
           <AddFromList
@@ -321,6 +327,7 @@ function EditClassroom({
             prerequisites={classroomStudents}
             setPrerequisites={setClassroomStudents}
             prerequisiteOptions={classroomStudentOptions}
+            isEnabled={isEnabled}
           />
 
           <SelectStatus
@@ -328,6 +335,7 @@ function EditClassroom({
             label="Status"
             object={classroom}
             onChange={handleClassroomChange}
+            isEnabled={isEnabled}
           />
         </div>
       </div>
@@ -336,10 +344,11 @@ function EditClassroom({
           onClick={handleCancel}
           className={styles.smallButton}
           style={{ background: "#beb2a4", marginLeft: "auto" }}
+          isEnabled={isEnabled}
         >
           Cancel
         </button>
-        <button onClick={submitForm} className={styles.smallButton}>
+        <button onClick={submitForm} className={styles.smallButton} isEnabled={isEnabled}>
           Save Change
         </button>
         {errorMessages.length > 0 && (

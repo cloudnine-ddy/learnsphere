@@ -9,6 +9,7 @@ function TitleDropdown({
   onChange,
   options,
   placeholder = "Please select…",
+  isEnabled=true
 }) {
   return (
     <div className={styles.formRow}>
@@ -22,6 +23,7 @@ function TitleDropdown({
         id={id}
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
+        disabled={!isEnabled}
       >
         <option className={styles.option} value="" disabled>
           {placeholder}

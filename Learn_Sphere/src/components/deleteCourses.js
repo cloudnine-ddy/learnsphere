@@ -10,10 +10,10 @@ export async function deleteCourses(courseID){
     */
 
     try {
-        // Search for the course 
+        // Search for the course
 
         const courseQuery = query (
-            collection(db, 'courses'), 
+            collection(db, 'courses'),
             where("courseID", "==", courseID)
         )
 
@@ -24,20 +24,20 @@ export async function deleteCourses(courseID){
         return false;
         }
 
-        const deletions = courseSnapshot.docs.map((d) => 
+        const deletions = courseSnapshot.docs.map((d) =>
         deleteDoc(doc(db, "courses", d.id))
         );
 
         await Promise.all(deletions);
 
         console.log("✅ Successfully deleted course");
-        
+
 
         deleteStudentCourseByCourseID(courseID);
 
-        return true; 
+        return true;
     } catch (error) {
-    console.error("Error deleting student_course:", error);
+    console.error("Error deleting Course:", error);
     throw error;
   }
 

@@ -51,7 +51,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
     }, [navigate]);
 
     function submitForm() {
-        setEnabled(false)
+        setEnabled(false);
         if (isValid()) {
             addLessonToDatabase(
                 lesson.lessonId,
@@ -69,7 +69,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
                 .catch((error) => setErrorMessages([error]));
             navigate("/home/lessons");
         } else {
-            setEnabled(true)
+            setEnabled(true);
             setErrorMessages(["Missing and invalid values! Check the form again."]);
         }
     }
@@ -92,7 +92,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
     };
 
     return (
-        <div className={styles.wrapper} disabled={!isEnabled}>
+        <div className={styles.wrapper}>
             <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>Add Lesson</div>
             </div>
@@ -107,6 +107,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
                         value={lesson.lessonId}
                         onChange={handleLessonChange}
                         required
+                        isEnabled={isEnabled}
                     />
 
                     <InputField
@@ -117,6 +118,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
                         value={lesson.title}
                         onChange={handleLessonChange}
                         required
+                        isEnabled={isEnabled}
                     />
 
                     <TextArea
@@ -126,6 +128,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
                         name="description"
                         value={lesson.description}
                         onChange={handleLessonChange}
+                        isEnabled={isEnabled}
                     />
 
                     <AddToList
@@ -135,6 +138,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
                         setCurrentItem={setCurrentObjectives}
                         itemList={objectives}
                         setItemList={setObjectives}
+                        isEnabled={isEnabled}
                     />
 
                     <AddToList
@@ -144,6 +148,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
                         setCurrentItem={setCurrentBook}
                         itemList={readingList}
                         setItemList={setReadingList}
+                        isEnabled={isEnabled}
                     />
 
                     <AddToList
@@ -154,6 +159,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
                         itemList={assignmentList}
                         setItemList={setAssignmentList}
                         multiline
+                        isEnabled={isEnabled}
                     />
 
                     <AddFromList
@@ -164,6 +170,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
                         prerequisiteOptions={prerequisiteOptions.map(
                             (option) => `${option.data().lessonID}: ${option.data().title}`
                         )}
+                        isEnabled={isEnabled}
                     />
 
                     <InputField
@@ -173,8 +180,9 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
                         name="creditPoints"
                         value={lesson.creditPoints}
                         onChange={handleLessonChange}
-                        min="0"
+                        min={1}
                         required
+                        isEnabled={isEnabled}
                     />
 
                     <SelectOneFromList
@@ -187,18 +195,19 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
                             )
                         )}
                         onChange={handleLessonChange}
+                        isEnabled={isEnabled}
                     />
-                    <SelectStatus name="status" label="Status" object={lesson} onChange={handleLessonChange} />
+                    <SelectStatus name="status" label="Status" object={lesson} onChange={handleLessonChange} isEnabled={isEnabled}/>
                 </div>
             </div>
 
             <div className={styles.infoFooter}>
                 <div className={styles.footerActions}>
-                    <button type="button" className={styles.backButton} onClick={handleBack}>
+                    <button type="button" className={styles.backButton} onClick={handleBack} isEnabled={isEnabled}>
                         <img src="images/icons/goback.png" alt="Back" className={styles.backIcon} />
                         <span>Back</span>
                     </button>
-                    <Button onClick={submitForm} label="Add" />
+                    <Button onClick={submitForm} label="Add" isEnabled={isEnabled}/>
                 </div>
 
                 {errorMessages.length > 0 && (
