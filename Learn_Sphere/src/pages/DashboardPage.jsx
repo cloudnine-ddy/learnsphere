@@ -51,6 +51,9 @@ function DashboardPage() {
   const [currentUnits, setCurrentUnits] = useState([]);
   const [courses, setCourses] = useState([]);
   const [classrooms, setClassrooms] = useState([]);
+  const [showFocusPrompt, setShowFocusPrompt] = useState(false);
+  const [focusMinutesInput, setFocusMinutesInput] = useState("25");
+  const [focusMinutesError, setFocusMinutesError] = useState("");
 
   // User
   useEffect(() => {
@@ -196,6 +199,40 @@ function DashboardPage() {
     console.log("Tried to go out");
   };
 
+  const openFocusPrompt = (event) => {
+    event.preventDefault();
+    setFocusMinutesInput("25");
+    setFocusMinutesError("");
+    setShowFocusPrompt(true);
+  };
+
+  const closeFocusPrompt = () => {
+    setShowFocusPrompt(false);
+    setFocusMinutesError("");
+  };
+
+  const confirmFocusSession = () => {
+    const trimmed = focusMinutesInput.trim();
+    if (!trimmed) {
+      setFocusMinutesError("Please enter how many minutes you want to focus.");
+      return;
+    }
+
+    if (!/^\d+$/.test(trimmed)) {
+      setFocusMinutesError("Use whole numbers only (minutes).");
+      return;
+    }
+
+    const minutes = Number.parseInt(trimmed, 10);
+    if (minutes <= 0) {
+      setFocusMinutesError("Enter at least 1 minute to begin focusing.");
+      return;
+    }
+
+    setShowFocusPrompt(false);
+    navigate(`/focus?duration=${minutes}`);
+  };
+
   return (
     <div className={styles.mainContent}>
       <DashbaordHeader
@@ -238,6 +275,18 @@ function DashboardPage() {
                 Classroom
               </h3>
             </Link>
+
+            {userData != null && userData.role === "student" && (
+              <Link to="/focus" onClick={openFocusPrompt}>
+                <h3 className={styles.menuItem}>
+                  <img
+                    src="../images/icons/classroom.png"
+                    className={styles.menuIcon}
+                  />
+                  Focus Mode
+                </h3>
+              </Link>
+            )}
 
             {userData != null && userData.role != "student" && (
               <Link to="/home/report">
@@ -394,7 +443,10 @@ function DashboardPage() {
                 )}
 
                 {userData.role !== "student" && (
-                  <Route path="/report" element={<ReportDashboard />} />
+                  <Route
+                    path="/report"
+                    element={<ReportDashboard userData={userData} />}
+                  />
                 )}
 
                 {userData.role === "admin" && (
@@ -413,6 +465,58 @@ function DashboardPage() {
           </div>
         </div>
       </div>
+      {showFocusPrompt && (
+        <div
+          className={styles.focusPromptOverlay}
+          role="dialog"
+          aria-modal="true"
+          onClick={closeFocusPrompt}
+        >
+          <div
+            className={styles.focusPrompt}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3 className={styles.focusPromptTitle}>Set focus duration</h3>
+            <p className={styles.focusPromptMessage}>
+              Enter how many minutes you want to focus.
+            </p>
+            <form
+              className={styles.focusPromptForm}
+              onSubmit={(event) => {
+                event.preventDefault();
+                confirmFocusSession();
+              }}
+            >
+              <input
+                type="number"
+                min="1"
+                step="1"
+                className={styles.focusPromptInput}
+                value={focusMinutesInput}
+                onChange={(event) => setFocusMinutesInput(event.target.value)}
+                aria-label="Focus duration in minutes"
+              />
+              {focusMinutesError && (
+                <p className={styles.focusPromptError}>
+                  {focusMinutesError}
+                </p>
+              )}
+              <div className={styles.focusPromptActions}>
+                <button
+                  type="button"
+                  className={styles.focusPromptCancel}
+                  onClick={closeFocusPrompt}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className={styles.focusPromptPrimary}>
+                  Start Focus
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

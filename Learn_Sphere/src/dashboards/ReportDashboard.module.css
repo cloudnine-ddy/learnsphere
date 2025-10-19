@@ -80,10 +80,11 @@
 .rowTitle {
     font-weight: bold;
     font-size: 25px;
-    color: blue;
+    color: #1e40af;
     text-align: left;
     padding-left: 25px;
-    background-color: yellow;
+    background: linear-gradient(90deg, rgba(191, 219, 254, 0.35), rgba(147, 197, 253, 0));
+    border-left: 6px solid rgba(59, 130, 246, 0.65);
 }
 
 .rowContent {
