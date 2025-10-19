@@ -90,9 +90,10 @@
 .rowContent {
     display: flex;
     flex-direction: row;
-    padding-left: 1%;
-    padding-right: 10%;
-    justify-content: space-around;
+    padding: 0 4%;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
 }
 
 .rowContainer {

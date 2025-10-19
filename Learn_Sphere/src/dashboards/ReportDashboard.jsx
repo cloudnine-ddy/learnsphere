@@ -7,7 +7,7 @@ import { getClassrooms } from "../components/getClassroom";
 import styles from "./ReportDashboard.module.css";
 import ReportSquare from "../components/display/reportSquare";
 
-const EMPTY_STATS = { total: 0, active: 0, archived: 0, average: 0 };
+const EMPTY_STATS = { total: 0, active: 0, draft: 0, archived: 0, average: 0 };
 
 function snapshotData(docSnap) {
   return typeof docSnap?.data === "function" ? docSnap.data() : docSnap || {};
@@ -16,17 +16,22 @@ function snapshotData(docSnap) {
 function calculateLessonStats(snapshots) {
   const total = snapshots.length;
   let active = 0;
+  let draft = 0;
   let archived = 0;
   let creditSum = 0;
 
   snapshots.forEach((docSnap) => {
     const data = snapshotData(docSnap);
-    const status = data?.status;
+    const status =
+      typeof data?.status === "string" ? data.status.toLowerCase() : "";
 
-    if (status === "Published") {
+    if (status === "published") {
       active += 1;
     }
-    if (status === "Archived") {
+    if (status === "draft") {
+      draft += 1;
+    }
+    if (status === "archived") {
       archived += 1;
     }
 
@@ -39,6 +44,7 @@ function calculateLessonStats(snapshots) {
   return {
     total,
     active,
+    draft,
     archived,
     average: total > 0 ? creditSum / total : 0,
   };
@@ -47,17 +53,24 @@ function calculateLessonStats(snapshots) {
 function calculateCourseStats(snapshots) {
   const total = snapshots.length;
   let active = 0;
+  let draft = 0;
   let archived = 0;
   let creditSum = 0;
 
   snapshots.forEach((docSnap) => {
     const data = snapshotData(docSnap);
-    const status = data?.courseStatus;
+    const status =
+      typeof data?.courseStatus === "string"
+        ? data.courseStatus.toLowerCase()
+        : "";
 
-    if (status === "Published") {
+    if (status === "published") {
       active += 1;
     }
-    if (status === "Archived") {
+    if (status === "draft") {
+      draft += 1;
+    }
+    if (status === "archived") {
       archived += 1;
     }
 
@@ -72,6 +85,7 @@ function calculateCourseStats(snapshots) {
   return {
     total,
     active,
+    draft,
     archived,
     average: total > 0 ? creditSum / total : 0,
   };
@@ -80,17 +94,24 @@ function calculateCourseStats(snapshots) {
 function calculateClassroomStats(snapshots) {
   const total = snapshots.length;
   let active = 0;
+  let draft = 0;
   let archived = 0;
   let studentCount = 0;
 
   snapshots.forEach((docSnap) => {
     const data = snapshotData(docSnap);
-    const status = data?.classroom_status;
+    const status =
+      typeof data?.classroom_status === "string"
+        ? data.classroom_status.toLowerCase()
+        : "";
 
-    if (status === "Published") {
+    if (status === "published") {
       active += 1;
     }
-    if (status === "Archived") {
+    if (status === "draft") {
+      draft += 1;
+    }
+    if (status === "archived") {
       archived += 1;
     }
 
@@ -103,6 +124,7 @@ function calculateClassroomStats(snapshots) {
   return {
     total,
     active,
+    draft,
     archived,
     average: total > 0 ? studentCount / total : 0,
   };
@@ -205,12 +227,17 @@ function ReportDashboard({ userData }) {
                 description={"Current running"}
               />
               <ReportSquare
+                title={"Draft Lesson"}
+                number={formatCount(lessonStats.draft, loading)}
+                description={"Not yet published"}
+              />
+              <ReportSquare
                 title={"Archive Lesson"}
                 number={formatCount(lessonStats.archived, loading)}
                 description={"Inactive"}
               />
               <ReportSquare
-                title={"Adverage No. of Lesson"}
+                title={"Average No. of Lesson"}
                 number={formatAverage(lessonStats.average, loading)}
                 description={"per lesson"}
               />
@@ -231,12 +258,17 @@ function ReportDashboard({ userData }) {
                 description={"Current running"}
               />
               <ReportSquare
+                title={"Draft Course"}
+                number={formatCount(courseStats.draft, loading)}
+                description={"Not yet published"}
+              />
+              <ReportSquare
                 title={"Archive Course"}
                 number={formatCount(courseStats.archived, loading)}
                 description={"Inactive"}
               />
               <ReportSquare
-                title={"Adverage No. of Credit Point"}
+                title={"Average No. of Credit Point"}
                 number={formatAverage(courseStats.average, loading)}
                 description={"per course"}
               />
@@ -257,12 +289,17 @@ function ReportDashboard({ userData }) {
                 description={"Current running"}
               />
               <ReportSquare
+                title={"Draft Classroom"}
+                number={formatCount(classroomStats.draft, loading)}
+                description={"Not yet published"}
+              />
+              <ReportSquare
                 title={"Archive Classroom"}
                 number={formatCount(classroomStats.archived, loading)}
                 description={"Inactive"}
               />
               <ReportSquare
-                title={"Adverage No. of Students"}
+                title={"Average No. of Students"}
                 number={formatAverage(classroomStats.average, loading)}
                 description={"per classroom"}
               />
