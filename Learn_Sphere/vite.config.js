@@ -6,6 +6,12 @@ const REPO = 'MA_THURSDAY5PM_TEAM3'
 
 export default defineConfig({
   base: `/${REPO}/`,
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, 'src'),
+      "@images": resolve(__dirname, 'images'),
+    },
+  },
   build: {
     rollupOptions: {
       input: {

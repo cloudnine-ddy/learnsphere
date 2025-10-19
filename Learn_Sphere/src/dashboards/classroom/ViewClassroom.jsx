@@ -20,6 +20,7 @@ import {
 } from "../../components/studentLesson";
 import { addStudentClassroom, deleteStudentClassroom, deleteStudentClassroomByStudentID } from "../../components/studentClassroom";
 import styles from "./ViewClassroom.module.css";
+import backIcon from "@images/icons/goback.png";
 
 import InfoBlock from "../../components/display/InfoBlock";
 import MessageBox from "../../components/display/MessageBox";
@@ -578,7 +579,7 @@ function ViewClassroom({ userData }) {
           onClick={handleBack}
         >
           <img
-            src="images/icons/goback.png"
+            src={backIcon}
             alt="Back"
             className={styles.backIcon}
           />

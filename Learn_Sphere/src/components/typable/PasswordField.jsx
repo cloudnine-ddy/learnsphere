@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
 import styles from "./PasswordField.module.css";
+import showIcon from "@images/icons/show.png";
+import hideIcon from "@images/icons/hide.png";
 
 function PasswordField({ label, id, placeholder = "", value, onChange, isEnabled=true }) {
   const [show, setShow] = useState(false);
@@ -27,8 +29,8 @@ function PasswordField({ label, id, placeholder = "", value, onChange, isEnabled
           onClick={() => setShow(!show)}
         >
           <img
-            src={show ? "images/icons/show.png" : "images/icons/hide.png"}
-            alt={show ? "show" : "hide"}
+            src={show ? showIcon : hideIcon}
+            alt={show ? "Hide password" : "Show password"}
             className={styles.icon}
           />
         </button>

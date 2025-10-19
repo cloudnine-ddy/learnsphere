@@ -19,6 +19,13 @@ import { getLessons } from "../components/getLessons";
 import { getCourses } from "../components/getCourses";
 
 import styles from "./DashboardPage.module.css";
+import courseIcon from "@images/icons/course.png";
+import lessonIcon from "@images/icons/lesson.png";
+import classroomIcon from "@images/icons/classroom.png";
+import focusIcon from "@images/icons/focus.png";
+import reportIcon from "@images/icons/view_report.png";
+import controlIcon from "@images/icons/control_panel.png";
+import logoutIcon from "@images/icons/logout.png";
 
 import DashbaordHeader from "../layout/DashboardHeader";
 
@@ -249,8 +256,9 @@ function DashboardPage() {
             <Link to="/home/lessons">
               <h3 className={styles.menuItem}>
                 <img
-                  src="../images/icons/course.png"
+                  src={courseIcon}
                   className={styles.menuIcon}
+                  alt="Courses icon"
                 />
                 Lesson
               </h3>
@@ -259,8 +267,9 @@ function DashboardPage() {
             <Link to="/home/courses">
               <h3 className={styles.menuItem}>
                 <img
-                  src="../images/icons/lesson.png"
+                  src={lessonIcon}
                   className={styles.menuIcon}
+                  alt="Lessons icon"
                 />
                 Course
               </h3>
@@ -269,8 +278,9 @@ function DashboardPage() {
             <Link to="/home/classrooms">
               <h3 className={styles.menuItem}>
                 <img
-                  src="../images/icons/classroom.png"
+                  src={classroomIcon}
                   className={styles.menuIcon}
+                  alt="Classrooms icon"
                 />
                 Classroom
               </h3>
@@ -280,8 +290,9 @@ function DashboardPage() {
               <Link to="/focus" onClick={openFocusPrompt}>
                 <h3 className={styles.menuItem}>
                   <img
-                    src="../images/icons/focus.png"
+                    src={focusIcon}
                     className={styles.menuIcon}
+                    alt="Focus icon"
                   />
                   Focus Mode
                 </h3>
@@ -292,8 +303,9 @@ function DashboardPage() {
               <Link to="/home/report">
                 <h3 className={styles.menuItem}>
                   <img
-                    src="../images/icons/view_report.png"
+                    src={reportIcon}
                     className={styles.menuIcon}
+                    alt="Reports icon"
                   />
                   Report
                 </h3>
@@ -304,8 +316,9 @@ function DashboardPage() {
               <Link to="/home/control">
                 <h3 className={styles.menuItem}>
                   <img
-                    src="../images/icons/control_panel.png"
+                    src={controlIcon}
                     className={styles.menuIcon}
+                    alt="Control panel icon"
                   />
                   Control Panel
                 </h3>
@@ -317,8 +330,9 @@ function DashboardPage() {
             <Link onClick={logOutUser}>
               <h3 className={styles.menuItem}>
                 <img
-                  src="../images/icons/logout.png"
+                  src={logoutIcon}
                   className={styles.menuIcon}
+                  alt="Logout icon"
                 />
                 Log Out
               </h3>

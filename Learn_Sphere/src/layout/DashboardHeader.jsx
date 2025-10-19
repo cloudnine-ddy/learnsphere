@@ -1,6 +1,7 @@
 import React from "react";
 
 import styles from "./DashboardHeader.module.css";
+import userIcon from "@images/icons/user.png";
 
 function DashboardHeader({ username }) {
   return (
@@ -15,8 +16,8 @@ function DashboardHeader({ username }) {
 
         <img
           className={styles.userIcon}
-          src="../images/icons/user.png"
-          alt="user-icon"
+          src={userIcon}
+          alt="user icon"
         />
       </div>
     </div>

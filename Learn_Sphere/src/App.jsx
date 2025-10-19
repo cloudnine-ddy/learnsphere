@@ -10,7 +10,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/MA_THURSDAY5PM_TEAM3">
       <Routes>
         <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/reg" element={<RegisterPage />} />

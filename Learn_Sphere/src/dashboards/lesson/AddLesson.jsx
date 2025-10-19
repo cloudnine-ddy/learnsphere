@@ -14,6 +14,7 @@ import AddToList from "../../components/selectable_addable/AddToList";
 import AddFromList from "../../components/selectable_addable/AddFromList";
 import SelectOneFromList from "../../components/selectable_addable/SelectOneFromList";
 import SelectStatus from "../../components/selectable_addable/SelectStatus";
+import backIcon from "@images/icons/goback.png";
 
 function AddLesson({ instructorList, prerequisiteOptions }) {
     const [lesson, setLesson] = useState({
@@ -204,7 +205,7 @@ function AddLesson({ instructorList, prerequisiteOptions }) {
             <div className={styles.infoFooter}>
                 <div className={styles.footerActions}>
                     <button type="button" className={styles.backButton} onClick={handleBack} isEnabled={isEnabled}>
-                        <img src="images/icons/goback.png" alt="Back" className={styles.backIcon} />
+                        <img src={backIcon} alt="Back" className={styles.backIcon} />
                         <span>Back</span>
                     </button>
                     <Button onClick={submitForm} label="Add" isEnabled={isEnabled}/>

@@ -15,6 +15,7 @@ import InfoBlock from "../../components/display/InfoBlock";
 import MessageBox from "../../components/display/MessageBox";
 import SingleButtonMessageBox from "../../components/display/SingleButtonMessageBox";
 import { getStudentLesson } from "../../components/studentLesson";
+import backIcon from "@images/icons/goback.png";
 
 function ViewLesson({ userData }) {
   let navigate = useNavigate();
@@ -206,7 +207,7 @@ function ViewLesson({ userData }) {
           onClick={handleBack}
         >
           <img
-            src="images/icons/goback.png"
+            src={backIcon}
             alt="Back"
             className={styles.backIcon}
           />
