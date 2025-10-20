@@ -17,6 +17,7 @@ import SelectOneFromList from "../../components/selectable_addable/SelectOneFrom
 import SelectStatus from "../../components/selectable_addable/SelectStatus";
 import InfoBlock from "../../components/display/InfoBlock";
 import { getListOfStudentsFromCourse } from "../../components/getStudentCourse";
+import backIcon from "@images/icons/goback.png";
 
 function AddClassroom({
   courseOptions = [],
@@ -433,7 +434,7 @@ function AddClassroom({
             isEnabled={isEnabled}
           >
             <img
-              src="images/icons/goback.png"
+              src={backIcon}
               alt="Back"
               className={styles.backIcon}
             />

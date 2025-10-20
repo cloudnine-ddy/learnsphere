@@ -15,6 +15,7 @@ import AddFromList from "../../components/selectable_addable/AddFromList";
 import SelectOneFromList from "../../components/selectable_addable/SelectOneFromList";
 import SelectStatus from "../../components/selectable_addable/SelectStatus";
 import InfoBlock from "../../components/display/InfoBlock";
+import backIcon from "@images/icons/goback.png";
 
 function AddCourse({ instructorList, prerequisiteOptions }) {
   const [course, setCourse] = useState({
@@ -221,7 +222,7 @@ function AddCourse({ instructorList, prerequisiteOptions }) {
             isEnabled={isEnabled}
           >
             <img
-              src="images/icons/goback.png"
+              src={backIcon}
               alt="Back"
               className={styles.backIcon}
             />

@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import styles from "./LessonCard.module.css";
+import lessonIcon from "@images/icons/atom.png";
 
 function LessonCard({
   lessonID,
@@ -15,7 +16,7 @@ function LessonCard({
     <Link to={href}>
       <div className={styles.lessonCard}>
         <div className={styles.lessonIcon}>
-          <img src="images/icons/atom.png" alt="" />
+          <img src={lessonIcon} alt="Lesson icon" />
         </div>
         <div className={styles.lessonInfo}>
           <p className={styles.lessonId}>{lessonID}</p>

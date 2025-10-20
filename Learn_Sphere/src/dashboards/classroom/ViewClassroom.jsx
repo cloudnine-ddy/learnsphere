@@ -20,6 +20,7 @@ import {
 } from "../../components/studentLesson";
 import { addStudentClassroom, deleteStudentClassroom, deleteStudentClassroomByStudentID } from "../../components/studentClassroom";
 import styles from "./ViewClassroom.module.css";
+import backIcon from "@images/icons/goback.png";
 
 import InfoBlock from "../../components/display/InfoBlock";
 import MessageBox from "../../components/display/MessageBox";
@@ -516,10 +517,7 @@ function ViewClassroom({ userData }) {
                       <tbody>
                         {request.map((reqSnap) => {
                           const data = reqSnap.data();
-                          const [, rawName = ""] = (
-                            data.request_student_name || ""
-                          ).split(":");
-                          const studentName = rawName.trim() || "—";
+                          const studentName = data.request_student_name.trim() || "—";
                           return (
                             <tr key={reqSnap.id}>
                               <td>{studentName || "—"}</td>
@@ -578,7 +576,7 @@ function ViewClassroom({ userData }) {
           onClick={handleBack}
         >
           <img
-            src="images/icons/goback.png"
+            src={backIcon}
             alt="Back"
             className={styles.backIcon}
           />

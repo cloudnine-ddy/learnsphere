@@ -18,6 +18,7 @@ import { checkClassroomDate } from "../../components/getClassroom";
 import styles from "./ViewCourse.module.css";
 
 import InfoBlock from "../../components/display/InfoBlock";
+import backIcon from "@images/icons/goback.png";
 import MessageBox from "../../components/display/MessageBox";
 import SingleButtonMessageBox from "../../components/display/SingleButtonMessageBox";
 import LessonCard from "../../components/clickable/LessonCard";
@@ -297,7 +298,7 @@ function ViewCourse({ userData }) {
           onClick={handleBack}
         >
           <img
-            src="images/icons/goback.png"
+            src={backIcon}
             alt="Back"
             className={styles.backIcon}
           />

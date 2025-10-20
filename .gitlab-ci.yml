@@ -1,0 +1,31 @@
+# .gitlab-ci.yml
+stages:
+  - deploy
+
+pages:
+  stage: deploy
+  tags:
+    - FIT2101
+  before_script:
+    - |
+      if ! command -v node >/dev/null 2>&1; then
+        echo "Node.js not found; installing Node.js 20..."
+        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+        sudo apt-get update
+        sudo apt-get install -y nodejs
+      fi
+      node --version
+      npm --version
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+  script:
+    - npm ci
+    - npm run build
+    - mv dist public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'

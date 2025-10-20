@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import InputField from "../typable/InputField";
 import styles from "./SearchBar.module.css";
+import searchIcon from "@images/icons/search.png";
 
 function SearchBar({ usersFunction, deleteHandler }) {
   const [searchValue, setSearchValue] = useState("");
@@ -56,8 +57,8 @@ function SearchBar({ usersFunction, deleteHandler }) {
           onClick={() => setSearchValue(searchBar)}
         >
           <img
-            src="images/icons/search.png"
-            alt=""
+            src={searchIcon}
+            alt="Search"
             className={styles.searchIcon}
           />
         </button>

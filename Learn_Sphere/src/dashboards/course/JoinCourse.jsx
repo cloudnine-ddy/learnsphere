@@ -9,6 +9,7 @@ import styles from "./JoinCourse.module.css";
 
 import JoinCourseCard from "../../components/clickable/JoinCourseCard";
 import MessageBox from "../../components/display/MessageBox";
+import backIcon from "@images/icons/goback.png";
 
 function JoinCourse({ userData }) {
   const navigate = useNavigate();
@@ -84,7 +85,7 @@ function JoinCourse({ userData }) {
           onClick={handleBack}
         >
           <img
-            src="images/icons/goback.png"
+            src={backIcon}
             alt="Back"
             className={styles.backIcon}
           />

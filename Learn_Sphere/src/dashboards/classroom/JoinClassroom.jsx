@@ -7,6 +7,7 @@ import JoinClassroomCard from "../../components/clickable/JoinClassroomCard";
 import { getClassroomsNonJoin } from "../../components/getClassroom";
 import MessageBox from "../../components/display/MessageBox";
 import SingleButtonMessageBox from "../../components/display/SingleButtonMessageBox";
+import backIcon from "@images/icons/goback.png";
 
 function JoinClassroom({ userData }) {
   const navigate = useNavigate();
@@ -108,7 +109,7 @@ function JoinClassroom({ userData }) {
           onClick={handleBack}
         >
           <img
-            src="images/icons/goback.png"
+            src={backIcon}
             alt="Back"
             className={styles.backIcon}
           />
