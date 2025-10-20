@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import styles from "./FocusPage.module.css";
@@ -16,46 +16,17 @@ function FocusPage() {
   const parsed = Number(rawDuration);
   const focusMinutes =
     Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 25;
-  const initialSeconds = focusMinutes * 60;
+  const totalSeconds = focusMinutes * 60;
 
-  const [totalSeconds, setTotalSeconds] = useState(initialSeconds);
-  const [remainingTime, setRemainingTime] = useState(initialSeconds);
+  const [remainingTime, setRemainingTime] = useState(totalSeconds);
   const [isRunning, setIsRunning] = useState(true);
   const [tasks, setTasks] = useState([]);
   const [taskInput, setTaskInput] = useState("");
   const [showGiveUpPrompt, setShowGiveUpPrompt] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState("");
   const [confirmationError, setConfirmationError] = useState("");
-  const [showCompletionPrompt, setShowCompletionPrompt] = useState(false);
-  const [newDurationInput, setNewDurationInput] = useState(
-    String(Math.max(focusMinutes, 1))
-  );
-  const [durationError, setDurationError] = useState("");
 
-  const resetSession = useCallback((seconds) => {
-    const safeSeconds = Math.max(0, Math.floor(seconds));
-    const fallbackMinutes = Math.max(
-      1,
-      Math.floor(safeSeconds / 60) || 0
-    );
-
-    setTotalSeconds(safeSeconds);
-    setRemainingTime(safeSeconds);
-    setIsRunning(true);
-    setTasks([]);
-    setTaskInput("");
-    setShowGiveUpPrompt(false);
-    setConfirmationInput("");
-    setConfirmationError("");
-    setShowCompletionPrompt(false);
-    setDurationError("");
-    setNewDurationInput(String(fallbackMinutes));
-  }, []);
-
-  const progress =
-    totalSeconds > 0
-      ? ((totalSeconds - remainingTime) / totalSeconds) * 100
-      : 0;
+  const progress = ((totalSeconds - remainingTime) / totalSeconds) * 100;
 
   const formatTime = (sec) => {
     const m = String(Math.floor(sec / 60)).padStart(2, "0");
@@ -73,20 +44,14 @@ function FocusPage() {
   }, [isRunning, remainingTime]);
 
   useEffect(() => {
-    resetSession(initialSeconds);
-  }, [initialSeconds, resetSession]);
-
-  useEffect(() => {
-    if (remainingTime === 0 && totalSeconds > 0) {
-      setIsRunning(false);
-      setShowGiveUpPrompt(false);
-      setDurationError("");
-      setNewDurationInput(
-        String(Math.max(1, Math.floor(totalSeconds / 60)))
-      );
-      setShowCompletionPrompt(true);
-    }
-  }, [remainingTime, totalSeconds]);
+    setRemainingTime(totalSeconds);
+    setIsRunning(true);
+    setTasks([]);
+    setTaskInput("");
+    setShowGiveUpPrompt(false);
+    setConfirmationInput("");
+    setConfirmationError("");
+  }, [totalSeconds]);
 
   const handleTaskSubmit = (event) => {
     event.preventDefault();
@@ -124,39 +89,6 @@ function FocusPage() {
     setConfirmationError(
       "That phrase does not match. Please type it exactly or stay focused."
     );
-  };
-
-  const handleCompletionHome = () => {
-    setShowCompletionPrompt(false);
-    navigate("/home");
-  };
-
-  const handleCompletionRestart = () => {
-    const parsedDuration = Number(newDurationInput);
-
-    if (!Number.isFinite(parsedDuration) || parsedDuration <= 0) {
-      setDurationError("Enter a positive number of minutes.");
-      return;
-    }
-
-    if (!Number.isInteger(parsedDuration)) {
-      setDurationError("Please enter a whole number of minutes.");
-      return;
-    }
-
-    if (parsedDuration > 240) {
-      setDurationError("Let's keep focus sessions under 240 minutes.");
-      return;
-    }
-
-    const minutes = parsedDuration;
-    const nextSeconds = minutes * 60;
-
-    resetSession(nextSeconds);
-
-    if (minutes !== focusMinutes) {
-      navigate(`/focus?duration=${minutes}`, { replace: true });
-    }
   };
 
   return (
@@ -247,67 +179,6 @@ function FocusPage() {
                 onClick={handleGiveUpConfirm}
               >
                 Give Up Focus
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {showCompletionPrompt && (
-        <div className={styles.overlay} role="dialog" aria-modal="true">
-          <div className={styles.modal}>
-            <h3 className={styles.completionTitle}>Focus session complete!</h3>
-            <p className={styles.completionMessage}>
-              Nice work staying on task. What would you like to do next?
-            </p>
-            <div className={styles.completionForm}>
-              <label
-                htmlFor="next-session-duration"
-                className={styles.completionLabel}
-              >
-                Start another session (minutes)
-              </label>
-              <div className={styles.durationInputRow}>
-                <input
-                  id="next-session-duration"
-                  type="number"
-                  min={1}
-                  max={240}
-                  step={1}
-                  className={styles.durationInput}
-                  value={newDurationInput}
-                  onChange={(event) => {
-                    setNewDurationInput(event.target.value);
-                    setDurationError("");
-                  }}
-                  aria-describedby={
-                    durationError ? "next-session-duration-error" : undefined
-                  }
-                />
-                <span className={styles.durationSuffix}>min</span>
-              </div>
-            </div>
-            {durationError && (
-              <p
-                id="next-session-duration-error"
-                className={styles.completionError}
-              >
-                {durationError}
-              </p>
-            )}
-            <div className={styles.completionActions}>
-              <button
-                type="button"
-                className={styles.homeButton}
-                onClick={handleCompletionHome}
-              >
-                Go to Home
-              </button>
-              <button
-                type="button"
-                className={styles.restartButton}
-                onClick={handleCompletionRestart}
-              >
-                Start New Session
               </button>
             </div>
           </div>
