@@ -1,31 +1,25 @@
 # .gitlab-ci.yml
-stages:
-  - deploy
-
 pages:
   stage: deploy
   tags:
     - FIT2101
-  before_script:
-    - |
-      if ! command -v node >/dev/null 2>&1; then
-        echo "Node.js not found; installing Node.js 20..."
-        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-        sudo apt-get update
-        sudo apt-get install -y nodejs
-      fi
-      node --version
-      npm --version
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
     paths:
       - node_modules/
   script:
-    - npm ci
+    # ✅ 第一步：安装 Node.js + npm（因为 Shell Runner 没有自带）
+    - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+    - apt-get update && apt-get install -y nodejs
+
+    # ✅ 第二步：安装依赖 & 构建
+    - npm install
     - npm run build
+
+    # ✅ 第三步：移动构建结果到 public
     - mv dist public
+
   artifacts:
     paths:
       - public
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "courseFrontEnd"'
+  only:
+    - courseFrontEnd
