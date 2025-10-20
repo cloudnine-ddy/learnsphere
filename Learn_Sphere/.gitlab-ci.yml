@@ -1,3 +1,4 @@
+# .gitlab-ci.yml
 pages:
   stage: deploy
   tags:
@@ -6,11 +7,17 @@ pages:
     paths:
       - node_modules/
   script:
-    - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -   # ✅ 安装 Node.js 源
-    - apt-get install -y nodejs                                  # ✅ 安装 node + npm
+    # ✅ 第一步：安装 Node.js 和 npm（Shell Runner 必须手动装）
+    - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+    - apt-get install -y nodejs
+
+    # ✅ 第二步：安装依赖 & 构建
     - npm ci
     - npm run build
+
+    # ✅ 第三步：准备 GitLab Pages 目录
     - mv dist public
+
   artifacts:
     paths:
       - public
