@@ -1,19 +1,18 @@
-# .gitlab-ci.yml
-image: node:20
-
 pages:
   stage: deploy
   tags:
-    - FIT2101 
+    - FIT2101
   cache:
     paths:
       - node_modules/
   script:
+    - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -   # ✅ 安装 Node.js 源
+    - apt-get install -y nodejs                                  # ✅ 安装 node + npm
     - npm ci
     - npm run build
-    - mv dist public   # Pages 会发布 public 目录
+    - mv dist public
   artifacts:
     paths:
       - public
-  rules:
-    - if: $CI_COMMIT_BRANCH == "courseFrontEnd"   # 如果你用的是 master，就改成 "master"
+  only:
+    - courseFrontEnd
