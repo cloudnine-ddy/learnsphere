@@ -56,7 +56,7 @@ function SearchBar({ usersFunction, deleteHandler }) {
           onClick={() => setSearchValue(searchBar)}
         >
           <img
-            src="images/icons/search.png"
+            src="images/icons/add.png"
             alt=""
             className={styles.searchIcon}
           />
