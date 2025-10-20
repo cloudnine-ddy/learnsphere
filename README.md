@@ -3,11 +3,11 @@
 **Product of** ©weShowAgile
 
 Developers: [in alphabetical order] <br>
-- Chin Min Hao [ 34474463] 
-- Joanne Youssel Rahmanto  [ 34881565 ] 
-- Lai Cen Yee [ 36243191 ] 
-- Ooi Jing wee (Nick) [ 35085320 ] 
-- Ti Jia Don (Jorden) [ 34896104 ] 
+- Chin Min Hao [ 34474463]
+- Joanne Youssel Rahmanto  [ 34881565 ]
+- Lai Cen Yee [ 36243191 ]
+- Ooi Jing wee (Nick) [ 35085320 ]
+- Ti Jia Don (Jorden) [ 34896104 ]
 
 
 ## Important Links to external sites
@@ -45,11 +45,11 @@ All meeting minutes can be found in the "Meeting Minutes" folder on Google Drive
 
 - The contribution and work log for each sub-task can be found in **Jira**. Each sub-task includes a detailed work log.
 
-## Other Documentation 
+## Other Documentation
 
 ### Team Journal
 
-Since our stand-up meetings are held twice a week (on Thursday and Sunday), not all issues are captured in real-time. Many problems arise and are resolved in between these meetings, which means they may not be discussed during stand-ups. 
+Since our stand-up meetings are held twice a week (on Thursday and Sunday), not all issues are captured in real-time. Many problems arise and are resolved in between these meetings, which means they may not be discussed during stand-ups.
 
 To ensure nothing is overlooked and to help improve the next sprint, this **Team Journal** serves as a record of all activities and challenges.
 
@@ -73,7 +73,7 @@ The test cases for teachers focus on actions and functionalities that are specif
 
 
 
-### Sprint 2 Test Cases 
+### Sprint 2 Test Cases
 
 In Sprint 2, the test cases are more focused on user stories instead of separate roles becuase during Sprint 2, the functionalities are somewhat dependant on each other.
 
