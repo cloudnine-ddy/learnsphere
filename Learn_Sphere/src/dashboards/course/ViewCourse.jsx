@@ -7,6 +7,7 @@ import { getCourse } from "../../components/getCourses";
 import {
   getListOfCoursesFromStudent,
   getListOfStudentsFromCourse,
+  checkCourseCompletion,
 } from "../../components/getStudentCourse";
 import { getLessonByIDAndName } from "../../components/getLessons";
 import { getCurrentUser, getUserInfo } from "../../components/manageUsers";
@@ -92,6 +93,7 @@ function ViewCourse({ userData }) {
       let lessonCodes = lessons.map((lesson) => {return lesson.data().lessonID});
       calculateStudentProgress(userData.id, lessonCodes)
       .then((progress) => {
+        console.log(progress);
         setCourseProgress(progress.toFixed(2)); // remove nulls
       })
     }
@@ -122,11 +124,14 @@ function ViewCourse({ userData }) {
       ]);
 
       if (students && students.length > 0) {
-        setMessage(
-          "This course already has enrolled students. Editing is disabled to protect existing enrollments."
-        );
-        setShowMessageBox(true);
-        return;
+        const canEdit = await checkCourseCompletion(course.courseID);
+        if (!canEdit) {
+          setMessage(
+            "Some students have not completed the course. Editing is disabled."
+          );
+          setShowMessageBox(true);
+          return;
+        }
       }
 
       const { hasClassroom, allEnded } = classroomCheck;
