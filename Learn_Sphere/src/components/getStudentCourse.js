@@ -95,7 +95,7 @@ export async function getListOfStudentsFromCourse(courseID) {
     );
 
     return students; // array of student documents
-    
+
   } catch (error) {
     console.error("Error fetching students from courses:", error);
     throw error;
@@ -103,3 +103,37 @@ export async function getListOfStudentsFromCourse(courseID) {
 }
 
 
+export async function checkCourseCompletion(courseID) {
+  try {
+    // Step 1: Get all students for the course
+    const students = await getListOfStudentsFromCourse(courseID);
+    if (students.length === 0) return true; // no students, safe to edit
+
+    const studentIDs = students.map((s) => s.id);
+
+    // Step 2: Check course completion for each student
+    const chunks = [];
+    for (let i = 0; i < studentIDs.length; i += 10) {
+      const batch = studentIDs.slice(i, i + 10);
+      const scQuery = query(
+        collection(db, "student_course"),
+        where("student_course_studentId", "in", batch),
+        where("student_course_courseId", "==", courseID)
+      );
+      chunks.push(getDocs(scQuery));
+    }
+
+    const results = await Promise.all(chunks);
+
+    // Step 3: Check if all students have completed the course
+    const allDocs = results.flatMap((snapshot) => snapshot.docs);
+    const allCompleted = allDocs.every(
+      (doc) => doc.data().student_course_courseCompletion === 100
+    );
+
+    return allCompleted; // true if editing allowed
+  } catch (error) {
+    console.error("Error checking course edit eligibility:", error);
+    return false; // safer to disallow edit if error occurs
+  }
+}
