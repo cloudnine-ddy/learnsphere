@@ -233,3 +233,42 @@ export async function updateDurationInClassroom(classroomId, durationWeeks) {
     throw error;
   }
 }
+
+export async function autoArchiveEndedClassrooms() {
+  try {
+    const now = new Date();
+    const snapshot = await getDocs(collection(db, "classrooms"));
+    const updates = [];
+
+    snapshot.forEach(async (docSnap) => {
+      const data = docSnap.data();
+
+      if (!data.classroom_endDate) return;
+
+      // Convert to Date object safely
+      const endDate = new Date(data.classroom_endDate);
+
+      if (endDate < now && data.classroom_status === "Published") {
+        const classroomRef = doc(db, "classrooms", docSnap.id);
+
+        await updateDoc(classroomRef, {
+          classroom_status: "Archived",
+          classroom_updatedDate: new Date().toISOString(),
+        });
+
+        console.log(
+          `📦 Archived classroom "${data.classroom_name}" (${data.classroom_id}) — Ended on ${endDate.toDateString()}`
+        );
+        updates.push(data.classroom_id);
+      }
+    });
+
+    if (updates.length > 0) {
+      console.log(`✅ Auto-archived ${updates.length} classrooms.`);
+    } else {
+      console.log("ℹ️ No classrooms needed archiving.");
+    }
+  } catch (error) {
+    console.error("❌ Error auto-archiving classrooms:", error);
+  }
+}

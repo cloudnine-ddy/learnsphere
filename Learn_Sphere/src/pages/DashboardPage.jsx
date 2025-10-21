@@ -17,6 +17,7 @@ import {
 } from "../components/manageUsers";
 import { getLessons } from "../components/getLessons";
 import { getCourses } from "../components/getCourses";
+import { autoArchiveEndedClassrooms } from "../components/updateClassrooms";
 
 import styles from "./DashboardPage.module.css";
 import courseIcon from "@images/icons/course.png";
@@ -196,6 +197,13 @@ function DashboardPage() {
     return () => {
       cancelled = true;
     };
+  }, [userData]);
+
+  useEffect(() => {
+    if (!userData || userData.role === "student") return;
+
+    console.log("🧹 Checking for ended classrooms to archive...");
+    autoArchiveEndedClassrooms();
   }, [userData]);
 
   const logOutUser = async () => {
