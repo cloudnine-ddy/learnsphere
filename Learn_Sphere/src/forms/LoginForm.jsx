@@ -105,7 +105,7 @@ function LoginForm({ showError, setShowError }) {
         <div className={styles.infoFooter}>
           <Button type="submit" label="Login" isEnabled={isEnabled}/>
           <div className={styles.noAccount}>
-            No account?<a href="/reg" isEnabled={isEnabled}> Sign Up</a>
+            No account?<a href="/MA_THURSDAY5PM_TEAM3/reg" isEnabled={isEnabled}> Sign Up</a>
           </div>
         </div>
       </div>
