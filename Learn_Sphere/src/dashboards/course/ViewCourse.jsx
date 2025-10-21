@@ -308,6 +308,8 @@ function ViewCourse({ userData }) {
 
       {showDelete && (
         <MessageBox
+          label="Delete Course"
+          message="Are you sure you want to delete this course?"
           onCancel={() => setShowDelete(false)}
           onConfirm={handleDelete}
         />

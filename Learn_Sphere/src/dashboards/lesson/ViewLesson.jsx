@@ -217,6 +217,8 @@ function ViewLesson({ userData }) {
 
       {showDelete && (
         <MessageBox
+          label="Delete Lesson"
+          message="Are you sure you want to delete this lesson?"
           onCancel={() => setShowDelete(false)}
           onConfirm={handleDelete}
         />

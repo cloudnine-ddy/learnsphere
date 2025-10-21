@@ -586,6 +586,8 @@ function ViewClassroom({ userData }) {
 
       {showDelete && (
         <MessageBox
+          label = "Delete Classroom"
+          message = "Are you sure you want to delete this classroom?"
           onCancel={() => setShowDelete(false)}
           onConfirm={handleDelete}
         />
