@@ -55,6 +55,10 @@ To ensure nothing is overlooked and to help improve the next sprint, this **Team
 
 - **Team Journal**: [Team Journal](https://docs.google.com/document/d/1E4uwgjvjkWO45nlbh2NdftzkDFSCB2rqDzRnnkmMqyc/edit?usp=sharing)
 
+**Things to take into consideration for Team Journal:**
+
+The number of problems faced has steadily decreased from Sprint 1 to Sprint 3. This indicates that the actions taken in previous sprints have been effective and that the team has learned from past experiences. Sprint 2 saw fewer issues than Sprint 1, and Sprint 3 has continued this positive trend with even fewer challenges than Sprint 2.
+
 ---
 
 ### Sprint 1 Test Cases
