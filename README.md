@@ -23,7 +23,7 @@ Developers: [in alphabetical order] <br>
 
 - **Project Inception**: [Inception Document](https://docs.google.com/document/d/1DlTXxda6A-UzEcwqsiFDRGQRCP7Lfb23GWrcImaBrvc/edit?usp=sharing)
 - **Recordings**: [Sprint Planning and Stand-up Meetings](https://docs.google.com/document/d/1c2L8kPucugq2UMNGfXoXhL-K4MFMJzgK19VroMNWLm0/edit?usp=sharing)
-- **Retrospective**: [Retrospective Document Sprint 2](https://docs.google.com/document/d/1FMskVUFWyEHLXWTXSPal96XZwTKPQtkY/edit?usp=sharing&ouid=100047865276099939875&rtpof=true&sd=true)
+- **Retrospective**: [Retrospective Document Sprint 3](https://docs.google.com/document/d/1FWJPgfUTQm-mKbR-nUN7c2_wPw9fOBVw/edit?usp=sharing&ouid=100047865276099939875&rtpof=true&sd=true)
 - **Risk Register**: [Risk Register](https://docs.google.com/spreadsheets/d/1co_lQZgy7e2vIYkXu4s8Nhda-f-QMZG0vHhAoKv1t0Y/edit?usp=sharing)
 - **Backlog Refinement**: [Backlog Refinement](https://docs.google.com/spreadsheets/d/1QoBhJAGp9E2iim3nPc4RWk1b2wiZ3gdG9c1uyuKEmOo/edit?usp=sharing)
 - **User Stories**: [User Stories](https://docs.google.com/spreadsheets/d/1yOeCojXID0Mq7kr_h7rWS1kX14CKBlS7tl1Sb7yblW0/edit?usp=sharing)
@@ -55,7 +55,7 @@ To ensure nothing is overlooked and to help improve the next sprint, this **Team
 
 - **Team Journal**: [Team Journal](https://docs.google.com/document/d/1E4uwgjvjkWO45nlbh2NdftzkDFSCB2rqDzRnnkmMqyc/edit?usp=sharing)
 
-**Things to take into consideration for Team Journal:**
+**Things to acknowledge for Team Journal:**
 
 The number of problems faced has steadily decreased from Sprint 1 to Sprint 3. This indicates that the actions taken in previous sprints have been effective and that the team has learned from past experiences. Sprint 2 saw fewer issues than Sprint 1, and Sprint 3 has continued this positive trend with even fewer challenges than Sprint 2.
 
@@ -89,7 +89,10 @@ In Sprint 2, the test cases are more focused on user stories instead of separate
 
 ### Sprint 3 Test Cases
 
+- **Main Folder**: [Test Case Folder](https://drive.google.com/drive/folders/13oZfL-2fFpoPkg8U348CVxT1AYtJ_XLY?usp=drive_link)
 
+    - **Test Case PDF: [PDF Test Case Folder](https://drive.google.com/drive/folders/1OZS84fFhhtJTAFQzdt5z2DUn793TTJtZ?usp=drive_link)**
 
+    - **Test Cases Spreadsheet: [Spreadsheet Test Case Folder](https://drive.google.com/drive/folders/1fHzWxDep8ZnSI5PT6E8R71bAy7XtOAHt?usp=drive_link)**
 ---
 
