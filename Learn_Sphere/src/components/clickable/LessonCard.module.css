@@ -2,13 +2,13 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    background: rgb(199, 163, 255);
+    background: var(--card-background, linear-gradient(135deg, #c7a3ff, #a58bff));
     border-radius: 40px;
     max-height: 120px;
     width: 500px;
     padding: 15px;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
-    transition: 0.2ms ease;
+    transition: 0.2s ease;
 }
 
 

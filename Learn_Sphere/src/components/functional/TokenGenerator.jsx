@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import { useNavigate } from "react-router-dom";
 
 import {
-  getCurrentUser,
-  getUserInfo,
   getTokens,
   createToken,
-  useToken,
   removeToken,
 } from "../manageUsers";
 
@@ -21,16 +18,22 @@ function TokenGenerator({
   const [tokens, setTokens] = useState([]);
   let navigate = useNavigate("/home");
 
-  useEffect(() => {
-    //Runs when token state is changed
+  const fetchTokens = useCallback(() => {
     getTokens(role)
       .then((tokens) => {
-        setTokens(tokens);
+        const availableTokens = tokens.filter(
+          (token) => token.status !== "Used"
+        );
+        setTokens(availableTokens);
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [tokens]);
+  }, [role]);
+
+  useEffect(() => {
+    fetchTokens();
+  }, [fetchTokens]);
 
   const generateToken = () => {
     const randomToken =
@@ -38,6 +41,7 @@ function TokenGenerator({
     createToken(randomToken, role)
       .then(() => {
         console.log("success!");
+        fetchTokens();
       })
       .catch((error) => {
         if (error == "TRY_AGAIN") {
@@ -49,9 +53,13 @@ function TokenGenerator({
     //setTokens([...tokens, { value: randomToken, status: "Available" }]);
   };
 
-  const handleDelete = (token) => {
-    console.log(token);
-    removeToken(token.value);
+  const handleDelete = async (token) => {
+    try {
+      await removeToken(token.value);
+      fetchTokens();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -64,16 +72,6 @@ function TokenGenerator({
         {tokens.map((token, index) => (
           <div key={index} className={styles.tokenField}>
             <span className={styles.token}>{token.value}</span>
-
-            <span
-              className={
-                token.status === "Available"
-                  ? styles.tokenStatusAvailable
-                  : styles.tokenStatusUsed
-              }
-            >
-              {token.status}
-            </span>
 
             <button
               className={styles.deleteButton}

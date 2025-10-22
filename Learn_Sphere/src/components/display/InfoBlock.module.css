@@ -23,6 +23,11 @@
   text-align: left;
 }
 
+.multilineContent {
+  white-space: pre-line;
+  margin: 0;
+}
+
 .content ul {
   display: flex;
   flex-direction: column;
@@ -37,8 +42,9 @@
   font-size: 18px;
   color: black;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: left;
+  white-space: pre-line;
   transition: background 0.2s ease, transform 0.2s ease;
 }
 

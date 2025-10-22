@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
-import InputField from "../typable/InputField";
+import React, { useState, useEffect } from "react";
 import styles from "./SearchBar.module.css";
 import searchIcon from "@images/icons/search.png";
 
@@ -13,8 +12,7 @@ function SearchBar({ usersFunction, deleteHandler }) {
     usersFunction().then((res) => {
       setSelectedUsers(
         res.filter((user) => {
-          let fullName = `${user.firstName} ${user.lastName}`;
-          console.log(fullName, searchValue, fullName.includes(searchValue));
+          const fullName = `${user.firstName} ${user.lastName}`;
           return fullName.includes(searchValue);
         })
       );
@@ -24,8 +22,6 @@ function SearchBar({ usersFunction, deleteHandler }) {
   useEffect(() => {
     userRefresh();
   }, [searchValue]);
-
-  console.log(selectedUsers);
 
   function handleDelete(token) {
     deleteHandler(token).then(() => {
@@ -64,20 +60,25 @@ function SearchBar({ usersFunction, deleteHandler }) {
         </button>
       </div>
 
-      {selectedUsers.map((user) => (
-        <div className={styles.resultField}>
-          <span className={styles.resultItem}>
-            {`${user.firstName} ${user.lastName}`}
-          </span>
-
-          <button
-            className={styles.deleteButton}
-            onClick={() => handleDelete(user.id)}
+      <div className={styles.resultsList}>
+        {selectedUsers.map((user) => (
+          <div
+            key={user.id || `${user.firstName}-${user.lastName}`}
+            className={styles.resultField}
           >
-            Delete
-          </button>
-        </div>
-      ))}
+            <span className={styles.resultItem}>
+              {`${user.firstName} ${user.lastName}`}
+            </span>
+
+            <button
+              className={styles.deleteButton}
+              onClick={() => handleDelete(user.id)}
+            >
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

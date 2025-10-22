@@ -9,6 +9,50 @@ import ReportSquare from "../components/display/reportSquare";
 
 const EMPTY_STATS = { total: 0, active: 0, draft: 0, archived: 0, average: 0 };
 
+function normaliseName(value) {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return value.replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function buildInstructorIdentifiers(userData) {
+  if (!userData) {
+    return new Set();
+  }
+
+  const withTitle = normaliseName(
+    [userData.title, userData.firstName, userData.lastName]
+      .filter((part) => typeof part === "string" && part.trim().length > 0)
+      .join(" ")
+  );
+
+  const withoutTitle = normaliseName(
+    [userData.firstName, userData.lastName]
+      .filter((part) => typeof part === "string" && part.trim().length > 0)
+      .join(" ")
+  );
+
+  const identifiers = [withTitle, withoutTitle].filter(Boolean);
+
+  return new Set(identifiers);
+}
+
+function filterDocsByFields(docs, fieldNames, identifierSet) {
+  if (!(identifierSet instanceof Set) || identifierSet.size === 0) {
+    return [];
+  }
+
+  return docs.filter((docSnap) => {
+    const data = snapshotData(docSnap);
+
+    return fieldNames.some((fieldName) =>
+      identifierSet.has(normaliseName(data?.[fieldName]))
+    );
+  });
+}
+
 function snapshotData(docSnap) {
   return typeof docSnap?.data === "function" ? docSnap.data() : docSnap || {};
 }
@@ -179,9 +223,43 @@ function ReportDashboard({ userData }) {
           return;
         }
 
-        setLessonStats(calculateLessonStats(lessonDocs));
-        setCourseStats(calculateCourseStats(courseDocs));
-        setClassroomStats(calculateClassroomStats(classroomDocs));
+        const isInstructor = userData?.role === "instructor";
+        const instructorIdentifiers = isInstructor
+          ? buildInstructorIdentifiers(userData)
+          : null;
+        const hasInstructorIdentifiers =
+          instructorIdentifiers && instructorIdentifiers.size > 0;
+
+        const reportLessonDocs =
+          isInstructor && hasInstructorIdentifiers
+            ? filterDocsByFields(
+                lessonDocs,
+                ["owner", "lessonOwner"],
+                instructorIdentifiers
+              )
+            : lessonDocs;
+
+        const reportCourseDocs =
+          isInstructor && hasInstructorIdentifiers
+            ? filterDocsByFields(
+                courseDocs,
+                ["courseSupervisor", "courseSupervisorName"],
+                instructorIdentifiers
+              )
+            : courseDocs;
+
+        const reportClassroomDocs =
+          isInstructor && hasInstructorIdentifiers
+            ? filterDocsByFields(
+                classroomDocs,
+                ["classroom_instructor", "classroomInstructor"],
+                instructorIdentifiers
+              )
+            : classroomDocs;
+
+        setLessonStats(calculateLessonStats(reportLessonDocs));
+        setCourseStats(calculateCourseStats(reportCourseDocs));
+        setClassroomStats(calculateClassroomStats(reportClassroomDocs));
       } catch (error) {
         console.error("Failed to load report data:", error);
         if (!cancelled) {

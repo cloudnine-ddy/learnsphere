@@ -15,6 +15,15 @@ function InfoBlock({ title, content, renderItem }) {
           </ul>
         ) : React.isValidElement(content) ? (
           content
+        ) : typeof content === "string" ? (
+          <p className={styles.multilineContent}>
+            {content.split(/\r?\n/).map((line, index, array) => (
+              <React.Fragment key={index}>
+                {line}
+                {index < array.length - 1 && <br />}
+              </React.Fragment>
+            ))}
+          </p>
         ) : (
           <p>{content}</p>
         )}

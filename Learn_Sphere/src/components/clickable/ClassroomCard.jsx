@@ -1,8 +1,9 @@
-﻿import React from "react";
+import React, { useMemo } from "react";
 
 import { Link } from "react-router-dom";
 
 import styles from "./ClassroomCard.module.css";
+import { getCardPalette } from "./cardPalette";
 
 function ClassroomCard({
   classroomId,
@@ -11,9 +12,19 @@ function ClassroomCard({
   supervisor,
   href,
 }) {
+  const cardStyle = useMemo(() => {
+    const sourceKey = `${classroomId || ""}-${classroomName || ""}`;
+    const palette = getCardPalette(sourceKey.trim());
+    return {
+      "--card-background": palette.background,
+      "--card-accent": palette.accent,
+      "--card-muted": palette.muted,
+    };
+  }, [classroomId, classroomName]);
+
   return (
     <Link to={href}>
-      <div className={styles.card}>
+      <div className={styles.card} style={cardStyle}>
         <div className={styles.lessonInfo}>
           <p className={styles.lessonId}>{classroomId}</p>
           <p className={styles.lessonTitle}>{classroomName}</p>
@@ -21,7 +32,7 @@ function ClassroomCard({
           <p className={styles.lessonInstructor}>{supervisor}</p>
         </div>
 
-        <div className={styles.lessonExtraArea}></div>
+        <div className={styles.lessonExtraArea} />
       </div>
     </Link>
   );

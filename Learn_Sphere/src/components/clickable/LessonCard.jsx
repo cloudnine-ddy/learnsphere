@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { Link } from "react-router-dom";
 
 import styles from "./LessonCard.module.css";
 import lessonIcon from "@images/icons/atom.png";
+import { getCardPalette } from "./cardPalette";
 
 function LessonCard({
   lessonID,
@@ -12,9 +13,19 @@ function LessonCard({
   instructorName,
   href,
 }) {
+  const backgroundStyle = useMemo(() => {
+    const sourceKey = `${lessonID || ""}-${lessonTitle || ""}`;
+    const palette = getCardPalette(sourceKey.trim());
+    return {
+      "--card-background": palette.background,
+      "--card-accent": palette.accent,
+      "--card-muted": palette.muted,
+    };
+  }, [lessonID, lessonTitle]);
+
   return (
     <Link to={href}>
-      <div className={styles.lessonCard}>
+      <div className={styles.lessonCard} style={backgroundStyle}>
         <div className={styles.lessonIcon}>
           <img src={lessonIcon} alt="Lesson icon" />
         </div>
