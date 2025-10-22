@@ -52,7 +52,7 @@ export async function getStudentLesson(studentID, lessonID) {
     const studentLessonSnapshot = await getDocs(studentLessonQuery);
 
     return studentLessonSnapshot.docs;
-  } 
+  }
   catch (error) {
     console.error("Error fetching studentLesson:", error);
     throw error;
@@ -407,14 +407,14 @@ export async function handleStudentLessonMarking(studentID, classroom, lessonID,
 {
   if (studentID != null && lessonID != null)
   {
-  if (action == "Unmark")
+  if (action == "unmark")
   {
       updateStudentLessonCompletion(studentID, lessonID, "unchecked");
       updateStudentLessonPassFail(studentID, lessonID, "unchecked");
 
       let classes = await getListOfClassroomsFromStudent(studentID)
       let maxDate = new Date(Math.max(...classes.map((c) => {
-        return new Date(c.data().classroom_endDate).getTime(); 
+        return new Date(c.data().classroom_endDate).getTime();
       })));
 
       updateStudentLessonEndDate(studentID, lessonID, maxDate)
@@ -435,7 +435,7 @@ export async function handleStudentLessonMarking(studentID, classroom, lessonID,
       let classes = await getListOfClassroomsFromStudent(studentID);
       console.log(classes);
       maxDate = new Date(Math.max(...classes.map((c) => {
-        return new Date(c.data().classroom_endDate).getTime(); 
+        return new Date(c.data().classroom_endDate).getTime();
       })));
       console.log(maxDate);
     }
