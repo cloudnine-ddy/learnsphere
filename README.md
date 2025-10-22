@@ -3,11 +3,11 @@
 **Product of** ©weShowAgile
 
 Developers: [in alphabetical order] <br>
-- Chin Min Hao [ 34474463] 
-- Joanne Youssel Rahmanto  [ 34881565 ] 
-- Lai Cen Yee [ 36243191 ] 
-- Ooi Jing wee (Nick) [ 35085320 ] 
-- Ti Jia Don (Jorden) [ 34896104 ] 
+- Chin Min Hao [ 34474463]
+- Joanne Youssel Rahmanto  [ 34881565 ]
+- Lai Cen Yee [ 36243191 ]
+- Ooi Jing wee (Nick) [ 35085320 ]
+- Ti Jia Don (Jorden) [ 34896104 ]
 
 
 ## Important Links to external sites
@@ -25,8 +25,8 @@ Developers: [in alphabetical order] <br>
 - **Recordings**: [Sprint Planning and Stand-up Meetings](https://docs.google.com/document/d/1c2L8kPucugq2UMNGfXoXhL-K4MFMJzgK19VroMNWLm0/edit?usp=sharing)
 - **Retrospective**: [Retrospective Document Sprint 2](https://docs.google.com/document/d/1FMskVUFWyEHLXWTXSPal96XZwTKPQtkY/edit?usp=sharing&ouid=100047865276099939875&rtpof=true&sd=true)
 - **Risk Register**: [Risk Register](https://docs.google.com/spreadsheets/d/1co_lQZgy7e2vIYkXu4s8Nhda-f-QMZG0vHhAoKv1t0Y/edit?usp=sharing)
-- **Backlog Refinement**: [Backlog Refinement](https://docs.google.com/document/d/14LBP7Nnn5y3GTWeGZa5KuC3eu8w8kP4PqMqUOhK8Y_U/edit?usp=sharing)
-- **User Stories**: [Backlog Refinement](https://docs.google.com/spreadsheets/d/1yGPtNBCwDKY0w5ygV5y8DOZg6kFB10QI1kscDwUCL2Q/edit?usp=sharing)
+- **Backlog Refinement**: [Backlog Refinement](https://docs.google.com/spreadsheets/d/1QoBhJAGp9E2iim3nPc4RWk1b2wiZ3gdG9c1uyuKEmOo/edit?usp=sharing)
+- **User Stories**: [User Stories](https://docs.google.com/spreadsheets/d/1yOeCojXID0Mq7kr_h7rWS1kX14CKBlS7tl1Sb7yblW0/edit?usp=sharing)
 
 ### Meeting Minutes
 
@@ -39,17 +39,17 @@ All meeting minutes can be found in the "Meeting Minutes" folder on Google Drive
 
 ### Burndown Chart
 
-- **Burndown Chart**: [Burndown Chart](https://docs.google.com/document/d/1cddUIf7wE_Zb7vFktWCjJs3GZfY5JkS0gNwv9Z-uDCI/edit?usp=sharing)
+- **Burndown Chart**: [Burndown Chart](https://docs.google.com/document/d/1b-WBAg_JfzhHaNcQNs_WVhrI-Iv42rqsu558z04q0Iw/edit?usp=sharing)
 
 ### Contribution/Work Log
 
 - The contribution and work log for each sub-task can be found in **Jira**. Each sub-task includes a detailed work log.
 
-## Other Documentation 
+## Other Documentation
 
 ### Team Journal
 
-Since our stand-up meetings are held twice a week (on Thursday and Sunday), not all issues are captured in real-time. Many problems arise and are resolved in between these meetings, which means they may not be discussed during stand-ups. 
+Since our stand-up meetings are held twice a week (on Thursday and Sunday), not all issues are captured in real-time. Many problems arise and are resolved in between these meetings, which means they may not be discussed during stand-ups.
 
 To ensure nothing is overlooked and to help improve the next sprint, this **Team Journal** serves as a record of all activities and challenges.
 
@@ -73,7 +73,7 @@ The test cases for teachers focus on actions and functionalities that are specif
 
 
 
-### Sprint 2 Test Cases 
+### Sprint 2 Test Cases
 
 In Sprint 2, the test cases are more focused on user stories instead of separate roles becuase during Sprint 2, the functionalities are somewhat dependant on each other.
 
@@ -82,6 +82,10 @@ In Sprint 2, the test cases are more focused on user stories instead of separate
     - **Test Case PDF: [PDF Test Case Folder](https://drive.google.com/drive/folders/1PKppWPMZqFuz9eIwOCTeriSa4E_q6fKF?usp=sharing)**
 
     - **Test Cases Spreadsheet: [Spreadsheet Test Case Folder](https://drive.google.com/drive/folders/1UVNYvGKwDYun1LjRwdaD3zsLdQIvPEBL?usp=drive_link)**
+
+### Sprint 3 Test Cases
+
+
 
 ---
 
