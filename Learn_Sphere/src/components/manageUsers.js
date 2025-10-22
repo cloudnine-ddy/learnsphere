@@ -225,11 +225,12 @@ export async function createToken(token, role)
 
 export async function useToken(email, token, role)
 {
-    const existingToken = await getDoc(doc(db, "tokens", token));
+    const tokenRef = doc(db, "tokens", token);
+    const existingToken = await getDoc(tokenRef);
 
-    if (existingToken.data() != null && existingToken.data().role == role && !existingToken.data().users.includes(email))
+    if (existingToken.exists() && existingToken.data()?.role === role)
     {
-        await updateDoc(doc(db, "tokens", token), { status : "Used", users: [...existingToken.data().users, email]});
+        await deleteDoc(tokenRef);
         return true;
     }
     else
