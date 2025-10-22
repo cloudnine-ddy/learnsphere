@@ -191,8 +191,13 @@ function ViewClassroom({ userData }) {
   };
 
   const handleEdit = () => {
+    if (!classroom) return;
 
-      if (!classroom) return;
+    if (classroom.classroom_status === "Archived") {
+      setMessage("This classroom is archived. Editing is not allowed.");
+      setShowMessageBox(true);
+      return;
+    }
 
     if (classroom.classroom_status === "Published") {
       const parseDate = (str) => {
@@ -341,7 +346,9 @@ function ViewClassroom({ userData }) {
           <div className={styles.courseStatus}>
             {classroom != null ? classroom.classroom_status : "null"}
           </div>
-          {userData != null && userData.role != "student" && (
+          {userData != null &&
+            userData.role != "student" &&
+            classroom?.classroom_status !== "Archived" && (
             <button
               className={styles.smallButton}
               style={{ background: "#beb2a4", marginLeft: "auto" }}
