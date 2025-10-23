@@ -1,5 +1,7 @@
 # LearnSphere
 
+Link to LearnSphere: https://jtii0004.github.io/deploy/
+
 **Product of** ©weShowAgile
 
 Developers: [in alphabetical order] <br>
@@ -27,6 +29,7 @@ Developers: [in alphabetical order] <br>
 - **Risk Register**: [Risk Register](https://docs.google.com/spreadsheets/d/1co_lQZgy7e2vIYkXu4s8Nhda-f-QMZG0vHhAoKv1t0Y/edit?usp=sharing)
 - **Backlog Refinement**: [Backlog Refinement](https://docs.google.com/spreadsheets/d/1QoBhJAGp9E2iim3nPc4RWk1b2wiZ3gdG9c1uyuKEmOo/edit?usp=sharing)
 - **User Stories**: [User Stories](https://docs.google.com/spreadsheets/d/1yOeCojXID0Mq7kr_h7rWS1kX14CKBlS7tl1Sb7yblW0/edit?usp=sharing)
+- **Handover Document**: [Handover Document](https://docs.google.com/document/d/1ojVF92Uu0kA5xUIRLh1BbZ6I4Dk1jJFo4PewvZZOs3Y/edit?usp=sharing)
 
 ### Meeting Minutes
 
