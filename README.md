@@ -3,7 +3,7 @@
 A role-based learning management system for organising courses, classrooms, lessons, enrolment, progress, and reporting.
 
 > **Project status:** Completed university team MVP<br>
-> **Current portfolio status:** Private repository pending public-release and history review<br>
+> **Current portfolio status:** Public portfolio repository<br>
 > **Live demo:** Not currently maintained
 
 ## Overview
@@ -247,8 +247,8 @@ These points describe my personal contributions without claiming sole ownership 
 - Routing and Vite base-path configuration are tied to the original GitLab repository name and require adjustment for another hosting location.
 - Several legacy Firebase imports generate build warnings.
 - Firebase security rules and a clean standalone data environment have not been provisioned and validated from scratch.
-- Earlier Git history contains generated dependencies and old environment configuration; the current branch has been cleaned, but the history requires sanitisation before any public release.
-- The project remains a university team project and should not be made public without completing the required course, teammate, privacy, and secret review.
+- Earlier Git history includes generated dependencies and configuration from the team's now-retired development environment; the current branch has been cleaned, while deeper history polish is deferred.
+- This archived university team project is published with team approval and remains subject to the usage boundary below.
 
 ## License
 
