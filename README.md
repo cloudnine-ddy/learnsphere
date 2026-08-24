@@ -1,87 +1,255 @@
 # LearnSphere
 
-**Product of** ©weShowAgile
+A role-based learning management system for organising courses, classrooms, lessons, enrolment, progress, and reporting.
 
-Developers: [in alphabetical order] <br>
-- Chin Min Hao [ 34474463] 
-- Joanne Youssel Rahmanto  [ 34881565 ] 
-- Lai Cen Yee [ 36243191 ] 
-- Ooi Jing wee (Nick) [ 35085320 ] 
-- Ti Jia Don (Jorden) [ 34896104 ] 
+> **Project status:** Completed university team MVP<br>
+> **Current portfolio status:** Private repository pending public-release and history review<br>
+> **Live demo:** Not currently maintained
 
+## Overview
 
-## Important Links to external sites
+LearnSphere was developed as a five-person team project for a university software engineering process and management unit.
 
-### Project Management
+The platform brings student, instructor, and administrator workflows into one application:
 
-- **Jira**: [KAN Board](https://fit2101-team3-my-thurs.atlassian.net/jira/software/projects/KAN/boards/1?jql=&atlOrigin=eyJpIjoiOWMyMmExNzM0NTZkNDM2YTkzMDk5ODU5YTA2OTc3ZDgiLCJwIjoiaiJ9)
-- **Google Drive Folder**: [Project Files](https://drive.google.com/drive/folders/1hc3fUFpyoa_sdVji-5RgK7a7k_acnl8N?usp=drive_link)
-- **Git repository**: [MA_Thursday5pm_Team3](https://git.infotech.monash.edu/fit2101/fit2101-s2-2025/group-repo/MA_Thursday5pm_Team3/-/tree/1281453c403289bd85037d0a3e4664107604bde9/)
+- students can discover learning content, join courses and classrooms, track learning activities, and use a built-in focus mode;
+- instructors can create and manage lessons, courses, classrooms, enrolment, and student progress; and
+- administrators can manage users, registration tokens, and platform-level reporting.
 
-## Important Documentation
+The project was delivered across three Scrum sprints, combining product development with sprint planning, estimation, acceptance criteria, testing, reviews, and retrospectives.
 
+## Core workflows
 
-- **Project Inception**: [Inception Document](https://docs.google.com/document/d/1DlTXxda6A-UzEcwqsiFDRGQRCP7Lfb23GWrcImaBrvc/edit?usp=sharing)
-- **Recordings**: [Sprint Planning and Stand-up Meetings](https://docs.google.com/document/d/1c2L8kPucugq2UMNGfXoXhL-K4MFMJzgK19VroMNWLm0/edit?usp=sharing)
-- **Retrospective**: [Retrospective Document Sprint 2](https://docs.google.com/document/d/1FMskVUFWyEHLXWTXSPal96XZwTKPQtkY/edit?usp=sharing&ouid=100047865276099939875&rtpof=true&sd=true)
-- **Risk Register**: [Risk Register](https://docs.google.com/spreadsheets/d/1co_lQZgy7e2vIYkXu4s8Nhda-f-QMZG0vHhAoKv1t0Y/edit?usp=sharing)
-- **Backlog Refinement**: [Backlog Refinement](https://docs.google.com/document/d/14LBP7Nnn5y3GTWeGZa5KuC3eu8w8kP4PqMqUOhK8Y_U/edit?usp=sharing)
-- **User Stories**: [Backlog Refinement](https://docs.google.com/spreadsheets/d/1yGPtNBCwDKY0w5ygV5y8DOZg6kFB10QI1kscDwUCL2Q/edit?usp=sharing)
+### Student
 
-### Meeting Minutes
+- Register and sign in through Firebase Authentication.
+- Join available courses and classrooms.
+- Browse lessons, assignments, and enrolled learning content.
+- View course and classroom information and learning progress.
+- Use a configurable focus timer with a temporary task list and visual progress feedback.
 
-All meeting minutes can be found in the "Meeting Minutes" folder on Google Drive. Specific folders for each type of meeting are listed below:
+### Instructor
 
-- **Meeting Minutes Folder**: [Meeting Minutes](https://drive.google.com/drive/folders/1snKjrnk0tm9FxOIuIuHMUBCsDwZbqo08?usp=sharing)
-    - **Client Meeting Minutes**: [Client Meetings](https://drive.google.com/drive/folders/163HR4RVN8v8yXfugNl1bX3LRLfGHiTwe?usp=drive_link)
-    - **Stand-up Meeting Minutes**: [Stand-up Meetings](https://drive.google.com/drive/folders/1goUbfl-iwLfebuSoFu3EbwJ382JkM983?usp=drive_link)
-    - **Sprint Planning Meeting Minutes**: [Sprint Planning](https://drive.google.com/drive/folders/14mKhdqg5L_EC3L72zUUeCYQwDd_PR2vc?usp=sharing)
+- Create, edit, view, archive, and manage lessons.
+- Organise lessons into courses with prerequisites and credit information.
+- Create and manage classrooms, enrolment, dates, assignments, and student lists.
+- Review and update student learning progress.
+- View reports scoped to the instructor's learning content.
 
-### Burndown Chart
+### Administrator
 
-- **Burndown Chart**: [Burndown Chart](https://docs.google.com/document/d/1cddUIf7wE_Zb7vFktWCjJs3GZfY5JkS0gNwv9Z-uDCI/edit?usp=sharing)
+- Generate and revoke registration tokens for students and instructors.
+- Search and manage platform users.
+- Access platform-wide course, classroom, lesson, and participation summaries.
+- Review active, draft, and archived content.
 
-### Contribution/Work Log
+## Architecture
 
-- The contribution and work log for each sub-task can be found in **Jira**. Each sub-task includes a detailed work log.
+```mermaid
+flowchart LR
+    User[Student / Instructor / Administrator]
+    SPA[React and Vite SPA]
+    Router[Role-aware routes and dashboards]
+    Services[Client data-service modules]
+    Auth[Firebase Authentication]
+    Firestore[Cloud Firestore]
+    Pipeline[GitLab CI]
+    Build[Vite production build]
+    Pages[Original GitLab Pages deployment]
 
-## Other Documentation 
+    User --> SPA
+    SPA --> Router
+    Router --> Services
+    Services --> Auth
+    Services --> Firestore
+    Pipeline --> Build
+    Build --> Pages
+```
 
-### Team Journal
+The application is implemented as a React single-page application. Role-aware pages and dashboards call shared client-side service modules, which coordinate authentication and Firestore operations.
 
-Since our stand-up meetings are held twice a week (on Thursday and Sunday), not all issues are captured in real-time. Many problems arise and are resolved in between these meetings, which means they may not be discussed during stand-ups. 
+The root Vite configuration builds the application from `Learn_Sphere/src` and also includes several standalone development and data-management pages used during the original team project.
 
-To ensure nothing is overlooked and to help improve the next sprint, this **Team Journal** serves as a record of all activities and challenges.
+## Engineering decisions
 
-- **Team Journal**: [Team Journal](https://docs.google.com/document/d/1E4uwgjvjkWO45nlbh2NdftzkDFSCB2rqDzRnnkmMqyc/edit?usp=sharing)
+### Role-aware product structure
 
----
+Student, instructor, and administrator experiences share the same application shell while exposing different actions and information.
 
-### Sprint 1 Test Cases
+The UI adapts to the authenticated user's role—for example, students receive learning and focus tools, instructors receive content-management and scoped reporting tools, and administrators receive token and user-management controls.
 
-Test cases are essential to ensure that the application is functioning as expected. The test cases are separated into two categories based on user roles:
+These client-side checks support the interface but do not replace properly configured Firebase security rules.
 
-#### Student Test Cases
-The test cases for students focus on actions and functionalities that are specific to student users.
+### Learning-content hierarchy
 
-- **[Student Test Cases](https://docs.google.com/spreadsheets/d/1HraaItg00uPc4XHtCd0TgdU6iNSq7l8ttoGm9dp1WEA/edit?usp=sharing)**
+The application models learning content through three related levels:
 
-#### Teacher Test Cases
-The test cases for teachers focus on actions and functionalities that are specific to teacher users.
+1. **Lessons** hold individual units of learning content.
+2. **Courses** organise lessons, prerequisites, and credit information.
+3. **Classrooms** connect courses, instructors, students, dates, assignments, and progress.
 
-- **[Teacher Test Cases](https://docs.google.com/spreadsheets/d/1aDL_JjAZztMcDzhwyYtY20bY0iceHzkhrSwY7cQSnk0/edit?usp=sharing)**
+Keeping these concepts separate allowed the team to support content reuse while still managing individual teaching groups.
 
+### Firebase integration
 
+Firebase Authentication manages application accounts and sessions, while Cloud Firestore stores users, lessons, courses, classrooms, enrolment, tokens, and reporting data.
 
-### Sprint 2 Test Cases 
+Firebase access is organised through reusable modules under `Learn_Sphere/src/components`, keeping data operations separate from most page and dashboard components.
 
-In Sprint 2, the test cases are more focused on user stories instead of separate roles becuase during Sprint 2, the functionalities are somewhat dependant on each other.
+### Static-site deployment
 
-- **Main Folder: [Test Case Folder](https://drive.google.com/drive/folders/1fp2GUqqWL7_wYzGt6RyXA9jk93uzSTtj?usp=sharing)**
+The team used Vite and GitLab CI to produce a static build for GitLab Pages. Deployment required repeated investigation of repository base paths, asset resolution, and client-side routing behaviour before the application could be tested online by the team.
 
-    - **Test Case PDF: [PDF Test Case Folder](https://drive.google.com/drive/folders/1PKppWPMZqFuz9eIwOCTeriSa4E_q6fKF?usp=sharing)**
+The original configuration is tied to the former GitLab repository path and is not presented as an actively maintained public deployment.
 
-    - **Test Cases Spreadsheet: [Spreadsheet Test Case Folder](https://drive.google.com/drive/folders/1UVNYvGKwDYun1LjRwdaD3zsLdQIvPEBL?usp=drive_link)**
+## Scrum delivery
 
----
+The project was developed across three Scrum sprints using:
 
+- sprint planning and backlog refinement;
+- story-point estimation;
+- acceptance criteria and Definition of Done;
+- work-in-progress and blocker tracking;
+- sprint reviews and retrospectives; and
+- role-based manual test cases.
+
+Project-management links and internal meeting records are intentionally excluded from this portfolio README.
+
+## Technology stack
+
+| Area | Technologies |
+| --- | --- |
+| Frontend | React, JavaScript, CSS Modules |
+| Build tooling | Vite, npm |
+| Routing | React Router |
+| Authentication | Firebase Authentication |
+| Data | Cloud Firestore |
+| Delivery | Git, GitLab CI, GitLab Pages |
+| Team process | Scrum, Jira, story points, acceptance criteria, retrospectives |
+
+## Project structure
+
+```text
+.
+├── Learn_Sphere/
+│   ├── images/                 # Application images and icons
+│   └── src/
+│       ├── components/         # Shared UI and Firebase data operations
+│       ├── dashboards/         # Lesson, course, classroom, report, and admin views
+│       ├── forms/              # Authentication and registration forms
+│       ├── layout/             # Shared page headers and layout
+│       ├── pages/              # Application-level routes
+│       ├── App.jsx
+│       └── main.jsx
+├── docs/                       # Manual test-case artefacts
+├── index.html                  # Main Vite entry point
+├── vite.config.js              # Root build and deployment configuration
+├── .gitlab-ci.yml              # Original GitLab Pages pipeline
+├── package.json
+└── README.md
+```
+
+## Running locally
+
+### Requirements
+
+- A current Node.js LTS release
+- npm
+- Access to an appropriately configured Firebase project
+
+### Installation
+
+From the repository root:
+
+```bash
+npm ci
+npm run dev
+```
+
+Open the local URL shown by Vite.
+
+### Production build
+
+```bash
+npm run build
+npm run preview
+```
+
+The current portfolio branch has been successfully verified with:
+
+```bash
+npm run build
+```
+
+The build completes successfully, with warnings for several legacy unused Firebase imports.
+
+## Firebase configuration
+
+The original application was connected to the team's Firebase environment. A fresh independent deployment should:
+
+1. create a separate Firebase project;
+2. enable the required authentication provider;
+3. provision the required Firestore collections;
+4. replace the web application configuration in `Learn_Sphere/src/components/firebaseConfig.js`; and
+5. define and validate role-appropriate Firebase security rules.
+
+Firebase web configuration does not replace database access control. Do not deploy the application against a production Firebase project without reviewing its Authentication and Firestore rules.
+
+## Testing and validation
+
+The team created role-based and user-story-based manual test cases across the project sprints. Selected test-case artefacts remain under `docs/`.
+
+The repository does not currently contain an automated test command or coverage baseline. Current portfolio validation is limited to source review and a successful production build.
+
+## Team and personal contribution
+
+LearnSphere was developed by a five-person team:
+
+- Chin Min Hao
+- Joanne Youssel Rahmanto
+- Lai Cen Yee
+- Ooi Jing Wee
+- Ti Jia Don
+
+The complete product is a shared team outcome.
+
+I contributed as both **Scrum Master and Developer**.
+
+### Scrum Master contribution
+
+Across three sprints, I helped coordinate:
+
+- sprint planning and story-point estimation;
+- acceptance criteria and Definition of Done;
+- work-in-progress and blocker tracking;
+- sprint reviews and retrospectives; and
+- communication between product, frontend, data, testing, and deployment work.
+
+### Development contribution
+
+My implementation and integration work included:
+
+- registration, authentication, and reusable form components;
+- lesson, course, and classroom interfaces and data workflows;
+- classroom enrolment, student lists, assignments, and progress-related features;
+- administrator token and user-management interfaces;
+- reporting dashboards for lessons, courses, and classrooms;
+- the student focus-mode timer and task experience;
+- UI improvements and cross-feature bug fixes; and
+- investigation of Vite base paths, routing, and GitLab Pages deployment.
+
+These points describe my personal contributions without claiming sole ownership of the complete application or every feature.
+
+## Current limitations
+
+- The original Firebase and GitLab Pages environments are not maintained as a public demo.
+- The repository does not currently include automated tests or a lint command.
+- Routing and Vite base-path configuration are tied to the original GitLab repository name and require adjustment for another hosting location.
+- Several legacy Firebase imports generate build warnings.
+- Firebase security rules and a clean standalone data environment have not been provisioned and validated from scratch.
+- Earlier Git history contains generated dependencies and old environment configuration; the current branch has been cleaned, but the history requires sanitisation before any public release.
+- The project remains a university team project and should not be made public without completing the required course, teammate, privacy, and secret review.
+
+## License
+
+No open-source license has been added. All rights are reserved by the project contributors unless a licence is provided later.
